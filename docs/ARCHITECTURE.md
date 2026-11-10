@@ -1,78 +1,81 @@
-# Bella the Cute Puppy — Technical Architecture
+# Bella the Cute Puppy — Technical Architecture (v2)
 
 ## 1. Stack
 
 | Component | Tool | Why |
 |---|---|---|
-| Engine | Unity 3D (URP — Universal Render Pipeline) | Industry standard for mobile; URP scales from low-end to high-end devices |
-| Language | C# | Unity's native scripting language |
-| 3D modeling/rigging | Blender (free) or Maya | Base mesh, skeleton rig, blendshapes |
-| Texturing | Substance 3D Painter, or hand-painted in Blender/Photoshop | Albedo textures; noise/alpha maps if shell-fur is attempted later |
-| Version control | Git / GitHub (this repo) | Already set up |
-| Build/CI (optional, later) | Unity Cloud Build | Lets Pon get builds without owning high-end hardware |
+| Engine | Unity 2022.3 LTS (URP) | Industry standard for mobile; URP scales to low-end Android |
+| Language | C# | Unity native |
+| 3D character | **AI pipeline: ChatGPT/Gemini image → Meshy/Tripo3D image-to-3D → quadruped auto-rig → GLB/FBX** | Zero-cost, no artist (see `ART_BIBLE.md` §7 for the exact workflow) |
+| Animation | Meshy/Tripo preset clips (walk/idle/run) + **procedural secondary motion in C#** | AI presets are limited for quadrupeds; procedural motion fills the gap and is where the cuteness lives |
+| Faces | Texture-swap on head material (`FaceExpressionController`) | AI models have no blendshapes; texture faces are the cartoon-correct, mobile-cheap alternative |
+| Version control | Git / GitHub (this repo) | Set up |
+| Target | Android only, min API ~24, 30–60 fps on mid-range devices | The actual market |
 
-## 2. Finite State Machine (FSM) — Bella's behavior
+## 2. Finite State Machine — Bella's behavior
 
-Avoid a monolithic `Update()` method. Use the State Design Pattern: a common `IState` interface, one class per behavioral state, and a `PetStateMachine` that holds the current state and delegates to it.
+State Design Pattern: `IState` (Enter/Tick/Exit), one class per state, `PetStateMachine` MonoBehaviour delegating `Update()`.
 
-```
-IState
- ├── Enter()
- ├── Tick()   (called every frame by the state machine)
- └── Exit()
-```
+### States (Phase 1, all implemented)
+- **IdleState** — default. Watches need thresholds → sets animator/expression flags (tired yawn, hungry begging). Occasional random "life" behaviors on a timer (ear twitch, look around, sit).
+- **InteractionState** — interrupt-driven (petting, feeding). Plays joyful reaction + particles, then auto-returns to Idle after a configurable duration.
+- **WalkToState** — moves Bella to a target (food bowl, bed). v1 uses direct steering with turn-toward-target in a single room — **no NavMesh** (one rectangular room needs no pathfinding; removing the dependency simplifies the scene). Re-add `com.unity.ai.navigation` only if rooms gain obstacles.
+- **SleepState** — entered via the bed; dims lights, restores energy over a short on-screen sequence (plus "slept while away" credit from offline time).
 
-### Core states (v1)
-- **IdleState** — default state. Continuously checks need thresholds:
-  - Energy low → sub-behavior: yawning animation ("tired" idle variant)
-  - Hunger critical → sub-behavior: begging animation + vocalization
-- **InteractionState** — interrupt-driven, triggered by touch input (petting, feeding). Overrides idle immediately, plays a joyful reaction animation + particle burst, then returns to Idle.
-- **LocomotionState** — triggered when Bella needs to move to an object (e.g., walking to the food bowl when feeding starts). Uses Unity's built-in NavMesh for pathfinding within the room.
+Transitions are requested by *systems* (input, needs, UI), never decided inside states — states only do, they don't orchestrate.
 
-Each state is its own script in `Assets/Scripts/States/`. See starter code already committed in this repo (`IState.cs`, `PetStateMachine.cs`, `IdleState.cs`).
+## 3. Needs: live decay + offline decay
 
-## 3. Needs system and offline decay
+Two decay paths, same config:
+1. **Live:** `PetNeeds.Update()` applies `R_decay * Time.deltaTime` each frame while playing. (v1 bugfix: the original starter code only decayed on resume — needs froze during play.)
+2. **Offline:** on load/resume: `V_current = max(V_min, V_saved − R_decay_offline × ΔT)` with ΔT from **UTC timestamps**. Offline rates are gentler than live rates (configurable multiplier) so a school day away ≈ "hungry and happy to see you", and there is a **max offline decay cap** so returning after a month never shows a miserable puppy (kindness cap, GDD §4).
 
-Needs are floats that decay over real elapsed time, including while the app is closed or the device is off. The formula (do not use `Time.deltaTime` alone for long-term decay — that only ticks while the app is running):
+**Serialization bug fixed:** `JsonUtility` cannot serialize `System.DateTime` — it silently drops the field, which would have broken offline decay entirely. Timestamps are now stored as `long utcTicks` (`DateTime.UtcNow.Ticks`) and reconstructed via `new DateTime(ticks, DateTimeKind.Utc)`.
 
-```
-V_current = max(V_min, V_saved - (R_decay * ΔT))
-```
+Clock-manipulation guard: `ΔT` is clamped to ≥ 0 and ≤ cap; a backwards clock just means "no decay", never negative time or rewards.
 
-- `V_current` — the recalculated need value on app resume
-- `V_saved` — the value stored at last save
-- `R_decay` — decay rate per second for that specific need
-- `ΔT` — elapsed seconds between the saved timestamp and now
-- `V_min` — floor (typically 0) so values never go negative
+## 4. Expression & procedural animation layer
 
-**Critical implementation detail:** timestamp must use `DateTime.UtcNow`, not local device time, logged in `OnApplicationPause`/`OnApplicationFocus` and compared against the saved timestamp on resume. This prevents players from manipulating their device clock to bypass decay. See `Assets/Scripts/Save/` starter code.
+### FaceExpressionController
+- Enum `Expression { Happy, Excited, Sad, Sleepy, Begging, Soapy }`.
+- Swaps the head material's base texture from an assigned array (AI-generated face PNGs on the model's UV face region — or on a simple quad "face plane" parented to the head bone if UVs are awkward, Animal-Crossing style).
+- On the Phase-1 placeholder it tints a face sphere instead; the API is identical, so swapping in the real model is a drop-in.
 
-## 4. Rendering / shader strategy
-
-Realistic strand-based fur simulation is too GPU-expensive for mobile. Two options, in order of recommendation:
-
-1. **Toon/cel shading (v1 default)** — flat, stylized shading with distinct light bands (base/shadow/highlight). Cheap, performant, visually distinct from Boo's realistic-fur look (which is a plus, not just a cost saving). Unity's official Toon Shader (URP) is free and open-source.
-2. **Shell-based fur (stretch goal, not v1)** — multiple semi-transparent extruded shell passes + a noise alpha map for a fuzzy look (e.g. the FurFX approach). Each shell is an extra draw call — cap shell count hard to hold 30–60fps on mid-range devices. Only attempt this after v1 ships and only if performance budget allows.
-
-Facial expression: use **blendshapes/morph targets**, not complex facial bone rigging. A handful of target shapes (smile, sad, open-mouth pant) interpolated via the Animator or direct C#, driven by the needs/happiness state.
+### ProceduralPuppy (the cuteness engine)
+All transform-level, animation-system-independent, works on placeholder AND rigged model root:
+- Idle breathing bounce (sine on local Y scale/pos)
+- Tail wag: wag frequency/amplitude mapped to Happiness (continuous emotional telemetry — players *feel* the needs system without reading bars)
+- Squash-and-stretch pulse on pet/feed
+- Head tilt toward touch point (later: toward dragged food)
+- Ear flop lag (simple spring on ear transforms once the rigged model provides ear bones)
 
 ## 5. Save system
-- Local JSON (or Unity's `PlayerPrefs` for very small data, but prefer a JSON file in `Application.persistentDataPath` for anything beyond a few values) holding: each need's `V_saved`, last-saved UTC timestamp, currency, owned outfits/unlocks.
-- No cloud save in v1 (keeps COPPA data-collection surface at zero). Add cloud save only if you later add account/login — which triggers a much bigger compliance lift, so avoid unless there's a real reason.
+- Local JSON at `Application.persistentDataPath/bella_save.json`. No cloud, no accounts (COPPA surface = zero).
+- `SaveData`: needs, `utcTicks`, treats currency, owned outfit IDs, learned tricks, sticker IDs, first-play date (for growth system), day-streak counter.
+- Atomic-ish write (write temp file, then move) to survive kills mid-save.
+- Versioned (`saveVersion` int) for forward migration.
 
-## 6. Project folder layout
-See `PLAN.md` §4 for the full repo tree. Within `Assets/Scripts/`:
-- `Core/` — `IState.cs`, `PetStateMachine.cs`
-- `States/` — one file per state
-- `Needs/` — `PetNeeds.cs`, `NeedDecayConfig.cs` (a ScriptableObject so decay rates are designer-tunable without touching code)
-- `Save/` — `SaveData.cs`, `SaveSystem.cs`
-- `MiniGames/` — one subfolder per mini-game, added as each is built (Phase 4)
-- `UI/` — need-bar widgets, currency display, age-gate screen, parental gate
+## 6. Scene construction — editor bootstrap (minimum-intervention keystone)
+`Assets/Scripts/Editor/BellaSceneBootstrap.cs` adds menu item **Bella → Build Test Scene**: programmatically creates camera, light, room, placeholder Bella (primitives: body/head/ears/tail/face), HUD canvas with need bars, feed button, event system, and wires every reference. Pon never drags a single reference in the Inspector. The same pattern will later wire the real model (menu: **Bella → Setup Imported Model**).
 
-## 7. Performance targets
-- 30–60 fps on mid-range Android devices (the realistic floor for the target market, not flagship-only).
-- Avoid: global illumination, complex specular highlights, uncapped shell-fur passes, per-frame heavy physics on more than a couple of active objects.
+## 7. Project folder layout
+```
+unity-project/Assets/Scripts/
+├── Core/        IState, PetStateMachine, GameBootstrap
+├── States/      IdleState, InteractionState, WalkToState, SleepState
+├── Needs/       PetNeeds, NeedDecayConfig
+├── Save/        SaveData, SaveSystem
+├── Pet/         ProceduralPuppy, FaceExpressionController, PetInteraction
+├── UI/          NeedsHud, FeedButton (programmatic UI, icon-first)
+├── Editor/      BellaSceneBootstrap
+└── MiniGames/   (Phase 4, one folder per game)
+```
 
-## 8. Compliance-relevant technical notes
-- Any analytics/crash-reporting SDK must be configured in "child-safe" mode (or omitted in v1) — default configs often collect device identifiers.
-- Age-gate logic must branch at the code level: under-13 path permanently disables data collection and ad SDK initialization for that session, not just hides a UI element.
+## 8. Performance targets
+- 30–60 fps on mid-range Android; single skinned mesh, texture-swap faces, no realtime GI, baked/simple lighting, one directional light, URP mobile settings.
+- AI-generated meshes are often dense: run Meshy's retopo/low-poly option or decimate in Blender if the model exceeds ~15–25k tris.
+
+## 9. Compliance-relevant technical notes
+- v1 ships with **no analytics/crash SDKs at all**. If ever added: child-safe config, no device IDs.
+- Age-gate branches in code: under-13 path keeps all collection/ads disabled (v1: they're disabled for everyone anyway).
+- Parental gate: randomized two-number arithmetic, new numbers each attempt, no retry hints.

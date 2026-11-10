@@ -1,147 +1,151 @@
-# Bella the Cute Puppy — Master Development Plan
+# Bella the Cute Puppy — Master Development Plan (v2)
 
-**Project:** A virtual-pet mobile game starring Bella, a small, very happy Golden Retriever puppy — in the spirit of *Boo: The World's Cutest Dog*, but an original character, original art, and original codebase.
+**Project:** A 3D virtual-pet mobile game starring Bella, a small, very happy Golden Retriever puppy — in the spirit of *Boo: The World's Cutest Dog*, with an entirely original character, art, and codebase.
 
-**Repo:** `medh-eng/bella-cute-puppy`
+**Repo:** `medh-eng/Bella-cute-puppy`
 **Owner:** Pon (non-technical founder/director; hands-on with specs, review, and decisions)
-**Primary builder:** Claude (Sonnet for ~90% of production work, Opus escalation for the hardest design/architecture calls, Fable reserved for a small number of high-leverage sessions — see §5)
+**Primary builder:** Claude (Sonnet for ~90% of production work, Opus escalation for hard calls, Fable for rare high-leverage reviews — see §6)
 
-This document is the top-level plan. It links out to the supporting docs in this folder:
-- [`GDD.md`](./GDD.md) — full game design: core loop, needs system, mini-games, monetization, compliance
-- [`ARCHITECTURE.md`](./ARCHITECTURE.md) — technical architecture: FSM, offline-time math, shaders, project structure
-- [`ART_BIBLE.md`](./ART_BIBLE.md) — Bella's character design spec (how she must look, and must NOT look like Boo)
-- [`AI_WORKFLOW.md`](./AI_WORKFLOW.md) — exactly which AI model/tool handles which task, with ready-to-use prompts
+**v2 changes (2026-11-11):** Android/Google Play only (iOS cut). Zero human spend — all art via AI tools. 3D pipeline confirmed: **ChatGPT/Gemini concept image → Meshy or Tripo3D image-to-3D → auto-rig (quadruped) → preset + procedural animation → Unity**. Mixamo removed (humanoid-only, cannot rig a dog). Google Play closed-testing requirement added as its own phase. Blendshapes replaced by face-texture swapping (AI-generated models don't come with blendshapes). Growth strategy made explicit (§5).
+
+Supporting docs:
+- [`GDD.md`](./GDD.md) — game design: core loop, needs, mini-games, differentiators, compliance
+- [`ARCHITECTURE.md`](./ARCHITECTURE.md) — FSM, offline-decay math, expression system, performance
+- [`ART_BIBLE.md`](./ART_BIBLE.md) — Bella's look + the exact AI art pipeline with ready-to-paste prompts
+- [`AI_WORKFLOW.md`](./AI_WORKFLOW.md) — which AI model/tool handles which task
 
 ---
 
 ## 1. Goal and operating principle
 
-**Goal:** ship a polished, COPPA-compliant, mobile virtual-pet game to iOS/Android, built with minimum hands-on effort from Pon.
+**Goal:** ship a polished, COPPA/Families-compliant virtual-pet game to **Google Play (Android only)**, built with minimum hands-on effort from Pon and **zero money spent on people** (total cash outlay: the one-time $25 Google Play developer fee, plus optional small AI-tool credits if free tiers run out).
 
-**Operating principle — "minimum intervention":** Claude does the design documentation, all code, all architecture decisions, and all project-management breakdown. Pon's role is reduced to four things:
-1. Answering a small number of *decision* questions I can't make for you (budget, timeline, monetization appetite, store accounts).
-2. Running Unity locally (or via a cloud build service) to actually compile/test, since I can write code but can't execute a game engine myself from chat.
-3. Approving/rejecting generated art and audio (since licensed asset purchases and store submissions need a human + payment method).
-4. Playtesting and giving feedback at each milestone.
-
-Everything else — GDD, C# scripts, shader code, state machines, save-data logic, store-listing copy, ASO research synthesis, compliance checklists — is produced directly into this repo by Claude across sessions.
-
----
-
-## 2. Phased roadmap
-
-### Phase 0 — Foundation (this session)
-- [x] Repo scaffolded (`docs/`, `unity-project/Assets/...`)
-- [x] GDD, architecture doc, art bible, AI workflow doc written
-- [x] Starter C# scripts for the needs system and FSM committed
-- [ ] Pon: install Unity Hub + Unity 2022 LTS (or newer LTS) locally, open `unity-project/`, confirm it loads with no errors
-
-### Phase 1 — Vertical slice (core loop only)
-**Target:** one room, Bella idle/react/eat, one need (hunger) fully working, save/load with offline decay.
-- Claude: write `PetNeeds`, `PetStateMachine`, `SaveSystem`, hunger-feeding interaction script, basic UI (need bars).
-- Claude: write placeholder-cube/capsule test scene instructions so Pon can press Play without any final art.
-- Pon: open Unity, press Play, confirm hunger decays over time and feeding restores it. Report back anything that errors.
-
-### Phase 2 — Full needs system + Idle/Interaction/Locomotion FSM
-- Claude: implement all 5 needs (hunger, hygiene, energy, health, happiness) per the decay formula in `ARCHITECTURE.md`.
-- Claude: implement the 3 core FSM states (Idle, Interaction, Locomotion) with NavMesh-based walk-to-bowl behavior.
-- Pon: test, report feel ("too fast decay", "animation missing" etc. — no code needed from you).
-
-### Phase 3 — Character art pipeline
-- Pon + an artist/freelancer (Hyderabad AVGC network, see `GDD.md` §8) OR an outsourced Fiverr/Upwork 3D artist: produce Bella's rigged 3D model + blendshapes per `ART_BIBLE.md`.
-- Claude: write the Animator/Blendshape-driving code so the model slots in once delivered — this doesn't block on having final art; we build against a placeholder capsule first.
-- Claude: write the Toon Shader / shell-fur shader setup instructions (Unity Toon Shader URP is the default recommendation — cheapest to integrate, good mobile performance; shell-fur is a stretch goal, not v1).
-
-### Phase 4 — Mini-games (one at a time)
-Build in this order (easiest → hardest, cheapest → most expensive to iterate):
-1. **The Wardrobe** (drag-and-drop dress-up) — pure UI, no physics, fastest to ship.
-2. **The Clinic** (match-the-tool puzzle) — simple logic, reuses UI patterns from Wardrobe.
-3. **The Photo Studio** (camera + stickers, local-only save — no cloud upload, no social network integration, per COPPA).
-4. **The Park (Frisbee)** (swipe-physics mini-game).
-5. **The Track (Racing)** (hardest — NPC AI, obstacle course) — build last, cut from v1 if timeline is tight.
-
-Each mini-game: Claude writes full C# + wires it into the currency system; Pon tests and approves.
-
-### Phase 5 — Economy, monetization, compliance
-- Claude: implement currency (treats/coins), daily reward, neutral age-gate screen, parental gate (math-problem style) before any IAP/ad flow.
-- Claude: draft privacy policy, COPPA checklist, Google Play Families / Apple Kids Category checklist (see `GDD.md` §7).
-- Pon: pick the actual ad network / IAP provider account and create the developer accounts (this requires your payment details — I cannot do this step).
-
-### Phase 6 — Polish, store listing, submission
-- Claude: write App Store/Play Store descriptions, keyword research synthesis (from Gemini's market research — see §5), privacy policy final text.
-- Pon: create the actual store listings (requires your Apple/Google developer accounts), upload build, submit for review.
-
-### Phase 7 — Post-launch
-- Claude: analyze any analytics/review data you paste in, propose balancing changes, write patch-note copy.
-- Pon: monitor live metrics, greenlight updates.
+**Operating principle — "minimum intervention":** Claude does design docs, all code, architecture, and project management. Pon's role:
+1. Answer the few genuinely human decisions (accounts, approvals, taste calls on Bella's look).
+2. Run Unity locally to compile/test (Claude writes everything, including an editor script that builds the test scene from one menu click — no manual editor wiring).
+3. Generate art via AI tools (Claude supplies exact prompts; Pon pastes them into ChatGPT/Gemini/Meshy/Tripo and downloads results into the repo).
+4. Playtest and report feel in plain language.
+5. Recruit ~12 friendly testers for the mandatory Google Play closed test (§4, Phase 7).
 
 ---
 
-## 3. What "done" looks like for v1 (scope control)
+## 2. The art pipeline (the v2 centerpiece)
 
-To keep this achievable with minimum intervention, v1 ships with:
-- 1 hub room
-- Full needs system (5 needs)
-- 2 mini-games (Wardrobe + Clinic) — Park/Track/Photo Studio are v1.1+
-- Toon-shaded placeholder-to-final 3D model (no shell fur in v1)
-- Currency + daily reward only (no IAP in v1 — add once the core loop is validated)
-- COPPA-compliant age gate, no ads, no data collection in v1
+No artist. The pipeline, verified November 2026:
 
-This is intentionally smaller than the full feature list in the PDF guide — that guide describes a mature, fully-featured product; v1 here is the smallest version that is actually a complete, shippable game, so you get something real in weeks rather than a sprawling project that never finishes. Phase ordering above lets you extend indefinitely after v1 ships.
+| Step | Tool | Output | Cost |
+|---|---|---|---|
+| 1. Concept sheet | ChatGPT Images / Gemini | Bella turnaround (front/side/back) + expression sheet, per `ART_BIBLE.md` prompts | Free |
+| 2. Image → 3D | **Meshy** (or Tripo3D as fallback) | Textured GLB/FBX of Bella | Free tier: Meshy 100 credits/month |
+| 3. Auto-rig | Meshy rigging (supports **quadrupeds**) or Tripo auto-rig | Rigged FBX/GLB, Unity-ready | Same credits |
+| 4. Animations | Meshy animation library (quadruped presets: walk, run, idle) + **procedural animation in code** (tail wag, bounce, squash-stretch, ear flop — Claude writes these) | Animation clips + runtime motion | Free |
+| 5. Facial expressions | **Face-texture swapping**, not blendshapes: Claude's `FaceExpressionController` swaps AI-generated face textures (happy/sad/sleepy/begging) on the head material | Code + 4–6 PNG faces | Free |
+| 6. Props/environment | Meshy text-to-3D for bowl/bed/toys; or Unity primitives + AI textures | GLB props | Free tier |
+| 7. UI art | ChatGPT/Gemini image gen (icons, buttons, backgrounds — Claude supplies prompts) | PNGs | Free |
+| 8. Audio | Freesound.org CC0 (barks, chimes) + jsfxr-style generated SFX | WAV/OGG | Free |
 
----
+**Key insight:** AI-generated 3D models arrive without blendshapes and with limited animation presets. We compensate in code — procedural secondary motion and texture-swapped faces are cheap, fully controllable, and (bonus) read as *more* cartoon-cute than realistic facial rigging. This is how games like Animal Crossing do faces.
 
-## 4. Repo structure
-
-```
-bella-cute-puppy/
-├── docs/
-│   ├── PLAN.md          ← this file
-│   ├── GDD.md
-│   ├── ARCHITECTURE.md
-│   ├── ART_BIBLE.md
-│   └── AI_WORKFLOW.md
-└── unity-project/
-    └── Assets/
-        ├── Scripts/
-        │   ├── Core/        (PetStateMachine, IState)
-        │   ├── States/      (IdleState, InteractionState, LocomotionState)
-        │   ├── Needs/        (PetNeeds, NeedDecayConfig)
-        │   ├── Save/         (SaveSystem, SaveData, offline-time calc)
-        │   ├── MiniGames/    (one subfolder per mini-game, added per Phase 4)
-        │   └── UI/
-        ├── Art/Bella/        (3D model, textures — populated in Phase 3)
-        ├── Animations/
-        ├── Prefabs/
-        ├── Shaders/
-        └── Audio/
-```
+**Important Mixamo note:** Mixamo rigs humanoids only — it cannot rig Bella. Meshy and Tripo both auto-rig quadrupeds natively; use them end-to-end.
 
 ---
 
-## 5. AI model allocation strategy (how to spend your limited Fable access)
+## 3. Phased roadmap
 
-You have: **unlimited-ish Sonnet/Opus** (your main daily driver) and **limited Fable time/chats**. Plan accordingly:
+### Phase 0 — Foundation ✅
+- [x] Repo scaffolded, docs written, starter scripts committed
+- [x] v2 plan revision (this document)
+- [ ] Pon: install Unity Hub + **Unity 2022.3 LTS**, open `unity-project/`, confirm no errors
 
-| Use Fable for (rare, high-leverage, one-shot) | Use Sonnet/Opus for (everything else, all day) |
-|---|---|
-| One big upfront "sanity check" pass over this whole plan + the GDD before you start Phase 1, to catch anything structurally wrong before code exists | All C# script writing |
-| The single hardest architecture decision point you hit mid-project (e.g., if NavMesh pathing + mobile performance fights you) | All day-to-day debugging |
-| A final pre-launch review pass: COPPA compliance, store-listing copy, overall quality bar | All documentation, GDD updates, mini-game design |
-| — | All of Phase 4 (every mini-game) |
-| — | Market/ASO copy synthesis once you've gathered raw research (via Gemini, per your note) |
+### Phase 1 — Playable grey-box slice ✅ (code complete, needs Pon's first run)
+Everything works with a placeholder puppy built from primitives — no art needed yet.
+- [x] Full needs system (5 needs), live + offline decay (JsonUtility DateTime bug fixed — timestamps now stored as ticks)
+- [x] FSM: Idle / Interaction / WalkTo / Sleep states
+- [x] Save/load, UTC-based offline decay
+- [x] Tap-to-pet with hearts particle burst; drag-food-to-Bella feeding
+- [x] Need-bars HUD (icon-based, pre-reader friendly)
+- [x] Procedural animation (idle bounce, tail wag, squash on pet) on the placeholder
+- [x] Face expression controller (texture-swap architecture, tint-based on placeholder)
+- [x] **One-click scene builder**: Unity menu `Bella → Build Test Scene` constructs the whole playable scene — Pon never wires anything manually
+- [ ] Pon: open Unity → `Bella → Build Test Scene` → press Play → feed/pet Bella → close and reopen to confirm offline decay. Report feel.
 
-Rule of thumb: **default to Sonnet for anything with a clear spec** (which, after this plan exists, is almost everything). **Escalate to Opus** only when a task is genuinely ambiguous or architecturally risky and getting it wrong would be expensive to unwind. **Save Fable** for the few moments where you want a second, independent opinion on something load-bearing — not for routine building.
+### Phase 2 — Real Bella (AI art pass 1)
+- Pon: run `ART_BIBLE.md` §7 prompts → concept sheet → pick favorite → Meshy image-to-3D → auto-rig → download GLB+FBX into `Assets/Art/Bella/`.
+- Claude: import setup, animator controller wiring preset clips + procedural layer, face-texture system on the real model.
+- Pon: taste check — "does she feel like Bella?"
 
-Full model-to-task mapping (including ChatGPT and Gemini, since you're already using Gemini for research) is in [`AI_WORKFLOW.md`](./AI_WORKFLOW.md).
+### Phase 3 — The room + daily rhythm
+- Environment (one cozy room; AI-generated props), day/night tint matching real local clock, sleep loop, wake-up greeting (Bella's excitement scales with hours away — capped, so never guilt).
+- Illness events + thought-bubble emotion system (icon bubbles: bone = hungry, Zzz = sleepy — pre-reader UI).
+
+### Phase 4 — Mini-games (easiest → hardest)
+1. **The Wardrobe** (dress-up; AI-generated accessory textures)
+2. **Trick Training** (NEW — draw a shape on screen, Bella learns the trick; gesture recognition is simple code, feels magical, and is this game's differentiator)
+3. **The Clinic** (tool-matching care puzzle)
+4. **Bubble Bath** (scrub mini-sequence; upgraded from a chore to a game)
+5. v1.1+: Photo Studio, Park/Frisbee, Track/Racing
+
+### Phase 5 — Economy + retention systems
+- Treats currency, daily gift, sticker memory-book (collection = long-term retention, no money involved), Bella grows slightly over real weeks (puppy → young dog toggle).
+- No IAP, no ads in v1 (deliberate — see GDD §7).
+
+### Phase 6 — Compliance + store prep
+- Neutral age screen, parental gate, Families Policy declaration, Data Safety form answers (all "no collection"), privacy policy text, store listing copy + ASO keywords, screenshots/feature graphic (AI-generated).
+- Pon: create Google Play developer account ($25, one-time) — do this EARLY in Phase 5, account verification can take days.
+
+### Phase 7 — Closed testing (mandatory, plan for ~3–4 weeks)
+Google requires new personal developer accounts to run a closed test with **12 testers opted in for 14 continuous days** before production access — and since 2026 Google checks that testers actually *use* the app, not just install it.
+- Pon: recruit 12–15 people (clinic staff, family, friends — overshoot so dropouts don't reset the clock), collect their Gmail addresses.
+- Claude: tester instructions message (what to tap, how often), feedback form questions.
+- Use internal testing track (up to 100 testers, no review) for fast iteration *in parallel*.
+
+### Phase 8 — Launch + post-launch
+- Apply for production access → production review → launch.
+- Then: review Play Console stats, apply for the **Teacher Approved** program, iterate with v1.1 mini-games.
 
 ---
 
-## 6. What I need from you to keep moving
+## 4. What "done" looks like for v1 (scope control)
 
-Nothing right now — the next session can proceed straight to Phase 1 scripts. When we get there, the only real decisions that are genuinely yours (not technical, not something I can decide for you) are:
-1. Target launch platforms: iOS only, Android only, or both?
-2. Rough budget for outsourced art (0 — placeholder/AI-assisted only, vs. hiring a 3D artist)?
-3. Timeline pressure — is this a side project with no deadline, or tied to something (a demo, a pitch, a release date)?
+- 1 cozy room, day/night cycle
+- Full 5-need system with offline decay
+- Real AI-generated rigged 3D Bella with face expressions + procedural cuteness
+- 3 mini-games: Wardrobe, Trick Training, Clinic (+ Bubble Bath care loop)
+- Treats currency + daily gift + sticker book
+- COPPA-clean: no ads, no IAP, no data collection, parental gate on external links
+- Passed 14-day closed test, live on Google Play
 
-Answer those whenever convenient; everything else I can keep building without blocking on you.
+---
+
+## 5. Growth strategy (the honest version of "viral")
+
+Child-directed apps legally cannot use viral machinery (social feeds, friend invites, share-to-unlock). What actually grows kids' games:
+
+1. **Retention → ranking.** Play Store rewards D1/D7 retention. Our levers: offline decay pulls kids back, daily gift, sticker book, Bella's growth, wake-up greeting. All positive-framing — no punishment mechanics (Families policy also restricts manipulative design).
+2. **ASO.** Parents type the searches ("puppy games for kids", "pet care game free no ads"). "**No ads**" is itself a top parent search term and our genuine differentiator — most competitors are ad-stuffed. Put it in the title/short description.
+3. **Teacher Approved program.** Google's curated Kids tab; most devs never apply. A compliant, ad-free, gentle pet game is exactly what it exists to feature. Apply immediately post-launch.
+4. **Parent-shareable moments.** Photo of dressed-up Bella exported via OS share sheet (behind parental gate) → WhatsApp — the one legal "share loop", and WhatsApp is the distribution channel in India.
+5. **Ratings prompt** aimed at the parent (behind the gate), only after a happy session.
+
+---
+
+## 6. AI model allocation
+
+Unchanged in spirit: **Sonnet** for all spec'd production work (scripts, docs, debugging), **Opus** for ambiguous/architectural calls, **Fable** reserved for: this sanity-check pass (done), one mid-project unblock if something resists Opus, one pre-launch compliance/quality review. Full mapping incl. ChatGPT/Gemini/Meshy/Tripo roles: `AI_WORKFLOW.md`.
+
+---
+
+## 7. Decisions log
+
+| Decision | Choice | Date |
+|---|---|---|
+| Platform | Android / Google Play only | 2026-11-11 |
+| Engine | Unity 2022.3 LTS (URP) | 2026-11-11 (confirmed over HTML5 option) |
+| Art | 3D via AI (Meshy/Tripo), zero human spend | 2026-11-11 |
+| Rigging | Meshy/Tripo quadruped auto-rig (NOT Mixamo — humanoid only) | 2026-11-11 |
+| Faces | Texture-swap, not blendshapes | 2026-11-11 |
+| v1 monetization | None (no ads, no IAP) | carried over |
+
+Open decisions for Pon (answer anytime):
+1. Bella's signature trait — collar color (soft red vs teal) or a heart-shaped ear patch? (Locks in before Phase 2 art generation.)
+2. Google Play account: personal ($25, needs the 12-tester test) — or do you have a registered business entity to use an organization account (exempt from the tester requirement)? The clinic's registration might qualify; worth checking.
