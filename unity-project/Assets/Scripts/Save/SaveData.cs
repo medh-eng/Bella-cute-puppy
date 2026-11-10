@@ -47,6 +47,9 @@ namespace Bella.Save
         /// <summary>Consecutive-day care streak (positive framing only — never punishes a break).</summary>
         public int dayStreak = 0;
 
+        /// <summary>"yyyy-MM-dd" string of the last day the streak was counted. Used by DailyRhythmManager.</summary>
+        public string lastStreakDateKey = "";
+
         public DateTime LastSavedUtc =>
             lastSavedUtcTicks > 0 ? new DateTime(lastSavedUtcTicks, DateTimeKind.Utc) : DateTime.UtcNow;
     }

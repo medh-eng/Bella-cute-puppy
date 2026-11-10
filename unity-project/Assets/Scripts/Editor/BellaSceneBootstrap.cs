@@ -245,6 +245,40 @@ namespace Bella.EditorTools
                 new Color(0.98f, 0.65f, 0.3f), controller, nameof(BellaController.RequestFeed));
             MakeButton(canvasGo.transform, "SleepButton", "SLEEP", new Vector2(180f, 90f),
                 new Color(0.55f, 0.6f, 0.95f), controller, nameof(BellaController.RequestSleep));
+
+            // ── Daily Rhythm Manager (singleton, persists) ─────────────────
+            var rhythmGo = new GameObject("DailyRhythmManager");
+            rhythmGo.AddComponent<DailyRhythmManager>();
+            UnityEditor.SceneManagement.EditorSceneManager.MoveGameObjectToScene(
+                rhythmGo, UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+
+            // ── Room Wander (attach to Bella) ──────────────────────────────
+            var wander = bellaGo.AddComponent<RoomWander>();
+            // Default bounds already set in RoomWander; editor-tunable via Inspector.
+
+            // ── Day Streak label (top-right corner) ───────────────────────
+            var streakLabel = Label(canvasGo.transform, "StreakLabel", "⭐ Day 1", 28);
+            var slr = streakLabel.rectTransform;
+            slr.anchorMin = slr.anchorMax = new Vector2(1f, 1f);
+            slr.pivot = new Vector2(1f, 1f);
+            slr.anchoredPosition = new Vector2(-20f, -20f);
+            slr.sizeDelta = new Vector2(200f, 50f);
+            streakLabel.alignment = TextAnchor.UpperRight;
+            streakLabel.color = new Color(1f, 0.85f, 0.2f);
+
+            // Greeting label (centered, fades after 5s)
+            var greetLabel = Label(canvasGo.transform, "GreetingLabel", "", 32);
+            var glr = greetLabel.rectTransform;
+            glr.anchorMin = new Vector2(0f, 1f); glr.anchorMax = new Vector2(1f, 1f);
+            glr.pivot = new Vector2(0.5f, 1f);
+            glr.anchoredPosition = new Vector2(0f, -130f);
+            glr.sizeDelta = new Vector2(0f, 70f);
+            greetLabel.alignment = TextAnchor.UpperCenter;
+            greetLabel.color = new Color(0.3f, 0.15f, 0.05f);
+            greetLabel.gameObject.SetActive(false);
+
+            var dayStreakUI = canvasGo.AddComponent<DayStreakUI>();
+            dayStreakUI.Wire(streakLabel, greetLabel);
         }
 
         private static Image Bar(Transform parent, string label, int index)

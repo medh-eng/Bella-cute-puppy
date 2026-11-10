@@ -110,6 +110,23 @@ namespace Bella.Pet
                 animator: animator));
         }
 
+        /// <summary>
+        /// Called by RoomWander — walks to an arbitrary world point, calls onArrived when done.
+        /// Won't fire if Bella is busy with a care action.
+        /// </summary>
+        public void WalkToPoint(Vector3 point, System.Action onArrived)
+        {
+            if (busy) { onArrived?.Invoke(); return; }
+            Vector3 captured = point;
+            fsm.ChangeState(new WalkToState(transform, () => captured, walkSpeed,
+                onArrive: () =>
+                {
+                    fsm.ChangeState(idle);
+                    onArrived?.Invoke();
+                },
+                animator: animator));
+        }
+
         private void GreetPlayer()
         {
             busy = true;
