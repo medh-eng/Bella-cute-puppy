@@ -36,6 +36,12 @@ namespace Bella.Needs
         [Tooltip("KINDNESS CAP (docs/GDD.md section 4): offline time beyond this many hours is ignored, so returning after a month never shows a miserable puppy.")]
         public float maxOfflineHours = 12f;
 
+        [Tooltip("Time away never pushes a need below this value (wistful, never miserable).")]
+        public float offlineFloor = 18f;
+
+        [Tooltip("Energy regained per hour while the app is closed (time away counts as rest).")]
+        public float offlineEnergyRestorePerHour = 25f;
+
         [Header("Thresholds (0-100 scale)")]
         public float lowEnergyThreshold = 20f;
         public float criticalHungerThreshold = 20f;

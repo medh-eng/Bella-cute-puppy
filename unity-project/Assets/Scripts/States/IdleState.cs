@@ -6,59 +6,71 @@ using Bella.Pet;
 namespace Bella.States
 {
     /// <summary>
-    /// Bella's default state. Watches need thresholds and drives the matching idle
-    /// expression + animator flags (docs/ARCHITECTURE.md section 2). Interaction /
-    /// WalkTo / Sleep states interrupt this one and return when finished.
-    /// Animator is optional (null on the grey-box placeholder).
+    /// Bella's default state. The most urgent need owns her face; every few
+    /// seconds she picks a little "life" behaviour (sit, play-bow, a sneeze when
+    /// she has the sniffles) and she turns to face the player.
     /// </summary>
     public class IdleState : IState
     {
         private readonly PetNeeds needs;
         private readonly FaceExpressionController face;
-        private readonly Animator animator; // may be null until Phase 2
+        private readonly BellaAnimator anim;
+        private readonly Transform self;
 
-        public IdleState(PetNeeds needs, FaceExpressionController face, Animator animator = null)
+        private float behaviourTimer;
+        private float faceYaw = 180f;
+
+        public IdleState(PetNeeds needs, FaceExpressionController face, BellaAnimator anim, Transform self)
         {
             this.needs = needs;
             this.face = face;
-            this.animator = animator;
+            this.anim = anim;
+            this.self = self;
         }
 
         public void Enter()
         {
-            if (animator != null)
-            {
-                animator.SetBool("IsTired", false);
-                animator.SetBool("IsBegging", false);
-            }
+            anim.Speed = 1f;
+            anim.Play("Idle", 0.25f);
+            behaviourTimer = Random.Range(4f, 8f);
+            faceYaw = 180f + Random.Range(-18f, 18f);
         }
 
         public void Tick()
         {
-            if (needs == null) return;
-
-            // Priority order: the most urgent need owns the face.
             Expression e =
-                needs.IsHungerCritical  ? Expression.Begging :
-                needs.IsEnergyLow       ? Expression.Sleepy :
-                needs.IsHappinessLow    ? Expression.Sad :
-                                          Expression.Happy;
-            face?.Set(e);
+                needs.IsUnwell ? Expression.Sad :
+                needs.IsHungerCritical ? Expression.Begging :
+                needs.IsEnergyLow ? Expression.Sleepy :
+                needs.IsHappinessLow ? Expression.Sad :
+                Expression.Happy;
+            face.Set(e);
 
-            if (animator != null)
+            // Turn to look at the player (the camera sits on the -Z side of the room).
+            Quaternion want = Quaternion.Euler(0f, faceYaw, 0f);
+            self.rotation = Quaternion.RotateTowards(self.rotation, want, 240f * Time.deltaTime);
+
+            behaviourTimer -= Time.deltaTime;
+            if (behaviourTimer > 0f) return;
+            behaviourTimer = Random.Range(5f, 10f);
+
+            if (needs.IsUnwell && Random.value < 0.6f)
             {
-                animator.SetBool("IsTired", needs.IsEnergyLow);
-                animator.SetBool("IsBegging", needs.IsHungerCritical);
+                AudioManager.Voice("sneeze");
+                anim.PlayOnce("Sneeze", () => anim.Play("Idle", 0.25f));
+                return;
             }
+            if (needs.IsEnergyLow || needs.IsHungerCritical)
+            {
+                anim.Play("Sit", 0.4f);
+                return;
+            }
+            float r = Random.value;
+            if (r < 0.35f) anim.Play("Sit", 0.4f);
+            else if (r < 0.55f && needs.Mood01 > 0.6f) anim.Play("PlayBow", 0.35f);
+            else anim.Play("Idle", 0.35f);
         }
 
-        public void Exit()
-        {
-            if (animator != null)
-            {
-                animator.SetBool("IsTired", false);
-                animator.SetBool("IsBegging", false);
-            }
-        }
+        public void Exit() { }
     }
 }

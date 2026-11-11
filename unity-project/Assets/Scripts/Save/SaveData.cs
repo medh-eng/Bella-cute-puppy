@@ -3,22 +3,25 @@ using System.Collections.Generic;
 
 namespace Bella.Save
 {
+    [Serializable]
+    public class TrickProgress
+    {
+        public string id;
+        public int count;
+    }
+
     /// <summary>
     /// Plain data container persisted to disk. Deliberately free of any personally
-    /// identifiable information per the COPPA data-minimization requirement in
-    /// docs/GDD.md section 7 — never holds a name, device ID, or anything beyond
-    /// in-game state.
+    /// identifiable information (docs/GDD.md section 7) — it never holds a name,
+    /// age, device ID, or anything beyond in-game state.
     ///
-    /// IMPORTANT: Unity's JsonUtility CANNOT serialize System.DateTime (it silently
-    /// drops the field). All timestamps are therefore stored as long tick counts
-    /// (DateTime.UtcNow.Ticks) and reconstructed with DateTimeKind.Utc.
-    /// See docs/ARCHITECTURE.md section 3.
+    /// IMPORTANT: Unity's JsonUtility CANNOT serialize System.DateTime. Timestamps
+    /// are stored as long tick counts and rebuilt with DateTimeKind.Utc.
     /// </summary>
     [Serializable]
     public class SaveData
     {
-        /// <summary>Bump when the schema changes; lets future code migrate old saves.</summary>
-        public int saveVersion = 2;
+        public int saveVersion = 3;
 
         public float hunger = 100f;
         public float hygiene = 100f;
@@ -26,31 +29,79 @@ namespace Bella.Save
         public float health = 100f;
         public float happiness = 100f;
 
-        /// <summary>Soft currency ("treats") earned through care and mini-games.</summary>
-        public int treats = 0;
+        /// <summary>Soft currency earned through care and mini-games. Never purchasable.</summary>
+        public int treats = 20;
 
-        /// <summary>IDs of owned wardrobe items (Phase 4).</summary>
         public List<string> ownedOutfits = new List<string>();
-
-        /// <summary>IDs of tricks Bella has learned (Phase 4 — Trick Training).</summary>
+        public List<string> equippedOutfits = new List<string>();
         public List<string> learnedTricks = new List<string>();
-
-        /// <summary>IDs of collected memory-book stickers (Phase 5).</summary>
+        public List<TrickProgress> trickProgress = new List<TrickProgress>();
         public List<string> stickers = new List<string>();
 
-        /// <summary>UTC ticks of the last save. Always from DateTime.UtcNow.Ticks.</summary>
         public long lastSavedUtcTicks = 0;
-
-        /// <summary>UTC ticks of the very first launch — drives Bella's growth system (Phase 5).</summary>
         public long firstPlayUtcTicks = 0;
 
-        /// <summary>Consecutive-day care streak (positive framing only — never punishes a break).</summary>
         public int dayStreak = 0;
-
-        /// <summary>"yyyy-MM-dd" string of the last day the streak was counted. Used by DailyRhythmManager.</summary>
+        public int bestStreak = 0;
         public string lastStreakDateKey = "";
+        public string lastGiftDateKey = "";
+        public int growthStageSeen = 0;
+
+        public bool sniffles = false;
+
+        // Lifetime counters (drive stickers).
+        public int countPets = 0;
+        public int countMeals = 0;
+        public int countBaths = 0;
+        public int countNaps = 0;
+        public int countFetches = 0;
+        public int countGifts = 0;
+        public int countCheckups = 0;
+        public int countTricks = 0;
+
+        // Parent settings.
+        public bool sfxOn = true;
+        public bool musicOn = true;
 
         public DateTime LastSavedUtc =>
             lastSavedUtcTicks > 0 ? new DateTime(lastSavedUtcTicks, DateTimeKind.Utc) : DateTime.UtcNow;
+
+        public DateTime FirstPlayUtc =>
+            firstPlayUtcTicks > 0 ? new DateTime(firstPlayUtcTicks, DateTimeKind.Utc) : DateTime.UtcNow;
+
+        public int GetTrickCount(string id)
+        {
+            for (int i = 0; i < trickProgress.Count; i++)
+                if (trickProgress[i].id == id) return trickProgress[i].count;
+            return 0;
+        }
+
+        public int AddTrickCount(string id)
+        {
+            for (int i = 0; i < trickProgress.Count; i++)
+            {
+                if (trickProgress[i].id == id)
+                {
+                    trickProgress[i].count++;
+                    return trickProgress[i].count;
+                }
+            }
+            trickProgress.Add(new TrickProgress { id = id, count = 1 });
+            return 1;
+        }
+
+        /// <summary>Repairs lists that an older or hand-edited save may have left null.</summary>
+        public void Sanitize()
+        {
+            if (ownedOutfits == null) ownedOutfits = new List<string>();
+            if (equippedOutfits == null) equippedOutfits = new List<string>();
+            if (learnedTricks == null) learnedTricks = new List<string>();
+            if (trickProgress == null) trickProgress = new List<TrickProgress>();
+            if (stickers == null) stickers = new List<string>();
+            if (lastStreakDateKey == null) lastStreakDateKey = "";
+            if (lastGiftDateKey == null) lastGiftDateKey = "";
+            if (treats < 0) treats = 0;
+            saveVersion = 3;
+        }
     }
 }

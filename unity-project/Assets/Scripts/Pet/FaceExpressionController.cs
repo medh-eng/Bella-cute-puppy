@@ -1,73 +1,126 @@
 using UnityEngine;
+using Bella.Core;
 
 namespace Bella.Pet
 {
     public enum Expression { Happy, Excited, Sad, Sleepy, Begging, Soapy }
 
     /// <summary>
-    /// Swaps Bella's facial expression. Architecture per docs/ARCHITECTURE.md section 4:
-    /// AI-generated models have no blendshapes, so faces are TEXTURES swapped on the
-    /// head/face renderer (Animal-Crossing style).
+    /// Bella's facial expressions (docs/ARCHITECTURE.md §4). AI-generated models
+    /// have no blendshapes, so each expression is a complete body texture whose
+    /// face region was repainted (tools/pipeline/faces.py); switching expression
+    /// swaps the texture on her material. Eyes also blink on their own.
     ///
-    /// Two modes, auto-detected:
-    ///  - Texture mode (Phase 2+): assign faceTextures (index = Expression enum order);
-    ///    the controller swaps mainTexture on the face renderer's material.
-    ///  - Tint mode (Phase 1 grey-box): no textures assigned; the controller tints the
-    ///    face renderer a readable mood color instead. Same public API, so the real
-    ///    model drops in with zero code changes.
+    /// On the placeholder puppy (no textures) the face sphere is tinted instead.
     /// </summary>
     public class FaceExpressionController : MonoBehaviour
     {
-        [Tooltip("Renderer that shows the face (face plane / head mesh / placeholder sphere).")]
-        [SerializeField] private Renderer faceRenderer;
+        private Renderer faceRenderer;
+        private Material material;
+        private readonly Texture2D[] textures = new Texture2D[6];
+        private Texture2D blinkTexture;
+        private bool textureMode;
 
-        [Tooltip("One texture per Expression enum value, in order: Happy, Excited, Sad, Sleepy, Begging, Soapy. Leave empty in grey-box phase.")]
-        [SerializeField] private Texture2D[] faceTextures;
+        private float blinkTimer = 3f;
+        private float blinkHold;
+        private float holdTimer;
+        private Expression heldExpression;
 
         public Expression Current { get; private set; } = Expression.Happy;
 
-        private MaterialPropertyBlock block;
-        private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
-        private static readonly int ColorId = Shader.PropertyToID("_Color");
+        public void Init(Renderer renderer, bool realModel)
+        {
+            faceRenderer = renderer;
+            if (faceRenderer == null) return;
+            material = faceRenderer.material;   // per-renderer instance
 
-        public void SetFaceRenderer(Renderer r) => faceRenderer = r;
+            if (realModel)
+            {
+                string[] names = { "happy", "excited", "sad", "sleepy", "begging", "blink" };
+                int found = 0;
+                for (int i = 0; i < names.Length; i++)
+                {
+                    textures[i] = Resources.Load<Texture2D>("Bella/Faces/bella_face_" + names[i]);
+                    if (textures[i] != null) found++;
+                }
+                blinkTexture = textures[5];
+                textureMode = textures[0] != null;
+                Diagnostics.Fact("Face textures loaded: " + found + "/6");
+                if (!textureMode) Diagnostics.Note("Bella's face textures are missing (Resources/Bella/Faces).");
+            }
+            Apply();
+        }
 
         public void Set(Expression e)
         {
-            if (e == Current && block != null) return;
+            if (holdTimer > 0f) { heldExpression = e; return; }
+            if (e == Current) return;
             Current = e;
             Apply();
         }
 
+        /// <summary>Show an expression for a moment, ignoring other Set() calls meanwhile.</summary>
+        public void Flash(Expression e, float seconds)
+        {
+            heldExpression = Current;
+            holdTimer = 0f;
+            Current = e;
+            Apply();
+            holdTimer = seconds;
+        }
+
+        private void Update()
+        {
+            if (holdTimer > 0f)
+            {
+                holdTimer -= Time.deltaTime;
+                if (holdTimer <= 0f)
+                {
+                    Current = heldExpression;
+                    Apply();
+                }
+            }
+
+            if (!textureMode || blinkTexture == null) return;
+            bool eyesOpen = Current == Expression.Happy || Current == Expression.Sad || Current == Expression.Begging;
+            if (blinkHold > 0f)
+            {
+                blinkHold -= Time.deltaTime;
+                if (blinkHold <= 0f) Apply();
+                return;
+            }
+            if (!eyesOpen) return;
+            blinkTimer -= Time.deltaTime;
+            if (blinkTimer <= 0f)
+            {
+                blinkTimer = Random.Range(2.2f, 5.5f);
+                blinkHold = 0.13f;
+                material.mainTexture = blinkTexture;
+            }
+        }
+
         private void Apply()
         {
-            if (faceRenderer == null) return;
-
-            if (faceTextures != null && faceTextures.Length > (int)Current && faceTextures[(int)Current] != null)
+            if (material == null) return;
+            if (textureMode)
             {
-                // Texture mode — instantiates the material once (per-renderer), then swaps textures.
-                faceRenderer.material.mainTexture = faceTextures[(int)Current];
+                Texture2D t = textures[(int)Current];
+                if (t == null) t = textures[0];
+                material.mainTexture = t;
                 return;
             }
 
-            // Tint mode (grey-box): readable mood colors, no material instantiation.
-            block ??= new MaterialPropertyBlock();
-            Color c = Current switch
+            Color c;
+            switch (Current)
             {
-                Expression.Happy   => new Color(1.00f, 0.85f, 0.45f), // warm gold
-                Expression.Excited => new Color(1.00f, 0.55f, 0.30f), // bright orange
-                Expression.Sad     => new Color(0.55f, 0.65f, 0.95f), // soft blue
-                Expression.Sleepy  => new Color(0.70f, 0.60f, 0.90f), // lavender
-                Expression.Begging => new Color(1.00f, 0.95f, 0.70f), // pale cream
-                Expression.Soapy   => new Color(0.70f, 0.95f, 1.00f), // bubble cyan
-                _ => Color.white
-            };
-            faceRenderer.GetPropertyBlock(block);
-            block.SetColor(BaseColorId, c); // URP Lit
-            block.SetColor(ColorId, c);     // Standard / fallback
-            faceRenderer.SetPropertyBlock(block);
+                case Expression.Excited: c = new Color(1.00f, 0.80f, 0.55f); break;
+                case Expression.Sad: c = new Color(0.75f, 0.80f, 0.95f); break;
+                case Expression.Sleepy: c = new Color(0.82f, 0.76f, 0.92f); break;
+                case Expression.Begging: c = new Color(1.00f, 0.97f, 0.80f); break;
+                case Expression.Soapy: c = new Color(0.80f, 0.95f, 1.00f); break;
+                default: c = new Color(0.98f, 0.92f, 0.78f); break;
+            }
+            material.color = c;
         }
-
-        private void Start() => Apply();
     }
 }

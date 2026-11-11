@@ -1,0 +1,95 @@
+{
+ "fps": 30,
+ "clips": [
+  {
+   "name": "Idle",
+   "start": 0,
+   "end": 60,
+   "loop": true
+  },
+  {
+   "name": "Walk",
+   "start": 66,
+   "end": 90,
+   "loop": true
+  },
+  {
+   "name": "Run",
+   "start": 96,
+   "end": 110,
+   "loop": true
+  },
+  {
+   "name": "Sit",
+   "start": 116,
+   "end": 176,
+   "loop": true
+  },
+  {
+   "name": "Sleep",
+   "start": 182,
+   "end": 272,
+   "loop": true
+  },
+  {
+   "name": "Eat",
+   "start": 278,
+   "end": 308,
+   "loop": true
+  },
+  {
+   "name": "Happy",
+   "start": 314,
+   "end": 332,
+   "loop": true
+  },
+  {
+   "name": "RollOver",
+   "start": 338,
+   "end": 386,
+   "loop": false
+  },
+  {
+   "name": "Dance",
+   "start": 392,
+   "end": 432,
+   "loop": true
+  },
+  {
+   "name": "Shake",
+   "start": 438,
+   "end": 474,
+   "loop": false
+  },
+  {
+   "name": "Beg",
+   "start": 480,
+   "end": 540,
+   "loop": true
+  },
+  {
+   "name": "Spin",
+   "start": 546,
+   "end": 576,
+   "loop": false
+  },
+  {
+   "name": "PlayBow",
+   "start": 582,
+   "end": 642,
+   "loop": true
+  },
+  {
+   "name": "Sneeze",
+   "start": 648,
+   "end": 678,
+   "loop": false
+  },
+  {
+   "name": "Paw",
+   "start": 684,
+   "end": 744,
+   "loop": true
+  }
+ ]
+}

@@ -1,31 +1,44 @@
 using UnityEngine;
+using Bella.Core;
 
 namespace Bella.Pet
 {
     /// <summary>
-    /// Touch/click input: tapping Bella pets her. Uses the legacy input path (mouse
-    /// position maps to primary touch on Android) so it works in the Editor and on
-    /// device with zero setup. Attach to any always-active object; raycasts against
-    /// Bella's collider.
+    /// Tap or stroke Bella to pet her. While the finger is down near her she
+    /// watches it (head follows). Disabled automatically during mini-games, which
+    /// read the pointer themselves.
     /// </summary>
     public class PetInteraction : MonoBehaviour
     {
-        [SerializeField] private Camera cam;
-        [SerializeField] private BellaController bella;
+        private Camera cam;
+        private BellaController bella;
+        private bool startedOnUI;
 
-        public void Wire(Camera c, BellaController b) { cam = c; bella = b; }
+        public void Init(Camera c, BellaController b)
+        {
+            cam = c;
+            bella = b;
+        }
 
         private void Update()
         {
-            if (!Input.GetMouseButtonDown(0)) return;
             if (cam == null || bella == null) return;
+            if (bella.InActivity) return;
 
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, 100f) &&
-                hit.collider.GetComponentInParent<BellaController>() == bella)
+            if (Pointer.Down) startedOnUI = Pointer.OverUI;
+
+            if (Pointer.Held && !startedOnUI)
             {
-                bella.PetBella();
+                RaycastHit hit;
+                if (Pointer.Raycast(cam, out hit))
+                {
+                    bool onBella = hit.collider.GetComponentInParent<BellaController>() == bella;
+                    if (onBella) bella.PetBella(hit.point);
+                    if (!bella.Busy) bella.Puppy.LookAt(hit.point + Vector3.up * (onBella ? 0.35f : 0.1f));
+                }
             }
+
+            if (Pointer.Up && !bella.Busy) bella.Puppy.ClearLook();
         }
     }
 }

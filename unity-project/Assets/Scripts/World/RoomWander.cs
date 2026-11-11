@@ -1,87 +1,47 @@
 using UnityEngine;
+using Bella.Pet;
 
-/// <summary>
-/// Makes Bella wander idle around the room by picking random points inside a
-/// rectangular floor area and issuing WalkToState commands via BellaController.
-///
-/// Does NOT use NavMesh — WalkToState steers directly (matches ARCHITECTURE.md §5).
-/// </summary>
-[RequireComponent(typeof(BellaController))]
-public class RoomWander : MonoBehaviour
+namespace Bella.World
 {
-    [Header("Room floor bounds (world-space, flat)")]
-    [SerializeField] private Vector2 roomMin = new Vector2(-3f, -2f);
-    [SerializeField] private Vector2 roomMax = new Vector2( 3f,  2f);
-
-    [Header("Timing")]
-    [Tooltip("Seconds Bella stays in one spot before wandering again")]
-    [SerializeField] private float pauseMin = 4f;
-    [SerializeField] private float pauseMax = 10f;
-
-    [Header("Night-time override")]
-    [Tooltip("After this hour Bella wanders less (encourages sleep)")]
-    [SerializeField] private float sleepyPauseMultiplier = 2.5f;
-
-    private BellaController _bella;
-    private float _wanderTimer;
-    private bool  _walking;
-
-    private void Awake() => _bella = GetComponent<BellaController>();
-
-    private void Start()
+    /// <summary>
+    /// Idle life: every so often Bella trots to a new spot in the room. Pauses
+    /// while she is busy, in a mini-game, or sleepy at night.
+    /// </summary>
+    public class RoomWander : MonoBehaviour
     {
-        _wanderTimer = Random.Range(pauseMin, pauseMax); // slight delay so scene settles
+        private BellaController bella;
+        private Room room;
+        private DayNight dayNight;
+        private float timer = 9f;
+        private bool walking;
+
+        public void Init(BellaController b, Room r, DayNight d)
+        {
+            bella = b; room = r; dayNight = d;
+        }
+
+        /// <summary>Hold off wandering (the player is interacting).</summary>
+        public void Pause(float seconds)
+        {
+            timer = Mathf.Max(timer, seconds);
+        }
+
+        private void Update()
+        {
+            if (bella == null || walking) return;
+            if (bella.Busy || bella.InActivity) { timer = Mathf.Max(timer, 5f); return; }
+            timer -= Time.deltaTime;
+            if (timer > 0f) return;
+
+            bool sleepy = (dayNight != null && dayNight.IsNight) || bella.Needs.IsEnergyLow;
+            timer = Random.Range(9f, 18f) * (sleepy ? 2.2f : 1f);
+            walking = bella.WalkToPoint(room.RandomFloorPoint(), () => walking = false);
+        }
+
+        private void LateUpdate()
+        {
+            // If a care action interrupted the walk, the arrival callback never fires.
+            if (walking && bella != null && (bella.Busy || bella.InActivity)) walking = false;
+        }
     }
-
-    private void Update()
-    {
-        if (_walking) return;   // BellaController is busy — don't interfere
-
-        _wanderTimer -= Time.deltaTime;
-        if (_wanderTimer > 0f) return;
-
-        PickNextPoint();
-    }
-
-    private void PickNextPoint()
-    {
-        // During night, wander far less
-        float mult = (DailyRhythmManager.Instance != null && DailyRhythmManager.Instance.IsNightTime())
-                     ? sleepyPauseMultiplier : 1f;
-
-        Vector3 target = new Vector3(
-            Random.Range(roomMin.x, roomMax.x),
-            transform.position.y,            // keep on the floor
-            Random.Range(roomMin.y, roomMax.y));
-
-        _walking = true;
-        _bella.WalkToPoint(target, OnArrived);
-    }
-
-    private void OnArrived()
-    {
-        _walking = false;
-        float mult = (DailyRhythmManager.Instance != null && DailyRhythmManager.Instance.IsNightTime())
-                     ? sleepyPauseMultiplier : 1f;
-        _wanderTimer = Random.Range(pauseMin, pauseMax) * mult;
-    }
-
-    /// <summary>Temporarily pause wandering (e.g. player is interacting).</summary>
-    public void Pause(float seconds)
-    {
-        _wanderTimer = Mathf.Max(_wanderTimer, seconds);
-    }
-
-    // ------------------------------------------------------------------ Gizmo
-#if UNITY_EDITOR
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = new Color(0.3f, 1f, 0.5f, 0.3f);
-        Vector3 center = new Vector3((roomMin.x + roomMax.x) / 2f, 0f, (roomMin.y + roomMax.y) / 2f);
-        Vector3 size   = new Vector3(roomMax.x - roomMin.x, 0.05f, roomMax.y - roomMin.y);
-        Gizmos.DrawCube(center, size);
-        Gizmos.color = new Color(0.3f, 1f, 0.5f, 1f);
-        Gizmos.DrawWireCube(center, size);
-    }
-#endif
 }

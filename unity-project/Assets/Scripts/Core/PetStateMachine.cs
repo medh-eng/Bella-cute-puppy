@@ -22,14 +22,14 @@ namespace Bella.Core
         {
             if (newState == CurrentState) return;
 
-            CurrentState?.Exit();
+            if (CurrentState != null) CurrentState.Exit();
             CurrentState = newState;
-            CurrentState?.Enter();
+            if (CurrentState != null) CurrentState.Enter();
         }
 
         private void Update()
         {
-            CurrentState?.Tick();
+            if (CurrentState != null) CurrentState.Tick();
         }
     }
 }
