@@ -44,7 +44,6 @@ namespace Bella.Core
         private static void Boot()
         {
             if (Instance != null) return;
-            if (FindObjectOfType<GameRoot>() != null) return;
             new GameObject("GameRoot").AddComponent<GameRoot>();
         }
 
@@ -80,9 +79,18 @@ namespace Bella.Core
             Application.targetFrameRate = 60;
             Screen.sleepTimeout = SleepTimeout.SystemSetting;
 
+            CheckInputAvailable();
+
             // Anything a template scene left behind would fight with our own camera and light.
-            foreach (Camera c in FindObjectsOfType<Camera>()) c.gameObject.SetActive(false);
-            foreach (Light l in FindObjectsOfType<Light>()) l.gameObject.SetActive(false);
+            // (Scene roots are walked by hand: the FindObjectsOfType family changes between Unity versions.)
+            GameObject[] roots = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+            for (int i = 0; i < roots.Length; i++)
+            {
+                if (roots[i] == gameObject) continue;
+                foreach (Camera c in roots[i].GetComponentsInChildren<Camera>(true)) c.gameObject.SetActive(false);
+                foreach (Light l in roots[i].GetComponentsInChildren<Light>(true)) l.gameObject.SetActive(false);
+                foreach (AudioListener a in roots[i].GetComponentsInChildren<AudioListener>(true)) a.enabled = false;
+            }
 
             // --- camera + light
             var camGo = new GameObject("Main Camera");
@@ -164,6 +172,26 @@ namespace Bella.Core
                 Text warn = UIKit.Label("SetupWarning", Hud.Root,
                     "Setup notes: " + Diagnostics.ProblemCount + " (gear > Diagnostics)", 26, Art.Rose, TextAnchor.LowerLeft);
                 UIKit.Place(warn.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(20f, 8f), new Vector2(900f, 40f));
+            }
+        }
+
+        /// <summary>
+        /// The game reads touches through Unity's classic Input class. Newer Unity versions can
+        /// switch that off in Player Settings; say so in plain words instead of failing silently.
+        /// </summary>
+        private static void CheckInputAvailable()
+        {
+            try
+            {
+                Vector3 unused = Input.mousePosition;
+                if (unused.x < -1e9f) Debug.Log(unused);
+            }
+            catch (Exception)
+            {
+                throw new InvalidOperationException(
+                    "Touch input is switched off in this project.\n" +
+                    "Fix: stop Play, then use the menu Bella > Set Up Project and restart Unity when asked.\n" +
+                    "(Manual fix: Edit > Project Settings > Player > Other Settings > Active Input Handling = Input Manager (Old).)");
             }
         }
 

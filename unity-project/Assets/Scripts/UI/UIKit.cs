@@ -56,6 +56,44 @@ namespace Bella.UI
         }
     }
 
+    /// <summary>
+    /// Keeps a full-screen UI root inside the phone's safe area (camera cut-outs,
+    /// rounded corners, gesture bar). Android 15+ always draws apps edge-to-edge,
+    /// so without this the top row of the HUD could sit under the camera hole.
+    /// </summary>
+    public class SafeArea : MonoBehaviour
+    {
+        private RectTransform rt;
+        private Rect applied = new Rect(-1f, -1f, -1f, -1f);
+        private int w, h;
+
+        private void OnEnable()
+        {
+            rt = transform as RectTransform;
+            Apply();
+        }
+
+        private void Update()
+        {
+            if (Screen.width != w || Screen.height != h || Screen.safeArea != applied) Apply();
+        }
+
+        private void Apply()
+        {
+            if (rt == null) return;
+            w = Screen.width; h = Screen.height;
+            applied = Screen.safeArea;
+            if (w <= 0 || h <= 0 || applied.width <= 0f || applied.height <= 0f) return;
+            Vector2 min = new Vector2(applied.xMin / w, applied.yMin / h);
+            Vector2 max = new Vector2(applied.xMax / w, applied.yMax / h);
+            if (float.IsNaN(min.x) || float.IsNaN(min.y) || float.IsNaN(max.x) || float.IsNaN(max.y)) return;
+            rt.anchorMin = new Vector2(Mathf.Clamp01(min.x), Mathf.Clamp01(min.y));
+            rt.anchorMax = new Vector2(Mathf.Clamp01(max.x), Mathf.Clamp01(max.y));
+            rt.offsetMin = Vector2.zero;
+            rt.offsetMax = Vector2.zero;
+        }
+    }
+
     /// <summary>Code-only uGUI construction helpers (reference resolution 1080 x 1920, portrait).</summary>
     public static class UIKit
     {
@@ -73,12 +111,13 @@ namespace Bella.UI
             return canvas;
         }
 
-        public static void EnsureEventSystem()
+        /// <summary>Full-screen root that stays inside the device's safe area.</summary>
+        public static RectTransform SafeRoot(string name, Transform parent)
         {
-            if (EventSystem.current != null) return;
-            if (Object.FindObjectOfType<EventSystem>() != null) return;
-            var es = new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
-            es.transform.SetParent(null);
+            RectTransform rt = Rect(name, parent);
+            Stretch(rt);
+            rt.gameObject.AddComponent<SafeArea>();
+            return rt;
         }
 
         public static RectTransform Rect(string name, Transform parent)

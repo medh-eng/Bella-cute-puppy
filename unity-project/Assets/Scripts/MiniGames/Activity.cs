@@ -31,8 +31,7 @@ namespace Bella.MiniGames
             Running = true;
             Canvas = UIKit.CreateCanvas(GetType().Name + "Canvas", 20);
             Canvas.transform.SetParent(transform, false);
-            UI = UIKit.Rect("Root", Canvas.transform);
-            UIKit.Stretch(UI);
+            UI = UIKit.SafeRoot("Root", Canvas.transform);
 
             Button back = UIKit.IconButton("Back", UI, "back", 140f, Color.white, Finish);
             UIKit.Place(back.GetComponent<RectTransform>(), new Vector2(0f, 1f), new Vector2(0.5f, 0.5f), new Vector2(110f, -120f), new Vector2(140f, 140f));

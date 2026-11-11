@@ -10,7 +10,7 @@ Goal: maximize what gets built with **minimum intervention from Pon** and **zero
 
 **Escalate to Opus** for genuinely ambiguous/high-stakes calls: save-schema changes after launch, a performance wall, end-of-phase reviews.
 
-**Session-start pattern:** "Continue Bella — repo medh-eng/Bella-cute-puppy, read docs/PLAN.md, do the next unchecked item in the current phase."
+**Session-start pattern:** "Continue Bella — repo medh-eng/Bella-cute-puppy, read docs/NEXT_CHAT.md."
 
 ## 2. Claude Fable — reserved, limited
 1. ~~Project-start sanity check~~ ✅ done 2026-11-11 (produced this v2 plan)
@@ -32,6 +32,6 @@ Goal: maximize what gets built with **minimum intervention from Pon** and **zero
 ## 6. The loop, step by step
 1. Pon: "continue Bella" in a Sonnet session.
 2. Claude writes code/docs straight into the repo and commits.
-3. Pon: open Unity → menu **Bella → Build Test Scene** (or just press Play on the existing scene) → test → report feel in plain words.
+3. Pon: open Unity → press Play (the project sets itself up; see `UNITY_DAY.md`) → test → report feel in plain words.
 4. Art phases: Pon pastes the prompts from `ART_BIBLE.md` into ChatGPT/Gemini/Meshy, downloads results into `Assets/Art/...`, pushes, and tells Claude — Claude wires them up.
 5. Decisions only at the points flagged in `PLAN.md` §7.

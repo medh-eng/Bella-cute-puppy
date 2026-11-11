@@ -38,7 +38,7 @@ Six faces, shipped as PNGs swapped onto the head material (`FaceExpressionContro
 All six must be generated in ONE AI session/image (an expression sheet) so they're stylistically identical.
 
 ## 6. Shading
-Flat-ish cartoon look: URP Lit with high smoothness off, or Simple Lit; single warm directional light + ambient. If the Meshy texture comes out too "realistic", re-texture in Meshy with a "cute cartoon flat colors" style prompt.
+Flat-ish cartoon look: matte diffuse shading (built-in pipeline, `Legacy Shaders/Diffuse`); single warm directional light + ambient. If the Meshy texture comes out too "realistic", re-texture in Meshy with a "cute cartoon flat colors" style prompt.
 
 ---
 

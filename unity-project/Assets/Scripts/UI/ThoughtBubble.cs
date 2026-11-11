@@ -33,7 +33,9 @@ namespace Bella.UI
             bella = b;
             needs = b.Needs;
             onTapped = tapped;
-            canvasRect = hudRoot.GetComponentInParent<Canvas>().GetComponent<RectTransform>();
+            // Positions are worked out in the HUD root's own space (it is inset by the safe area).
+            canvasRect = hudRoot as RectTransform;
+            if (canvasRect == null) canvasRect = hudRoot.GetComponentInParent<Canvas>().GetComponent<RectTransform>();
 
             Image bubble = UIKit.Img("ThoughtBubble", hudRoot, Art.Icon("bubble"), Color.white, true);
             rt = bubble.rectTransform;
@@ -97,7 +99,7 @@ namespace Bella.UI
             Vector2 local;
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, sp, null, out local))
             {
-                // anchors are bottom-left, the canvas rect's local origin is its centre
+                // anchors are bottom-left, the root rect's local origin is its centre
                 Vector2 half = canvasRect.rect.size * 0.5f;
                 Vector2 p = local + half + new Vector2(40f, 0f);
                 p.x = Mathf.Clamp(p.x, 20f, canvasRect.rect.width - 200f);

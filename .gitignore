@@ -22,3 +22,10 @@ unity-project/*.booproj
 # OS files
 .DS_Store
 Thumbs.db
+
+# Store screenshots are picked by hand; builds and signing keys never go in the repo
+unity-project/Screenshots/
+*.keystore
+*.jks
+*.apk
+*.aab

@@ -28,8 +28,7 @@ namespace Bella.UI
             needs = n;
             Canvas = UIKit.CreateCanvas("HudCanvas", 10);
             Canvas.transform.SetParent(transform, false);
-            Root = UIKit.Rect("HudRoot", Canvas.transform);
-            UIKit.Stretch(Root);
+            Root = UIKit.SafeRoot("HudRoot", Canvas.transform);
 
             var top = new Vector2(0f, 1f);
             string[] icons = { "bone", "bubbles", "zzz", "heart", "health" };

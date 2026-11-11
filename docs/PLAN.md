@@ -1,10 +1,12 @@
-# Bella the Cute Puppy — Master Development Plan (v2)
+# Bella the Cute Puppy — Master Development Plan (v3)
 
 **Project:** A 3D virtual-pet mobile game starring Bella, a small, very happy Golden Retriever puppy — in the spirit of *Boo: The World's Cutest Dog*, with an entirely original character, art, and codebase.
 
 **Repo:** `medh-eng/Bella-cute-puppy`
 **Owner:** Pon (non-technical founder/director; hands-on with specs, review, and decisions)
 **Primary builder:** Claude (Sonnet for ~90% of production work, Opus escalation for hard calls, Fable for rare high-leverage reviews — see §6)
+
+**v3 changes (2026-11-11, later the same day):** the whole v1 game is now built (see §3). Unity 6.3 LTS replaces 2022.3. Rigging, animation, icons and audio were produced by scripts in `tools/pipeline/` rather than by Meshy presets and Freesound, so §2's table is kept as the fallback route for *future* characters and props.
 
 **v2 changes (2026-11-11):** Android/Google Play only (iOS cut). Zero human spend — all art via AI tools. 3D pipeline confirmed: **ChatGPT/Gemini concept image → Meshy or Tripo3D image-to-3D → auto-rig (quadruped) → preset + procedural animation → Unity**. Mixamo removed (humanoid-only, cannot rig a dog). Google Play closed-testing requirement added as its own phase. Blendshapes replaced by face-texture swapping (AI-generated models don't come with blendshapes). Growth strategy made explicit (§5).
 
@@ -22,7 +24,7 @@ Supporting docs:
 
 **Operating principle — "minimum intervention":** Claude does design docs, all code, architecture, and project management. Pon's role:
 1. Answer the few genuinely human decisions (accounts, approvals, taste calls on Bella's look).
-2. Run Unity locally to compile/test (Claude writes everything, including an editor script that builds the test scene from one menu click — no manual editor wiring).
+2. Run Unity locally to compile/test — one PC session, scripted end to end in `UNITY_DAY.md` (the project sets itself up on first open; no manual editor wiring).
 3. Generate art via AI tools (Claude supplies exact prompts; Pon pastes them into ChatGPT/Gemini/Meshy/Tripo and downloads results into the repo).
 4. Playtest and report feel in plain language.
 5. Recruit ~12 friendly testers for the mandatory Google Play closed test (§4, Phase 7).
@@ -52,56 +54,56 @@ No artist. The pipeline, verified November 2026:
 
 ## 3. Phased roadmap
 
+**Status on 11 Nov 2026: Phases 0–6 are complete in the repository, apart from the items that need
+a computer with Unity or a Google account. Those are collected in [`UNITY_DAY.md`](./UNITY_DAY.md).**
+Legend: ✅ done and in the repo · 🖥 needs the Unity PC session · 👤 needs Pon (account / people)
+
 ### Phase 0 — Foundation ✅
-- [x] Repo scaffolded, docs written, starter scripts committed
-- [x] v2 plan revision (this document)
-- [ ] Pon: install Unity Hub + **Unity 2022.3 LTS**, open `unity-project/`, confirm no errors
+- [x] Repo, docs, plan
+- [ ] 🖥 Install Unity Hub + **Unity 6.3 LTS** with Android Build Support, open `unity-project/`
 
-### Phase 1 — Playable grey-box slice ✅ (code complete, needs Pon's first run)
-Everything works with a placeholder puppy built from primitives — no art needed yet.
-- [x] Full needs system (5 needs), live + offline decay (JsonUtility DateTime bug fixed — timestamps now stored as ticks)
-- [x] FSM: Idle / Interaction / WalkTo / Sleep states
-- [x] Save/load, UTC-based offline decay
-- [x] Tap-to-pet with hearts particle burst; drag-food-to-Bella feeding
-- [x] Need-bars HUD (icon-based, pre-reader friendly)
-- [x] Procedural animation (idle bounce, tail wag, squash on pet) on the placeholder
-- [x] Face expression controller (texture-swap architecture, tint-based on placeholder)
-- [x] **One-click scene builder**: Unity menu `Bella → Build Test Scene` constructs the whole playable scene — Pon never wires anything manually
-- [ ] Pon: open Unity → `Bella → Build Test Scene` → press Play → feed/pet Bella → close and reopen to confirm offline decay. Report feel.
+### Phase 1 — Playable slice ✅
+- [x] Five needs with live + offline decay, kindness cap and floor
+- [x] FSM (Idle / Interaction / WalkTo / Sleep), local JSON save
+- [x] Petting, feeding, sleeping, fetch
+- [x] Whole game assembled in code by `GameRoot` — no manual scene wiring
+- [ ] 🖥 First Play in Unity (checklist in `UNITY_DAY.md` step 4)
 
-### Phase 2 — Real Bella (AI art pass 1)
-- Pon: run `ART_BIBLE.md` §7 prompts → concept sheet → pick favorite → Meshy image-to-3D → auto-rig → download GLB+FBX into `Assets/Art/Bella/`.
-- Claude: import setup, animator controller wiring preset clips + procedural layer, face-texture system on the real model.
-- Pon: taste check — "does she feel like Bella?"
+### Phase 2 — Real Bella ✅
+- [x] AI mesh rigged by script in Blender (no Meshy rig needed), 15 baked animations in one take
+- [x] Six face textures + blink; procedural tail, ears, look-at, squash-and-stretch
+- [x] Primitive placeholder puppy kept as an automatic fallback if the model fails to import
+- [ ] 🖥 Taste check — "does she feel like Bella?"
 
-### Phase 3 — The room + daily rhythm
-- Environment (one cozy room; AI-generated props), day/night tint matching real local clock, sleep loop, wake-up greeting (Bella's excitement scales with hours away — capped, so never guilt).
-- Illness events + thought-bubble emotion system (icon bubbles: bone = hungry, Zzz = sleepy — pre-reader UI).
+### Phase 3 — Room + daily rhythm ✅
+- [x] Room with bowl, bed, ball; day/night lighting from the real clock; music for day and night
+- [x] Greeting scaled to time away; wandering; sniffles event; thought bubbles
 
-### Phase 4 — Mini-games (easiest → hardest)
-1. **The Wardrobe** (dress-up; AI-generated accessory textures)
-2. **Trick Training** (NEW — draw a shape on screen, Bella learns the trick; gesture recognition is simple code, feels magical, and is this game's differentiator)
-3. **The Clinic** (tool-matching care puzzle)
-4. **Bubble Bath** (scrub mini-sequence; upgraded from a chore to a game)
-5. v1.1+: Photo Studio, Park/Frisbee, Track/Racing
+### Phase 4 — Mini-games ✅
+- [x] Wardrobe (12 outfits, 4 slots) · Trick Training (6 gestures) · Clinic · Bubble Bath
+- [ ] v1.1+: Photo Studio, Park/Frisbee, Track/Racing
 
-### Phase 5 — Economy + retention systems
-- Treats currency, daily gift, sticker memory-book (collection = long-term retention, no money involved), Bella grows slightly over real weeks (puppy → young dog toggle).
-- No IAP, no ads in v1 (deliberate — see GDD §7).
+### Phase 5 — Economy + retention ✅
+- [x] Treats, daily present, days-together counter, 18-sticker book, growth over 15 days
+- [x] No IAP, no ads
 
-### Phase 6 — Compliance + store prep
-- Neutral age screen, parental gate, Families Policy declaration, Data Safety form answers (all "no collection"), privacy policy text, store listing copy + ASO keywords, screenshots/feature graphic (AI-generated).
-- Pon: create Google Play developer account ($25, one-time) — do this EARLY in Phase 5, account verification can take days.
+### Phase 6 — Compliance + store prep ✅ (documents) / 🖥👤 (accounts and screenshots)
+- [x] Parental gate, parents' area, in-game privacy summary
+- [x] Privacy policy page (`docs/privacy.html`), store listing, every Play Console answer
+      (`docs/store/`), feature graphic, 512 px icon, credits/provenance (`CREDITS.md`)
+- [x] Age screen deliberately dropped — child-only audience, see `store/PLAY_CONSOLE_ANSWERS.md` §5
+- [x] Safe-area handling for Android's edge-to-edge display
+- [ ] 👤 Google Play developer account (US$25) — start early, verification takes days
+- [ ] 👤 Turn on GitHub Pages; put a contact email in `docs/privacy.html`
+- [ ] 🖥 Six store screenshots (menu **Bella → Take Screenshot**)
+- [ ] 🖥 Upload keystore + signed `.aab`
 
-### Phase 7 — Closed testing (mandatory, plan for ~3–4 weeks)
-Google requires new personal developer accounts to run a closed test with **12 testers opted in for 14 continuous days** before production access — and since 2026 Google checks that testers actually *use* the app, not just install it.
-- Pon: recruit 12–15 people (clinic staff, family, friends — overshoot so dropouts don't reset the clock), collect their Gmail addresses.
-- Claude: tester instructions message (what to tap, how often), feedback form questions.
-- Use internal testing track (up to 100 testers, no review) for fast iteration *in parallel*.
+### Phase 7 — Closed testing (≈ 3–4 weeks) 👤
+- [x] Tester invitation, reminders, feedback form, production-access answers (`store/CLOSED_TEST_KIT.md`)
+- [ ] 👤 Recruit 15–20 testers, run 14 days, apply for production access
 
 ### Phase 8 — Launch + post-launch
-- Apply for production access → production review → launch.
-- Then: review Play Console stats, apply for the **Teacher Approved** program, iterate with v1.1 mini-games.
+- [ ] Production review → launch → review Play Console stats → v1.1 mini-games
 
 ---
 
@@ -122,7 +124,7 @@ Google requires new personal developer accounts to run a closed test with **12 t
 Child-directed apps legally cannot use viral machinery (social feeds, friend invites, share-to-unlock). What actually grows kids' games:
 
 1. **Retention → ranking.** Play Store rewards D1/D7 retention. Our levers: offline decay pulls kids back, daily gift, sticker book, Bella's growth, wake-up greeting. All positive-framing — no punishment mechanics (Families policy also restricts manipulative design).
-2. **ASO.** Parents type the searches ("puppy games for kids", "pet care game free no ads"). "**No ads**" is itself a top parent search term and our genuine differentiator — most competitors are ad-stuffed. Put it in the title/short description.
+2. **ASO.** Parents type the searches ("puppy games for kids", "pet care game free no ads"). "**No ads**" is itself a top parent search term and our genuine differentiator — most competitors are ad-stuffed. Put it in the short and full description (not the app name — Play's metadata policy forbids it there).
 3. **Teacher Approved program.** Google's curated Kids tab; most devs never apply. A compliant, ad-free, gentle pet game is exactly what it exists to feature. Apply immediately post-launch.
 4. **Parent-shareable moments.** Photo of dressed-up Bella exported via OS share sheet (behind parental gate) → WhatsApp — the one legal "share loop", and WhatsApp is the distribution channel in India.
 5. **Ratings prompt** aimed at the parent (behind the gate), only after a happy session.
@@ -140,12 +142,18 @@ Unchanged in spirit: **Sonnet** for all spec'd production work (scripts, docs, d
 | Decision | Choice | Date |
 |---|---|---|
 | Platform | Android / Google Play only | 2026-11-11 |
-| Engine | Unity 2022.3 LTS (URP) | 2026-11-11 (confirmed over HTML5 option) |
+| Engine | Unity (3D), confirmed over HTML5 option | 2026-11-11 |
+| Unity version | **Unity 6.3 LTS**, built-in render pipeline. Replaces 2022.3/URP: Google Play now requires target API 36 + 16 KB pages, which 6.3 handles out of the box; the game's flat cartoon look needs no URP | 2026-11-11 |
 | Art | 3D via AI (Meshy/Tripo), zero human spend | 2026-11-11 |
-| Rigging | Meshy/Tripo quadruped auto-rig (NOT Mixamo — humanoid only) | 2026-11-11 |
+| Rigging | Done by script in Blender (`tools/pipeline/`) — no rigging service needed | 2026-11-11 |
+| Audio | All sounds and music synthesised by script — no third-party clips to license | 2026-11-11 |
+| Age screen | Dropped — only needed for mixed-audience apps | 2026-11-11 |
+| Store title | "No ads" kept out of the app name (Play metadata policy); it is in the descriptions | 2026-11-11 |
 | Faces | Texture-swap, not blendshapes | 2026-11-11 |
 | v1 monetization | None (no ads, no IAP) | carried over |
 
 Open decisions for Pon (answer anytime):
-1. Bella's signature trait — collar color (soft red vs teal) or a heart-shaped ear patch? (Locks in before Phase 2 art generation.)
+1. ~~Bella's signature trait~~ — settled by the generated art: teal collar with a gold paw tag.
+3. Android package id — currently `com.bellacutepuppy.game`. It can never be changed after the first upload.
+4. Public contact email for the store page and privacy policy.
 2. Google Play account: personal ($25, needs the 12-tester test) — or do you have a registered business entity to use an organization account (exempt from the tester requirement)? The clinic's registration might qualify; worth checking.
