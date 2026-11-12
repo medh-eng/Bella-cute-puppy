@@ -22,6 +22,29 @@ namespace Bella.Systems
         private Hud hud;
         private float stickerTimer = 2f;
 
+        /// <summary>
+        /// Treats from things that can be repeated endlessly (fetch, practising tricks, extra
+        /// baths and check-ups) share one daily allowance. Care that Bella actually needed, the
+        /// daily present and learning a new trick are never limited. This keeps the wardrobe a
+        /// two-week goal instead of an afternoon of tapping, without ever saying "no" to play.
+        /// </summary>
+        public const int DailyPlayTreats = 30;
+
+        /// <summary>Returns how many of the wanted treats today's play allowance still covers.</summary>
+        public static int PlayTreats(int wanted)
+        {
+            SaveData d = SaveSystem.Data;
+            string today = TodayKey();
+            if (d.playPayDateKey != today)
+            {
+                d.playPayDateKey = today;
+                d.playPaidToday = 0;
+            }
+            int pay = Mathf.Clamp(wanted, 0, Mathf.Max(0, DailyPlayTreats - d.playPaidToday));
+            d.playPaidToday += pay;
+            return pay;
+        }
+
         public bool GiftAvailable => SaveSystem.Data.lastGiftDateKey != TodayKey();
 
         public static string TodayKey()

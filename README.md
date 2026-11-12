@@ -6,7 +6,7 @@ all art made with AI tools and scripts — zero human spend.
 
 ![Feature graphic](docs/store/feature_graphic_1024x500.png)
 
-## Where things stand (11 Nov 2026)
+## Where things stand (12 Nov 2026)
 
 **All game work that can be done without Unity is finished.** The complete v1 game is in this
 repository: code, Bella's rigged and animated model, faces, sounds, music, icons, store text,
@@ -19,6 +19,15 @@ inside Unity** — that first run is the next step.
 | Start the next Claude chat | **[docs/NEXT_CHAT.md](docs/NEXT_CHAT.md)** |
 | See the whole plan and what is ticked off | [docs/PLAN.md](docs/PLAN.md) |
 | Fill in Google Play | [docs/store/](docs/store/) — listing text, every console form, closed-test kit |
+
+## What she looks like
+
+Rendered in Blender from the exact model, textures and animations the game uses (not in-game screenshots):
+
+![Bella poses](docs/preview/bella_poses_blender.png)
+![Bella faces](docs/preview/bella_faces.png)
+
+Home-screen layout drawn from the real HUD coordinates and icons: [docs/preview/home_screen_layout_mockup.png](docs/preview/home_screen_layout_mockup.png)
 
 ## What is in the game
 
@@ -47,6 +56,8 @@ docs/privacy.html         privacy policy page (served by GitHub Pages)
 art-source/               raw AI mesh, concept faces, the rigged + animated .blend
 tools/pipeline/           scripts that produced the model, animations, faces, icons and audio
 tools/stubcheck/          compile-check for all scripts without Unity (needs only dotnet)
+tools/gesture-test/       accuracy test for the trick-drawing recogniser
+docs/preview/             Blender renders of Bella and a home-screen layout mock-up
 CREDITS.md                where every asset came from
 ```
 

@@ -66,6 +66,7 @@ namespace Bella.EditorTools
             Step("player settings", ApplyPlayerSettings);
             Step("android settings", ApplyAndroidSettings);
             Step("app icon", ApplyIcon);
+            Step("back gesture", EnablePredictiveBack);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log("[Bella] Project setup complete. Press Play to meet Bella.");
@@ -188,6 +189,17 @@ namespace Bella.EditorTools
             if (PlayerSettings.Android.bundleVersionCode < 1) PlayerSettings.Android.bundleVersionCode = 1;
             // The game never touches the network; make sure no INTERNET permission is requested.
             PlayerSettings.Android.forceInternetPermission = false;
+        }
+
+        /// <summary>
+        /// Android 16 delivers the Back gesture through a newer system callback. Unity 6.1+ has a
+        /// switch for it; it is set by name so that Unity versions without the switch still compile.
+        /// </summary>
+        private static void EnablePredictiveBack()
+        {
+            System.Reflection.PropertyInfo p = typeof(PlayerSettings.Android).GetProperty("predictiveBackSupport",
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+            if (p != null && p.CanWrite && p.PropertyType == typeof(bool)) p.SetValue(null, true, null);
         }
 
         private static void ApplyIcon()

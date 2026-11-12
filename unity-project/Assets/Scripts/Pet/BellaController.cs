@@ -202,7 +202,7 @@ namespace Bella.Pet
                             Needs.AddHappiness(14f);
                             Needs.Tire(6f);
                             SaveSystem.Data.countFetches++;
-                            Celebrate(1);
+                            Celebrate(Progress.PlayTreats(1));
                             FinishCare("fetch");
                         }, 180f));
                     }));

@@ -21,6 +21,10 @@ namespace Bella.Pet
         /// <summary>Tail wag strength multiplier (0 while asleep).</summary>
         public float WagAmount { get; set; } = 1f;
 
+        /// <summary>Raises the whole puppy (metres) — e.g. onto her bed cushion while she naps.</summary>
+        public float HeightOffset { get; set; }
+
+        private float height, heightVel;
         private float squash, squashVel;
         private float excitement;
         private float wagPhase;
@@ -61,6 +65,9 @@ namespace Bella.Pet
             if (model == null || model.Pivot == null) return;
             float dt = Time.deltaTime;
             Transform pivot = model.Pivot;
+
+            height = Mathf.SmoothDamp(height, HeightOffset, ref heightVel, 0.2f);
+            pivot.localPosition = new Vector3(0f, height, 0f);
 
             // --- squash & stretch on the whole puppy ------------------------------
             squash = Mathf.SmoothDamp(squash, 0f, ref squashVel, 0.16f);

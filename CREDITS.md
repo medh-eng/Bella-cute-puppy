@@ -9,7 +9,7 @@ Nothing in the build is taken from another game, a stock library or a third-part
 | Bella 3D mesh | `art-source/bella_raw.glb` | AI image-to-3D from the concept art | Generated for this project |
 | Rig, skin weights, 15 animations | `unity-project/Assets/Resources/Bella/bella.fbx` | Built by script in Blender — `tools/pipeline/build_rig.py`, `anims.py`, `build_anim.py` | Original work |
 | Face textures (happy, excited, sad, sleepy, begging, blink) | `Assets/Resources/Bella/Faces/` | Repainted from the model's own texture — `tools/pipeline/faces.py` | Original work |
-| Portraits and app icon | `Assets/Resources/Portraits/` | Cropped from the project's own expression sheet | Original work |
+| Portraits and app icon | `Assets/Resources/Portraits/` | Cropped from the project's own expression sheet, background cut out by script | Original work |
 | UI icons (54) | `Assets/Resources/Icons/` | Drawn by script — `tools/pipeline/gen_icons.py` | Original work |
 | Sound effects and both music loops | `Assets/Resources/Audio/` | Synthesised by script — `tools/pipeline/gen_audio.py` (no samples used) | Original work |
 | Room, furniture, accessories, particles | — | Built from primitives in code at run time | Original work |

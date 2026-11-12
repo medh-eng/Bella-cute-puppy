@@ -85,6 +85,7 @@ Legend: ✅ done and in the repo · 🖥 needs the Unity PC session · 👤 need
 
 ### Phase 5 — Economy + retention ✅
 - [x] Treats, daily present, days-together counter, 18-sticker book, growth over 15 days
+- [x] Economy paced: 30 treats/day from repeatable play, unlimited from needed care → wardrobe ≈ 1–2 weeks
 - [x] No IAP, no ads
 
 ### Phase 6 — Compliance + store prep ✅ (documents) / 🖥👤 (accounts and screenshots)

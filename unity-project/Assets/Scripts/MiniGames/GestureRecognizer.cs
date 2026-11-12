@@ -41,8 +41,10 @@ namespace Bella.MiniGames
             Vector2 net = pts[pts.Count - 1] - pts[0];
             float straightness = net.magnitude / length;
 
-            // 2. A fairly straight stroke is a direction.
-            if (straightness > 0.78f)
+            // 2. A fairly straight stroke is a direction — unless it clearly swings from side to
+            //    side (a shallow three-stroke zigzag is "fairly straight" too).
+            if (straightness > 0.78f &&
+                Mathf.Max(Reversals(pts, true, diag * 0.15f), Reversals(pts, false, diag * 0.15f)) < 2)
             {
                 if (Mathf.Abs(net.x) > Mathf.Abs(net.y)) return net.x > 0f ? "right" : "left";
                 return net.y > 0f ? "up" : "down";

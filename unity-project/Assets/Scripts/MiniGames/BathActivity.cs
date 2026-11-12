@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using Bella.Core;
 using Bella.Pet;
 using Bella.Save;
+using Bella.Systems;
 using Bella.UI;
 
 namespace Bella.MiniGames
@@ -177,7 +178,7 @@ namespace Bella.MiniGames
                 Fx.Sparkles(Bella.HeadPoint, 16);
                 AudioManager.Play("success");
                 AudioManager.Voice("bark");
-                Bella.Celebrate(wasNeeded ? 5 : 1);
+                Bella.Celebrate(wasNeeded ? 5 : Progress.PlayTreats(1));
                 FinishAfter(1.6f);
             });
         }

@@ -21,6 +21,9 @@ namespace Bella.States
         private readonly float napSeconds;
         private readonly Action onWake;
 
+        /// <summary>Top of the bed cushion built in World/Room.cs.</summary>
+        private const float BedHeight = 0.15f;
+
         private float elapsed;
         private float energyPerSecond;
         private float zzzTimer;
@@ -46,6 +49,7 @@ namespace Bella.States
             face.Set(Expression.Soapy);       // closed, content eyes
             anim.Play("Sleep", 0.6f);
             puppy.WagAmount = 0f;
+            puppy.HeightOffset = BedHeight;      // lie ON the cushion, not inside it
             float missing = Mathf.Max(0f, 100f - needs.Energy);
             energyPerSecond = napSeconds > 0f ? missing / napSeconds : missing;
             needs.DecayPaused = true;
@@ -78,6 +82,7 @@ namespace Bella.States
         public void Exit()
         {
             puppy.WagAmount = 1f;
+            puppy.HeightOffset = 0f;
             needs.DecayPaused = false;
         }
     }

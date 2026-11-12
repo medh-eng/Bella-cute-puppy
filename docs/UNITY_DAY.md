@@ -52,7 +52,8 @@ with the words in the box at the bottom of this page.
 1. Press the **▶ Play** button at the top centre.
 2. For the right shape: in the **Game** tab, open the resolution drop-down (it says "Free Aspect")
    → **+** → type **1080 × 1920** → select it.
-3. Try each of these and tick what works:
+3. Try each of these and tick what works (a picture of where the buttons sit:
+   `docs/preview/home_screen_layout_mockup.png`):
 
 - [ ] Bella is standing in her room, tail wagging, and she blinks
 - [ ] Clicking/stroking her makes hearts appear

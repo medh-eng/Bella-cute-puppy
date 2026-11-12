@@ -26,6 +26,21 @@ def apply(pose):
             pb.location=M.inverted()@loc
         else: R=E(*v)
         pb.rotation_quaternion=(M.inverted()@R@M).to_quaternion()
+import numpy as np
+SINK=0.006   # how far the lowest point may rest below the floor (reads as "weight" with the blob shadow)
+def ground():
+    """Floor contact: lift the whole puppy (Root bone) until nothing is under the floor.
+    Poses are authored as rotations about pivots, so sits, bows, dances and rolls would
+    otherwise push paws, tummy or head through the ground. Never pulls an airborne pose down."""
+    root=ao.pose.bones["Root"]
+    for _ in range(3):
+        bpy.context.view_layer.update()
+        dg=bpy.context.evaluated_depsgraph_get(); ob=mesh.evaluated_get(dg); me=ob.to_mesh()
+        co=np.empty(len(me.vertices)*3); me.vertices.foreach_get("co",co); co=co.reshape(-1,3)
+        M=np.array(ob.matrix_world); zmin=float((co@M[:3,:3].T+M[:3,3])[:,2].min()); ob.to_mesh_clear()
+        lift=-zmin-SINK
+        if lift<=2e-4: break
+        root.location=root.location+REST["Root"].inverted()@mathutils.Vector((0,0,lift))
 L=A.layout()
 def key_all(f):
     for pb in ao.pose.bones:
@@ -48,9 +63,10 @@ if PREVIEW:
     for n,s,e,loop,fn in L:
         if "all" not in PREVIEW and n not in PREVIEW: continue
         ts=[0,0.2,0.4,0.6,0.8] if n not in ("Sit","Sleep","Beg","Eat","PlayBow","Paw","Idle") else [0.25]
+        if os.environ.get("PREVIEW_TS"): ts=[float(x) for x in os.environ["PREVIEW_TS"].split(",")]
         sheet=Image.new("RGB",(220*len(ts),220*len(views)),"white")
         for i,t in enumerate(ts):
-            apply(fn(t)); bpy.context.view_layer.update()
+            apply(fn(t)); ground(); bpy.context.view_layer.update()
             for j,vw in enumerate(views):
                 cam.location=c+mathutils.Vector(vw); d=c-cam.location
                 cam.rotation_euler=d.to_track_quat('-Z','Y').to_euler()
@@ -62,7 +78,7 @@ if PREVIEW:
 for n,s,e,loop,fn in L:
     fr=e-s
     for i in range(fr+1):
-        apply(fn(i/fr if not loop else (i%fr)/fr if i<fr else 0.0)); key_all(s+i)
+        apply(fn(i/fr if not loop else (i%fr)/fr if i<fr else 0.0)); ground(); key_all(s+i)
     # hold pose through the gap so sampling just past the end is safe
     for g in range(1,A.GAP): key_all(e+g)
 sc.frame_start=0; sc.frame_end=L[-1][2]+A.GAP-1

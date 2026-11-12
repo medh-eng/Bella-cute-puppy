@@ -49,6 +49,10 @@ namespace Bella.Save
 
         public bool sniffles = false;
 
+        // Daily allowance of treats from repeatable play (fetch, extra tricks...).
+        public string playPayDateKey = "";
+        public int playPaidToday = 0;
+
         // Lifetime counters (drive stickers).
         public int countPets = 0;
         public int countMeals = 0;
@@ -100,6 +104,8 @@ namespace Bella.Save
             if (stickers == null) stickers = new List<string>();
             if (lastStreakDateKey == null) lastStreakDateKey = "";
             if (lastGiftDateKey == null) lastGiftDateKey = "";
+            if (playPayDateKey == null) playPayDateKey = "";
+            if (playPaidToday < 0) playPaidToday = 0;
             if (treats < 0) treats = 0;
             saveVersion = 3;
         }

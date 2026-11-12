@@ -87,15 +87,18 @@ def happy(t):
     return p
 
 def rollover(t):
-    """one-shot: flop down, roll 360 about the body axis, pop back up"""
+    """one-shot: flop down, tuck the chin, roll 360 about the body axis, pop back up.
+    (Floor contact is added per frame by build_anim.ground, so she rolls ON the floor.)"""
     p={}
     down=ease(t/0.2)-ease((t-0.8)/0.2)
+    tuck=ease((t-0.08)/0.14)-ease((t-0.78)/0.14)     # head laid forward along the body while rolling
     roll=360*ease((t-0.18)/0.64)
-    p["Root"]=dict(loc=(0,0,-0.10*down+0.16*bump(t,0.2,0.8)*0+0.0), rot=(0,roll,0), pivot_z=0.20)
+    p["Root"]=dict(loc=(0,0,-0.10*down), rot=(0,roll,0), pivot_z=0.30)
     for s in ("L","R"):
         p["Front"+s+"_Upper"]=(-55*down,0,0); p["Front"+s+"_Lower"]=(50*down,0,0)
         p["Back"+s+"_Upper"]=(-45*down,0,0); p["Back"+s+"_Lower"]=(70*down,0,0)
-    p["Neck"]=(10*down,0,0); p["Head"]=(-10*down,0,0)
+    p["Chest"]=(14*tuck,0,0); p["Neck"]=(10*down+34*tuck,0,0); p["Head"]=(-10*down+30*tuck,0,0)
+    p["Ear_L"]=(0,-14*tuck,0); p["Ear_R"]=(0,14*tuck,0); p["Tail_1"]=(-20*tuck,0,0)
     return p
 
 def dance(t):

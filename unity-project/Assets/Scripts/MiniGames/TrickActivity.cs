@@ -24,7 +24,6 @@ namespace Bella.MiniGames
         private int dotIndex;
         private bool drawing, performing;
         private float trailFade;
-        private int paidThisSession;
         private Image hintIcon;
 
         protected override void OnBegin()
@@ -185,9 +184,8 @@ namespace Bella.MiniGames
             }
             else
             {
-                // A few treats per visit, then tricks are just for fun (no grinding).
-                int pay = paidThisSession < 8 ? 2 : 0;
-                paidThisSession++;
+                // Practice pays from the shared daily play allowance, then tricks are just for fun.
+                int pay = Progress.PlayTreats(2);
                 Fx.Stars(Bella.HeadPoint + Vector3.up * 0.3f, 6);
                 Bella.Celebrate(pay);
             }

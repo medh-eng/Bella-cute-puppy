@@ -4,7 +4,7 @@
 *"Continue Bella — repo medh-eng/Bella-cute-puppy, read docs/NEXT_CHAT.md."*
 If the Unity session has happened, paste the report from the bottom of `docs/UNITY_DAY.md` too.
 
-Last updated: 11 Nov 2026.
+Last updated: 12 Nov 2026.
 
 ---
 
@@ -17,6 +17,23 @@ store listing, Play Console answers, privacy page, closed-test kit, feature grap
 **The honest limit:** nobody has opened this project in Unity yet. The scripts compile against
 hand-written stand-ins for the Unity API (`tools/stubcheck/check.sh`), and the animations were
 previewed in Blender, but the first real run is still ahead. Expect a short fix-up round after it.
+
+### Checked without Unity on 12 Nov 2026 (so these are no longer guesses)
+
+| Check | How | Result |
+|---|---|---|
+| Model matches the code's assumptions | `bella.fbx` re-imported in Blender | 23 bones with the expected names, rest pose Root→Head (0, 0.52, 0.23) and Root→Hips (0, 0.30, −0.25) exactly, height 0.943, 14k triangles, every vertex weighted, one take of 24.97 s |
+| Loop seams | start vs end pose of all 15 clips | 0.0° / 0 mm difference on every clip |
+| Floor contact | lowest mesh point on every 2nd frame | **Was broken**: roll-over went 64 cm under the floor, dance and play-bow 16 cm, sit/sleep/eat/beg 5–7 cm. **Fixed** in the pipeline (`build_anim.ground`); now ≤ 6 mm on all clips. Roll-over re-posed so she rolls on her back with chin tucked |
+| Animation vs. model normalising | inspected the take | The take keys the model's own top object, which could undo `BellaModel`'s turn/scale/position every frame. **Fixed**: the model now sits in a holder object |
+| Trick drawing | 4,000 simulated wobbly strokes per shape (`tools/gesture-test/run.sh`) | lines 100 %, circle 99 %, zigzag 97.5 % (was 90 % — shallow zigzags were read as lines; fixed), taps ignored 100 % |
+| UI on tall and wide screens | arithmetic on canvas sizes | **Was broken**: bottom buttons clipped on 20:9 phones, sticker book overflowed on tablets. **Fixed**: canvas scaler uses Expand |
+| Popup portraits | looked at the files | **Was broken**: opaque white squares on round badges. **Fixed**: backgrounds cut out |
+| Treat economy | read every reward | Fetch / trick practice / healthy check-ups paid without limit (whole wardrobe in ~1 hour). **Fixed**: repeatable play shares 30 treats a day (`Progress.PlayTreats`); needed care, the daily present and newly learned tricks are unlimited → wardrobe ≈ 1–2 weeks |
+| Nap on the bed | read `Room` + `SleepState` | She lay inside the cushion; now raised onto it (`ProceduralPuppy.HeightOffset`) |
+| Android 16 Back gesture | Unity 6.3 docs | Setup switches on `PlayerSettings.Android.predictiveBackSupport` (by reflection, so older Unity still compiles) |
+
+Pictures of what to expect are in `docs/preview/`.
 
 ## 2. What is left, in order
 
@@ -60,14 +77,14 @@ Closed test (14 days) → production access → launch → v1.1 (§5).
 | Face looks wrong / expressions do not change | `Pet/FaceExpressionController.cs` | Face textures are full-body textures; check they loaded (Diagnostics "Face textures loaded: 6/6") |
 | Icons have dark edges or look blurry | `Editor/BellaImportSettings.cs` | Reimport `Resources/Icons` (right-click → Reimport) |
 | HUD under the camera hole on the phone | `UI/UIKit.cs` → `SafeArea` | Confirm `Screen.safeArea` is reported; Player Settings → "Render outside safe area" may stay on |
-| Android back button closes the app from inside a mini-game | `GameRoot.Update` | Android 16 predictive-back: may need `android:enableOnBackInvokedCallback="false"` via a custom manifest |
+| Android back button closes the app from inside a mini-game | `GameRoot.Update` | Check Player Settings → Android → Predictive Back Support is on (setup sets it); if Back still is not seen as Escape, handle it with a custom manifest |
 | Build fails | First red Console line | Usually a missing Android module in Unity Hub, or the keystore password |
 | Play Console rejects the bundle | The message text | Target API below 36 → check Player → Target API Level = Automatic and the SDK installed by the Hub; debug-signed → keystore not selected |
 
-Unverified assumptions worth a look even if everything seems fine: animation loop seams, ear/tail
-bone axes (`ProceduralPuppy` rotates around the pivot's axes), accessory anchor positions on the
-real model (`BellaModel.BuildAnchors` uses Blender-space coordinates), music loop points, text
-fitting on small phones.
+Still unverified and worth a look even if everything seems fine: how Unity's importer treats the
+FBX (the checks above used Blender's importer), accessory positions on the real model
+(`BellaModel.BuildAnchors`), how the roll-over, dance and nap read in motion, music loop points,
+text fitting on small phones.
 
 ## 4. Decisions only Pon can make
 
@@ -97,6 +114,9 @@ fitting on small phones.
 - Do not add networking, analytics, ads, or any package that needs the INTERNET permission: the
   store answers in `docs/store/PLAY_CONSOLE_ANSWERS.md` all depend on that.
 - Do not use `FindObjectOfType` / `FindObjectsOfType` variants (they differ between Unity versions).
+- Run `tools/gesture-test/run.sh` after touching `GestureRecognizer.cs`.
+- After re-exporting animations, re-run the three Blender checks described in the table in §1
+  (rest pose, loop seams, floor contact) before committing the FBX.
 - Regenerating assets: `tools/pipeline/` (Blender 4+/5 as the `bpy` Python module, numpy, Pillow);
   source mesh `art-source/bella_raw.glb`, rigged scene `art-source/bella_rigged_animated.blend`.
   If animations are re-exported, regenerate `Pet/BellaClips.cs` from `tools/pipeline/clips.json`.

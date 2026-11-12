@@ -71,9 +71,14 @@ namespace Bella.Pet
                 return false;
             }
 
-            GameObject inst = Instantiate(prefab, Pivot);
+            // The imported model sits inside a holder, and ALL normalising (turn, size, position) is
+            // done on the holder. The baked take also carries keys for the model's own top object;
+            // if we adjusted that object directly the animation would undo it every frame.
+            var holder = new GameObject("BellaHolder");
+            holder.transform.SetParent(Pivot, false);
+            ModelRoot = holder.transform;
+            GameObject inst = Instantiate(prefab, ModelRoot);
             inst.name = "BellaModel";
-            ModelRoot = inst.transform;
 
             Root = Art.FindDeep(ModelRoot, "Root");
             Hips = Art.FindDeep(ModelRoot, "Hips");
