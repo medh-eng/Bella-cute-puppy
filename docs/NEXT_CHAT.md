@@ -11,8 +11,9 @@ Last updated: 13 Nov 2026.
 ## 1. Where the project is
 
 Every phase of `docs/PLAN.md` that can be done without Unity or a Google account is finished and on
-`main`: the full v1 game (45 scripts), Bella's rigged/animated model, faces, 19 sounds, 54 icons,
-store listing, Play Console answers, privacy page, closed-test kit, feature graphic.
+`main`: the full v1 game (46 scripts), Bella's rigged/animated model, faces, 24 sounds (5 music
+loops + 2 nature-ambience loops + 17 effects/voices), 57 icons, store listing, Play Console
+answers, privacy page, closed-test kit, feature graphic.
 
 **The honest limit:** nobody has opened this project in Unity yet. The scripts compile against
 hand-written stand-ins for the Unity API (`tools/stubcheck/check.sh`), and the animations were
