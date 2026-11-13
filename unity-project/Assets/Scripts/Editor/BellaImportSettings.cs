@@ -58,7 +58,7 @@ namespace Bella.EditorTools
             if (!assetPath.StartsWith("Assets/Resources/Audio/")) return;
             var ai = assetImporter as AudioImporter;
             if (ai == null) return;
-            bool music = assetPath.Contains("music_");
+            bool music = assetPath.Contains("music_") || assetPath.Contains("amb_");
             AudioImporterSampleSettings s = ai.defaultSampleSettings;
             s.loadType = music ? AudioClipLoadType.CompressedInMemory : AudioClipLoadType.DecompressOnLoad;
             s.compressionFormat = music ? AudioCompressionFormat.Vorbis : AudioCompressionFormat.ADPCM;

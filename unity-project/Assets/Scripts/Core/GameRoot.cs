@@ -138,6 +138,7 @@ namespace Bella.Core
             DayNight.Init(sun, Cam, Room, Audio);
             Wander = gameObject.AddComponent<RoomWander>();
             Wander.Init(Bella, Room, DayNight);
+            gameObject.AddComponent<Ambience>().Init(Room, DayNight, Cam, Needs, Bella);
 
             // --- UI
             if (UnityEngine.EventSystems.EventSystem.current == null)
@@ -249,6 +250,7 @@ namespace Bella.Core
         {
             if (activity != a) return;
             activity = null;
+            if (DayNight != null) DayNight.SetMusicOverride(false);
             CameraRig.GoHome();
             Hud.SetVisible(true);
             Bella.EndActivity();

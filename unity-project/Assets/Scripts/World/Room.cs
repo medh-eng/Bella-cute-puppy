@@ -92,6 +92,10 @@ namespace Bella.World
             Art.Prim(PrimitiveType.Sphere, "Leaf2", t, new Vector3(1.58f, 0.5f, 2.2f), new Vector3(0.3f, 0.36f, 0.3f), Art.Leaf * 0.92f);
             Art.Prim(PrimitiveType.Sphere, "Leaf3", t, new Vector3(1.92f, 0.52f, 2.22f), new Vector3(0.3f, 0.36f, 0.3f), Art.Leaf * 0.92f);
 
+            BuildBunting(t);
+            BuildToyShelf(t);
+            BuildToyBasket(t);
+
             // Bed
             Vector3 bed = BedPosition;
             Art.Prim(PrimitiveType.Cylinder, "BedBase", t, bed + new Vector3(0f, 0.07f, 0f), new Vector3(1.25f, 0.07f, 1.05f), Art.Lilac);
@@ -121,6 +125,88 @@ namespace Bella.World
                 Art.Prim(PrimitiveType.Sphere, "TubFoot", tub.transform, new Vector3(x, 0.04f, z), Vector3.one * 0.14f, Art.Gold);
             }
             tub.SetActive(false);
+        }
+
+        // ---------------------------------------------------------------- decor
+
+        private static Mesh pennantMesh;
+
+        /// <summary>Unit pennant triangle hanging point-down, facing the camera.</summary>
+        private static Mesh PennantMesh()
+        {
+            if (pennantMesh != null) return pennantMesh;
+            var verts = new System.Collections.Generic.List<Vector3>
+            {
+                new Vector3(-0.5f, 0f, 0f), new Vector3(0.5f, 0f, 0f), new Vector3(0f, -1f, 0f)
+            };
+            var tris = new System.Collections.Generic.List<int> { 0, 1, 2 };
+            pennantMesh = new Mesh();
+            pennantMesh.name = "BellaPennant";
+            pennantMesh.SetVertices(verts);
+            pennantMesh.SetTriangles(tris, 0);
+            pennantMesh.RecalculateNormals();
+            pennantMesh.RecalculateBounds();
+            return pennantMesh;
+        }
+
+        /// <summary>A string of party pennants near the ceiling — the room is always a little festive.</summary>
+        private void BuildBunting(Transform t)
+        {
+            Art.Prim(PrimitiveType.Cube, "BuntingRibbon", t, new Vector3(0f, 2.96f, 2.67f), new Vector3(5.3f, 0.03f, 0.02f), Art.Gold);
+            Color[] cols = { Art.Pink, Art.Gold, Art.Teal, Art.Lilac, Art.Leaf, Art.Orange };
+            const int count = 11;
+            for (int i = 0; i < count; i++)
+            {
+                float k = i / (float)(count - 1);
+                float x = Mathf.Lerp(-2.45f, 2.45f, k);
+                float droop = 0.1f * Mathf.Sin(k * Mathf.PI * 2f);   // two gentle waves
+                var flag = new GameObject("Pennant" + i);
+                flag.transform.SetParent(t, false);
+                flag.transform.localPosition = new Vector3(x, 2.94f - Mathf.Abs(droop), 2.665f);
+                flag.transform.localScale = new Vector3(0.24f, 0.3f, 1f);
+                flag.transform.localRotation = Quaternion.Euler(0f, 0f, droop * 40f);
+                flag.AddComponent<MeshFilter>().sharedMesh = PennantMesh();
+                flag.AddComponent<MeshRenderer>().sharedMaterial = Art.Lit(cols[i % cols.Length]);
+            }
+        }
+
+        /// <summary>A little shelf on the back wall with a teddy, picture books and a spare ball.</summary>
+        private void BuildToyShelf(Transform t)
+        {
+            Art.Prim(PrimitiveType.Cube, "Shelf", t, new Vector3(2.05f, 1.9f, 2.6f), new Vector3(1.05f, 0.055f, 0.24f), new Color(1.00f, 0.98f, 0.94f));
+            Art.Prim(PrimitiveType.Cube, "ShelfBracketL", t, new Vector3(1.65f, 1.8f, 2.66f), new Vector3(0.05f, 0.16f, 0.1f), new Color(1.00f, 0.98f, 0.94f));
+            Art.Prim(PrimitiveType.Cube, "ShelfBracketR", t, new Vector3(2.45f, 1.8f, 2.66f), new Vector3(0.05f, 0.16f, 0.1f), new Color(1.00f, 0.98f, 0.94f));
+
+            // Teddy bear
+            var brown = new Color(0.72f, 0.52f, 0.34f);
+            var creamy = new Color(0.95f, 0.86f, 0.70f);
+            Vector3 b = new Vector3(1.78f, 1.93f, 2.6f);
+            Art.Prim(PrimitiveType.Sphere, "TeddyBody", t, b + new Vector3(0f, 0.085f, 0f), new Vector3(0.16f, 0.17f, 0.14f), brown);
+            Art.Prim(PrimitiveType.Sphere, "TeddyTummy", t, b + new Vector3(0f, 0.08f, -0.045f), new Vector3(0.1f, 0.11f, 0.06f), creamy);
+            Art.Prim(PrimitiveType.Sphere, "TeddyHead", t, b + new Vector3(0f, 0.22f, 0f), new Vector3(0.13f, 0.12f, 0.12f), brown);
+            Art.Prim(PrimitiveType.Sphere, "TeddySnout", t, b + new Vector3(0f, 0.2f, -0.055f), new Vector3(0.055f, 0.045f, 0.04f), creamy);
+            Art.Prim(PrimitiveType.Sphere, "TeddyEarL", t, b + new Vector3(-0.055f, 0.285f, 0f), new Vector3(0.05f, 0.05f, 0.03f), brown);
+            Art.Prim(PrimitiveType.Sphere, "TeddyEarR", t, b + new Vector3(0.055f, 0.285f, 0f), new Vector3(0.05f, 0.05f, 0.03f), brown);
+            Art.Prim(PrimitiveType.Sphere, "TeddyArmL", t, b + new Vector3(-0.085f, 0.1f, -0.02f), new Vector3(0.05f, 0.09f, 0.05f), brown);
+            Art.Prim(PrimitiveType.Sphere, "TeddyArmR", t, b + new Vector3(0.085f, 0.1f, -0.02f), new Vector3(0.05f, 0.09f, 0.05f), brown);
+
+            // Picture books, leaning sizes, and a spare ball
+            Art.Prim(PrimitiveType.Cube, "Book1", t, new Vector3(2.12f, 2.05f, 2.62f), new Vector3(0.055f, 0.24f, 0.17f), Art.Rose);
+            Art.Prim(PrimitiveType.Cube, "Book2", t, new Vector3(2.19f, 2.04f, 2.62f), new Vector3(0.055f, 0.21f, 0.16f), Art.Teal);
+            Art.Prim(PrimitiveType.Cube, "Book3", t, new Vector3(2.27f, 2.03f, 2.62f), new Vector3(0.055f, 0.19f, 0.15f), Art.Gold, new Vector3(0f, 0f, -8f));
+            Art.Prim(PrimitiveType.Sphere, "ShelfBall", t, new Vector3(2.43f, 1.99f, 2.6f), Vector3.one * 0.12f, Art.Sky);
+        }
+
+        /// <summary>A wicker toy basket in the back corner, out of Bella's wander area.</summary>
+        private void BuildToyBasket(Transform t)
+        {
+            var wicker = new Color(0.82f, 0.62f, 0.40f);
+            Vector3 p = new Vector3(-1.9f, 0f, 2.05f);
+            Art.Prim(PrimitiveType.Cylinder, "Basket", t, p + new Vector3(0f, 0.16f, 0f), new Vector3(0.55f, 0.16f, 0.55f), wicker);
+            Art.Prim(PrimitiveType.Cylinder, "BasketInner", t, p + new Vector3(0f, 0.17f, 0f), new Vector3(0.47f, 0.16f, 0.47f), wicker * 0.75f);
+            Art.Prim(PrimitiveType.Sphere, "BasketBall1", t, p + new Vector3(-0.1f, 0.3f, -0.05f), Vector3.one * 0.17f, Art.Teal);
+            Art.Prim(PrimitiveType.Sphere, "BasketBall2", t, p + new Vector3(0.1f, 0.31f, 0.08f), Vector3.one * 0.16f, Art.Pink);
+            Art.Prim(PrimitiveType.Sphere, "BasketBall3", t, p + new Vector3(0.02f, 0.34f, -0.12f), Vector3.one * 0.14f, Art.Gold);
         }
 
         public void SetBowlFull(bool full)

@@ -90,6 +90,8 @@ namespace Bella.Systems
             new StickerDef("grown_1",      "paw",      "Getting bigger",   Art.Teal),
             new StickerDef("grown_2",      "treat",    "Big puppy",        Art.Gold),
             new StickerDef("cuddles_50",   "sparkle",  "50 cuddles",       Art.Lilac),
+            new StickerDef("butterfly_1",  "butterfly","Butterfly friend", Art.Sky),
+            new StickerDef("butterfly_20", "rainbow",  "Garden of friends",Art.Leaf),
         };
 
         public static OutfitDef FindOutfit(string id)

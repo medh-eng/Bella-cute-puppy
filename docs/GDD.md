@@ -13,6 +13,7 @@ A 3D mobile virtual-pet simulation for **Android** starring **Bella**, a small, 
 - **High error tolerance. No fail states.** Poor mini-game performance still gets encouraging feedback — Bella is always happy you tried.
 - Immediate multisensory reward on every interaction: bark/chime + animation + particle burst (hearts/stars).
 - **Emotional legibility system (NEW):** Bella shows *thought bubbles* with icons — bone = hungry, soap bubble = dirty, Zzz = sleepy, heart = loves you. A 4-year-old reads her state instantly without text or even looking at the need bars. The bars become the "parent/older kid" layer; the bubbles are the primary UI.
+- **Living room ambience:** the room follows the real clock — clouds drift past the window by day, stars twinkle and fireflies glow at night, a star nightlight watches over the bed, party bunting keeps it festive. Butterflies with heart-shaped wings flutter around in the daytime; tapping one gives sparkles, a happy yip, a little happiness and its own stickers ("Butterfly friend", "Garden of friends"). Each moment of the day has its own music and nature sounds.
 
 ## 3. Core gameplay loop
 Open app → Bella greets you (excitement scaled to time away, capped — delight, never guilt) → read her thought bubble → attend to needs (feed/bathe/sleep/play) → earn treats from care + mini-games → spend treats on outfits/stickers/toys → needs decay over real time → return.
@@ -60,8 +61,9 @@ Squarely child-directed under COPPA + Google Play Families. Non-negotiable:
 - Google Play specifics: Families Policy declaration, target-audience declaration ("ages 5 & under" + "6–8"), store listing must not misrepresent, closed test required first (`PLAN.md` Phase 7).
 
 ## 8. Audio direction
-- Bella vocals: friendly puppy barks/whines — CC0 from Freesound, pitch-shifted in Unity to make them "hers" (free + legally clean).
-- UI: soft chimes, pops. Music: one gentle loop for day, one lullaby for night. CC0 sources or simple generated compositions.
+- Bella vocals: friendly puppy barks/whines — all synthesised in-house (`tools/pipeline/gen_audio.py`), free + legally clean.
+- UI: soft chimes, pops. Music: an original loop per moment of the day — morning (fresh), day (bouncy), evening (golden-hour waltz), night (lullaby) — plus a quick, giggly tune for mini-games.
+- Nature ambience under the music: sparse birdsong while the sun is up, gentle crickets after dark, hush while she naps.
 - Every need-restoring action has a unique, satisfying sound signature (the "slot machine principle" used benevolently).
 
 ## 9. Success metrics (once live)

@@ -196,6 +196,31 @@ im,d=new(); d.arc(P(30,30,162,162),-60,250,fill=OL,width=26*S); d.arc(P(30,30,16
 e=(96+66*math.cos(math.radians(250)),96+66*math.sin(math.radians(250))); h=[(e[0]-8,e[1]+38),e,(e[0]+36,e[1]+8)]
 line(d,h,OL,26*S); line(d,h,GC,14*S); fin(im,"gesture_circle")
 im,d=new(); z=[(24,130),(60,60),(96,130),(132,60),(168,130)]; line(d,z,OL,26*S); line(d,z,GC,14*S); fin(im,"gesture_zigzag")
+# moon (clean crescent for the night window — no Z's), cloud, butterfly (ambience + sticker)
+im2,d2=new(); circ(d2,88,100,62,(255,230,130,255))
+mask=Image.new("L",(W,W),255); md=ImageDraw.Draw(mask); md.ellipse(P(88-56+42,100-56-24,88+56+42,100+56-24),fill=0)
+im=Image.composite(im2,Image.new("RGBA",(W,W),(0,0,0,0)),mask); d=ImageDraw.Draw(im)
+d.arc(P(88-56+42,100-56-24,88+56+42,100+56-24),105,210,fill=OL,width=LW)
+poly(d,star_pts(142,58,15,0.45,4),(255,244,222,255),w=4*S); poly(d,star_pts(158,110,10,0.45,4),(255,244,222,255),w=3*S)
+fin(im,"moon")
+im,d=new()
+tmp=Image.new("RGBA",(W,W),(0,0,0,0)); td=ImageDraw.Draw(tmp)
+for cx,cy,r in ((62,106,34),(98,86,44),(136,108,32)): td.ellipse(P(cx-r,cy-r,cx+r,cy+r),fill=OL)
+td.rounded_rectangle(P(30,104,168,142),radius=18*S,fill=OL)
+for cx,cy,r in ((62,106,27),(98,86,37),(136,108,25)): td.ellipse(P(cx-r,cy-r,cx+r,cy+r),fill=(255,255,255,255))
+td.rounded_rectangle(P(37,110,161,135),radius=13*S,fill=(255,255,255,255))
+im.alpha_composite(tmp); shine(d,86,74,8); fin(im,"cloud")
+im,d=new()
+for sx in (-1,1):
+    cx=96+sx*40
+    d.ellipse(P(cx-32,36,cx+32,104),fill=(255,150,195,255),outline=OL,width=LW)      # top wing
+    d.ellipse(P(96+sx*30-26,94,96+sx*30+26,152),fill=(190,160,245,255),outline=OL,width=LW)  # bottom wing
+    circ(d,cx,70,11,(255,244,222,255),w=4*S)
+d.rounded_rectangle(P(88,52,104,140),radius=8*S,fill=(120,86,60,255),outline=OL,width=5*S)
+circ(d,96,46,14,(120,86,60,255),w=5*S)
+line(d,[(90,38),(78,22)],OL,5*S); line(d,[(102,38),(114,22)],OL,5*S)
+circ(d,78,22,5,(255,214,64,255),w=3*S); circ(d,114,22,5,(255,214,64,255),w=3*S)
+fin(im,"butterfly")
 print(len(os.listdir(OUT)),"icons")
 # contact sheet
 fs=sorted(os.listdir(OUT)); cols=10; rows=(len(fs)+cols-1)//cols

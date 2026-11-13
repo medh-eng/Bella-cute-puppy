@@ -52,25 +52,134 @@ tt=t(1.6); nz=rng.standard_normal(len(tt)); k=np.ones(90)/90; nz=np.convolve(nz,
 save("snore",nz*(np.sin(np.pi*tt/1.6)**2)*(1+0.5*np.sin(2*np.pi*24*tt)),0.35)
 tt=t(0.35); nz=rng.standard_normal(len(tt))*np.exp(-12*tt); save("sneeze",np.concatenate([yip(600,900,0.12)*0.5,np.zeros(int(SR*0.04)),nz]),0.5)
 save("sparkle",seq([(i*0.05,n(x,6),0.35) for i,x in enumerate(["C","E","G","B","G","E"])])+0,0.4)
-# music: two original loops, music-box timbre
-def music(mel,bass,beat,name,vol):
-    L=int(SR*beat*sum(d for _,d in mel)); x=np.zeros(L+SR)
-    pos=0.0
-    for f,d in mel:
-        if f: y=tone(f,min(1.6,d*beat*2.2),3.0,(1,0.25,0.08)); i=int(SR*pos*beat); x[i:i+len(y)]+=y
+# ---------------------------------------------------------------- music
+# Five original loops, one per moment of the day plus one for mini-games.
+# A tiny sequencer: a voice is (timbre, [(start_beats, freq, dur_beats)...]);
+# percussion is (timbre, [start_beats...]). Loops are made seamless by folding
+# the decaying tail back onto the start (same trick as v1).
+rng2=np.random.default_rng(11)
+def mbox(f,d):  return tone(f,max(d,0.25),3.0,(1,0.25,0.08))            # music box (lead)
+def soft(f,d):  return tone(f,max(d,0.25),4.5,(1,0.18))*0.42            # quiet arpeggio voice
+def pluck(f,d): return tone(f,max(d,0.2),6.0,(1,0.4,0.18,0.08))*0.5     # waltz "pm-pm" chord
+def bassv(f,d): return tone(f,max(d,0.3),1.8,(1,0.15))*0.6
+def pad(f,d):
+    tt=t(d); x=np.sin(2*np.pi*f*tt)+0.5*np.sin(2*np.pi*f*1.004*tt)+0.35*np.sin(2*np.pi*f*0.5*tt)
+    return x*np.minimum(tt/0.4,1)*np.clip((d-tt)/0.6,0,1)*0.22
+def tick(f,d):  tt=t(0.05); return np.sin(2*np.pi*1900*tt)*np.exp(-60*tt)*0.45   # woodblock
+def shak(f,d):  tt=t(0.07); nz=np.diff(rng2.standard_normal(len(tt)),prepend=0.0); return nz/(np.abs(nz).max()+1e-9)*np.exp(-50*tt)*0.22
+def thump(f,d): tt=t(0.16); return np.sin(2*np.pi*105*tt)*np.exp(-16*tt)*0.7     # soft heartbeat drum
+
+CH={"C":[("C",0),("E",0),("G",0)],"Dm":[("D",0),("F",0),("A",0)],"Em":[("E",0),("G",0),("B",0)],
+    "F":[("F",0),("A",0),("C",1)],"G":[("G",0),("B",0),("D",1)],"Am":[("A",0),("C",1),("E",1)]}
+def ct(ch,tone_i,o): a,up=CH[ch][tone_i]; return n(a,o+up)
+
+def mel(spec):
+    out=[]; pos=0.0
+    for a,o,d in spec:
+        if a: out.append((pos,n(a,o),d))
         pos+=d
-    pos=0.0
-    for f,d in bass:
-        if f: y=tone(f,min(2.2,d*beat*1.5),1.8,(1,0.15))*0.55; i=int(SR*pos*beat); x[i:i+len(y)]+=y
-        pos+=d
-    x[:SR]+=x[L:L+SR]; save(name,x[:L],vol)   # wrap the tail so the loop is seamless
-R=None
-day=[("C",5,1),("E",5,1),("G",5,1),("E",5,1),("A",5,1),("G",5,1),("E",5,2), ("D",5,1),("F",5,1),("A",5,1),("F",5,1),("G",5,1),("E",5,1),("D",5,2),
-     ("C",5,1),("E",5,1),("G",5,1),("C",6,1),("B",5,1),("A",5,1),("G",5,2), ("F",5,1),("A",5,1),("G",5,1),("E",5,1),("D",5,1),("G",5,1),("C",5,2)]
-dayb=[("C",3,4),("A",2,4),("F",2,4),("G",2,4),("C",3,4),("E",3,4),("F",2,4),("G",2,2),("C",3,2)]
-music([(n(a,o),d) for a,o,d in day],[(n(a,o),d) for a,o,d in dayb],0.30,"music_day",0.5)
-night=[("E",5,2),("G",5,1),("E",5,3),("D",5,2),("F",5,1),("D",5,3),("C",5,2),("E",5,1),("G",5,2),("A",5,1),("G",5,3),(None,0,3),
-       ("A",5,2),("G",5,1),("E",5,3),("F",5,2),("E",5,1),("D",5,3),("C",5,2),("D",5,1),("E",5,2),("D",5,1),("C",5,3),(None,0,3)]
-nightb=[("C",3,6),("G",2,6),("A",2,6),("E",2,6),("F",2,6),("G",2,6),("A",2,6),("C",3,6)]
-music([((n(a,o) if a else None),d) for a,o,d in night],[(n(a,o),d) for a,o,d in nightb],0.42,"music_night",0.45)
+    return out,pos
+
+def track(name,beat,voices,perc,vol,length):
+    L=int(SR*beat*length); x=np.zeros(L+3*SR)
+    for timbre,events in voices:
+        for s,f,d in events:
+            y=timbre(f,d*beat); i=int(SR*s*beat); x[i:i+len(y)]+=y
+    for timbre,times in perc:
+        for s in times:
+            y=timbre(0,0); i=int(SR*s*beat); x[i:i+len(y)]+=y
+    x[:3*SR]+=x[L:L+3*SR]
+    save(name,x[:L],vol)
+
+def arp(chords,bar,o=4,pattern=((0,0),(1,2),(2,1),(3,2))):
+    ev=[]
+    for b,ch in enumerate(chords):
+        for off,ti in pattern: ev.append((b*bar+off,ct(ch,ti,o),1))
+    return ev
+def roots(chords,bar,o=3,dur=None,offs=(0,)):
+    ev=[]
+    for b,ch in enumerate(chords):
+        for off in offs: ev.append((b*bar+off,ct(ch,0,o),dur or bar*0.8))
+    return ev
+
+# --- morning: fresh and hopeful, like curtains opening (C major)
+m_mel=[("C",5,2),("E",5,1),("G",5,1),("A",5,2),("G",5,2),("E",5,1),("G",5,1),("C",6,2),("B",5,1),("A",5,1),("G",5,2),
+       ("A",5,2),("F",5,1),("A",5,1),("G",5,2),("E",5,2),("D",5,1),("E",5,1),("F",5,2),("E",5,1),("D",5,1),("C",5,2),
+       ("E",5,1),("G",5,1),("C",6,2),("A",5,1),("C",6,1),("G",5,2),("F",5,1),("A",5,1),("G",5,1),("E",5,1),("D",5,2),("G",5,2),
+       ("C",6,2),("B",5,1),("A",5,1),("G",5,2),("E",5,2),("F",5,1),("E",5,1),("D",5,2),("C",5,4)]
+m_ch=["C","Am","F","G","C","Em","F","G","Am","F","C","G","F","G","C","C"]
+ev,ln=mel(m_mel)
+track("music_morning",0.32,[(mbox,ev),(soft,arp(m_ch,4)),(bassv,roots(m_ch,4,3,3.2))],[],0.5,ln)
+
+# --- day: playful and bouncy, Bella's skipping tune (G major)
+d_mel=[("G",5,1),("B",5,1),("D",6,2),("B",5,1),("G",5,1),("A",5,2),("B",5,1),("C",6,1),("B",5,1),("A",5,1),("G",5,2),(None,0,2),
+       ("A",5,1),("C",6,1),("E",6,2),("C",6,1),("A",5,1),("B",5,2),("G",5,1),("A",5,1),("B",5,1),("C",6,1),("D",6,2),(None,0,2),
+       ("D",6,1),("B",5,1),("G",5,2),("E",6,1),("D",6,1),("B",5,2),("C",6,1),("B",5,1),("A",5,1),("G",5,1),("A",5,2),("D",5,2),
+       ("G",5,1),("B",5,1),("D",6,2),("B",5,1),("G",5,1),("A",5,2),("B",5,1),("C",6,1),("B",5,1),("A",5,1),("G",5,2),(None,0,2),
+       ("C",6,1),("E",6,1),("D",6,2),("B",5,1),("G",5,1),("A",5,2),("B",5,1),("A",5,1),("G",5,1),("F#",5,1),("G",5,4),
+       ("G",5,1),("B",5,1),("D",6,1),("G",6,1),("F#",6,1),("D",6,1),("E",6,2),("D",6,1),("B",5,1),("C",6,1),("A",5,1),("G",5,4)]
+d_ch=["G","Em","C","G","Am","C","G","G","G","C","G","G","G","Em","C","G","C","G","G","G","G","C","G","G"]
+ev,ln=mel(d_mel)
+d_bars=range(len(d_ch))
+track("music_day",0.26,[(mbox,ev),(soft,arp(d_ch,4,4,((1,0),(3,2)))),(bassv,roots(d_ch,4,3,1.4,(0,2)))],
+      [(thump,[b*4 for b in d_bars]),(tick,[b*4+2 for b in d_bars]),(shak,[b*4+1 for b in d_bars]+[b*4+3 for b in d_bars])],0.5,ln)
+
+# --- evening: a warm golden-hour waltz (C major, 3/4)
+e_mel=[("E",5,2),("D",5,1),("C",5,3),("E",5,2),("F",5,1),("G",5,3),("A",5,2),("G",5,1),("E",5,3),("F",5,2),("E",5,1),("D",5,3),
+       ("C",5,2),("D",5,1),("E",5,2),("F",5,1),("G",5,2),("B",4,1),("C",5,3),
+       ("G",5,2),("F",5,1),("E",5,3),("G",5,2),("A",5,1),("B",5,3),("C",6,2),("B",5,1),("A",5,3),("F",5,2),("A",5,1),("G",5,3),
+       ("E",5,2),("G",5,1),("F",5,2),("D",5,1),("E",5,2),("D",5,1),("C",5,3)]
+e_ch=["C","Am","F","G","C","Em","F","G","Am","F","G","C","C","Em","F","G","C","Em","Am","F","C","G","G","C"]
+ev,ln=mel(e_mel)
+e_bars=range(len(e_ch))
+track("music_evening",0.4,[(mbox,ev),(bassv,roots(e_ch,3,3,1.6)),
+      (pluck,[(b*3+1,ct(c,1,4),1) for b,c in enumerate(e_ch)]+[(b*3+2,ct(c,2,4),1) for b,c in enumerate(e_ch)]),
+      (pad,roots(e_ch,3,3,3.0))],[],0.48,ln)
+
+# --- night: a true lullaby, slow and round (C major, 3/4)
+n_mel=[("E",5,2),("G",5,1),("E",5,3),("D",5,2),("F",5,1),("D",5,3),("C",5,2),("E",5,1),("G",5,3),("A",5,2),("G",5,1),("E",5,3),
+       ("F",5,2),("A",5,1),("G",5,2),("E",5,1),("D",5,2),("E",5,1),("C",5,3),("E",5,2),("D",5,1),("C",5,3),("D",5,3),("C",5,3)]
+n_ch=["C","F","Am","G","F","C","G","C"]
+ev,ln=mel(n_mel)
+track("music_night",0.55,[(mbox,ev),(bassv,roots(n_ch,6,3,2.4)),
+      (pad,roots(n_ch,6,3,6.0)),(pad,[(b*6+3,ct(c,2,3),3.0) for b,c in enumerate(n_ch)])],[],0.42,ln)
+
+# --- play: the mini-game tune, quick and giggly (C pentatonic)
+p_mel=[("C",5,1),("D",5,1),("E",5,1),("G",5,1),("E",5,1),("G",5,1),("A",5,2),("G",5,1),("E",5,1),("D",5,1),("E",5,1),("C",5,2),(None,0,2),
+       ("E",5,1),("G",5,1),("A",5,1),("C",6,1),("A",5,1),("C",6,1),("D",6,2),("C",6,1),("A",5,1),("G",5,1),("A",5,1),("G",5,2),(None,0,2),
+       ("G",5,1),("A",5,1),("C",6,1),("D",6,1),("E",6,2),("D",6,1),("C",6,1),("D",6,1),("C",6,1),("A",5,1),("G",5,1),("A",5,2),("E",5,2),
+       ("C",6,1),("A",5,1),("G",5,1),("E",5,1),("G",5,1),("E",5,1),("D",5,2),("C",5,1),("D",5,1),("E",5,1),("G",5,1),("C",5,4)]
+p_ch=["C","C","F","G","C","Am","F","G","F","G","C","Am","F","G","C","C"]
+ev,ln=mel(p_mel)
+p_bars=range(len(p_ch))
+track("music_play",0.22,[(mbox,ev),(soft,arp(p_ch,4,4,((1,1),(3,2)))),(bassv,roots(p_ch,4,3,1.2,(0,2)))],
+      [(thump,[b*4 for b in p_bars]),(tick,[b*4+2 for b in p_bars]),(shak,[b*4+1 for b in p_bars]+[b*4+3 for b in p_bars])],0.5,ln)
+
+# ---------------------------------------------------------------- nature ambience
+# birds: sparse cheerful chirps for mornings and afternoons (quiet layer under the music)
+def chirp(f0,f1,d):
+    tt=t(d); f=f0+(f1-f0)*np.sin(np.pi*tt/d); ph=2*np.pi*np.cumsum(f)/SR
+    return np.sin(ph)*np.sin(np.pi*tt/d)**0.7
+BDUR=24.0; Lb=int(SR*BDUR); xb=np.zeros(Lb+SR)
+rb=np.random.default_rng(21); pos=0.8
+while pos<BDUR-2.0:
+    base=rb.uniform(2000,3400)
+    for k in range(int(rb.integers(2,5))):
+        c=chirp(base*rb.uniform(0.9,1.1),base*rb.uniform(1.15,1.45),rb.uniform(0.06,0.14))
+        i=int(SR*pos); xb[i:i+len(c)]+=c*rb.uniform(0.4,0.9)
+        pos+=rb.uniform(0.09,0.2)
+        if pos>=BDUR-2.0: break
+    pos+=rb.uniform(1.2,3.2)
+save("amb_birds",xb[:Lb],0.3)
+
+# crickets: a gentle night bed. All periods divide 16 s exactly, so the loop is seamless.
+CDUR=16.0; ttc=t(CDUR)
+def cricket(fc,pulse,group_hz,duty,amp,phase):
+    g=((ttc*group_hz+phase)%1.0)<duty
+    p=np.sin(2*np.pi*pulse*ttc)>0.2
+    return np.sin(2*np.pi*fc*ttc)*g*p*amp
+xc=cricket(4300,27,0.5,0.55,1.0,0.0)+cricket(3700,23,0.375,0.5,0.7,0.4)
+k=np.exp(-np.arange(300)/80.0); k/=k.sum(); xc=np.convolve(xc,k,mode="same")
+save("amb_crickets",xc,0.2)
+
 import os; print({f:os.path.getsize(OUT+"/"+f)//1024 for f in sorted(os.listdir(OUT))})

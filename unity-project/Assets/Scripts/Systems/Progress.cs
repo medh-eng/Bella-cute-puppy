@@ -185,6 +185,8 @@ namespace Bella.Systems
             Try("streak_30", d.dayStreak >= 30);
             Try("grown_1", GrowthStage() >= 1);
             Try("grown_2", GrowthStage() >= 2);
+            Try("butterfly_1", d.countButterflies >= 1);
+            Try("butterfly_20", d.countButterflies >= 20);
         }
 
         private void Try(string id, bool condition)

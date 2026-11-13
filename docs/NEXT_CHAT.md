@@ -4,7 +4,7 @@
 *"Continue Bella — repo medh-eng/Bella-cute-puppy, read docs/NEXT_CHAT.md."*
 If the Unity session has happened, paste the report from the bottom of `docs/UNITY_DAY.md` too.
 
-Last updated: 12 Nov 2026.
+Last updated: 13 Nov 2026.
 
 ---
 
@@ -34,6 +34,20 @@ previewed in Blender, but the first real run is still ahead. Expect a short fix-
 | Android 16 Back gesture | Unity 6.3 docs | Setup switches on `PlayerSettings.Android.predictiveBackSupport` (by reflection, so older Unity still compiles) |
 
 Pictures of what to expect are in `docs/preview/`.
+
+### Content pass on 13 Nov 2026 — music, ambience, decor, butterflies (46 scripts)
+
+| What | Where |
+|---|---|
+| **Music suite**: an original loop per moment of the day — `music_morning` (fresh), `music_day` (bouncy, light percussion), `music_evening` (golden-hour waltz), `music_night` (true lullaby with warm pad) — plus `music_play`, a quick giggly tune all four mini-games switch to (`Activity.Begin` → `DayNight.SetMusicOverride`) | `tools/pipeline/gen_audio.py`, `World/DayNight.cs`, `MiniGames/Activity.cs` |
+| **Nature ambience** under the music: sparse birdsong (`amb_birds`) while the sun is up, gentle crickets (`amb_crickets`, seam-perfect 16 s loop) after dark, hush while she naps. New third audio channel | `Core/AudioManager.cs` (`SetAmbience`), `World/DayNight.cs` |
+| **Living room**: clouds drift across the window by day; stars twinkle at night; the window orb now shows a proper **moon** icon (was Zzz); 2 tappable **butterflies** with heart-wings by day; 4 fireflies + a pulsing star nightlight at night | new `World/Ambience.cs` (46th script), wired in `GameRoot` |
+| **Butterfly tap** = sparkles + hearts + yip + 4 happiness + `countButterflies++` → stickers `butterfly_1` "Butterfly friend" and `butterfly_20` "Garden of friends" | `Save/SaveData.cs`, `Systems/Catalog.cs`, `Systems/Progress.cs` |
+| **Room decor**: rainbow pennant bunting near the ceiling, a toy shelf (teddy bear, picture books, spare ball) right of the window, a wicker toy basket with balls in the back-left corner — all outside Bella's wander area | `World/Room.cs` |
+| **3 new icons** (57 total): `moon`, `cloud`, `butterfly` — previewed, match the house style | `tools/pipeline/gen_icons.py` |
+| QC done without Unity: all 5 music tracks verified bar-grid-exact, no dead gaps, no clipping, seamless wraps; ambience loop periods divide the loop length exactly; stubcheck ALL_OK | — |
+
+Worth a look on Unity day: how the heart-wing butterflies read in motion, ambience volume balance (`AudioManager.ambienceTarget = 0.16`), bunting/shelf placement on the real camera.
 
 ## 2. What is left, in order
 
@@ -80,6 +94,9 @@ Closed test (14 days) → production access → launch → v1.1 (§5).
 | Android back button closes the app from inside a mini-game | `GameRoot.Update` | Check Player Settings → Android → Predictive Back Support is on (setup sets it); if Back still is not seen as Escape, handle it with a custom manifest |
 | Build fails | First red Console line | Usually a missing Android module in Unity Hub, or the keystore password |
 | Play Console rejects the bundle | The message text | Target API below 36 → check Player → Target API Level = Automatic and the SDK installed by the Hub; debug-signed → keystore not selected |
+| No butterflies / fireflies / clouds | `World/Ambience.cs` | Built by `GameRoot.Start` right after `RoomWander`; day critters hide at night and during naps, night ones in the day — check `DayNight.Current` first |
+| Music doesn't change with the time of day, or mini-game tune sticks | `World/DayNight.cs` | `SetMusicOverride(false)` must run in `GameRoot.ActivityFinished`; the 30 s clock check only switches music when no override is on |
+| Ambience (birds/crickets) silent | `Core/AudioManager.cs` | Third source added in `Init`; follows the same music toggle in the parents' area |
 
 Still unverified and worth a look even if everything seems fine: how Unity's importer treats the
 FBX (the checks above used Blender's importer), accessory positions on the real model
@@ -115,6 +132,10 @@ text fitting on small phones.
   store answers in `docs/store/PLAY_CONSOLE_ANSWERS.md` all depend on that.
 - Do not use `FindObjectOfType` / `FindObjectsOfType` variants (they differ between Unity versions).
 - Run `tools/gesture-test/run.sh` after touching `GestureRecognizer.cs`.
+- After touching the music in `gen_audio.py`: every melody's unit count must equal its chord grid
+  (bars × bar length) — the 13 Nov QC script pattern in the chat checked exactly this, plus
+  dead-gap and clipping sweeps. Ambience loops stay seamless only if every modulation period
+  divides the loop length exactly.
 - After re-exporting animations, re-run the three Blender checks described in the table in §1
   (rest pose, loop seams, floor contact) before committing the FBX.
 - Regenerating assets: `tools/pipeline/` (Blender 4+/5 as the `bpy` Python module, numpy, Pillow);

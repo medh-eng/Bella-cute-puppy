@@ -62,6 +62,7 @@ namespace Bella.Save
         public int countGifts = 0;
         public int countCheckups = 0;
         public int countTricks = 0;
+        public int countButterflies = 0;
 
         // Parent settings.
         public bool sfxOn = true;

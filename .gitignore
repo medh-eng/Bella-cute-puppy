@@ -29,3 +29,8 @@ unity-project/Screenshots/
 *.jks
 *.apk
 *.aab
+
+# Pipeline intermediates (canonical copies live in unity-project/Assets/Resources/)
+tools/pipeline/audio/
+tools/pipeline/icons/
+tools/pipeline/icons_sheet.png

@@ -15,12 +15,14 @@ namespace Bella.World
 
         public Period Current { get; private set; } = Period.Afternoon;
         public bool IsNight => Current == Period.Night;
+        public bool IsSleepDim => sleepDim;
 
         private Light sun;
         private Camera cam;
         private Room room;
         private AudioManager audioManager;
         private bool sleepDim;
+        private bool musicOverride;
         private float checkTimer;
 
         private Color tLight, tAmbient, tSky;
@@ -43,6 +45,16 @@ namespace Bella.World
         {
             sleepDim = on;
             Evaluate();
+        }
+
+        /// <summary>
+        /// While a mini-game plays its own tune, the period music stays out of the
+        /// way (the 30-second clock check would otherwise stomp it mid-game).
+        /// </summary>
+        public void SetMusicOverride(bool on)
+        {
+            musicOverride = on;
+            if (!on) Evaluate();
         }
 
         public static Period PeriodForHour(int hour)
@@ -85,10 +97,24 @@ namespace Bella.World
             if (room != null && room.WindowOrb != null)
             {
                 bool night = p == Period.Night;
-                room.WindowOrb.sharedMaterial.mainTexture = Art.Tex(night ? "Icons/zzz" : "Icons/sun");
+                room.WindowOrb.sharedMaterial.mainTexture = Art.Tex(night ? "Icons/moon" : "Icons/sun");
             }
             if (audioManager != null)
-                audioManager.SetMusic(p == Period.Night || p == Period.Evening || sleepDim ? "music_night" : "music_day");
+            {
+                if (!musicOverride)
+                {
+                    string track = "music_day";
+                    if (sleepDim || p == Period.Night) track = "music_night";
+                    else if (p == Period.Morning) track = "music_morning";
+                    else if (p == Period.Evening) track = "music_evening";
+                    audioManager.SetMusic(track);
+                }
+                // Birdsong while the sun is up, crickets after dark, hush while she naps.
+                string amb = "";
+                if (!sleepDim)
+                    amb = (p == Period.Morning || p == Period.Afternoon) ? "amb_birds" : "amb_crickets";
+                audioManager.SetAmbience(amb);
+            }
 
             if (first)
             {

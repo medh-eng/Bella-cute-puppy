@@ -5,7 +5,8 @@ using Bella.Save;
 namespace Bella.Core
 {
     /// <summary>
-    /// Sound effects + two music loops (day / night). Every clip is an original
+    /// Sound effects, one music loop per moment of the day, and a quiet nature
+    /// ambience layer (birdsong / crickets) underneath. Every clip is an original
     /// synthesised sound shipped in Resources/Audio (see tools/pipeline/gen_audio.py),
     /// so there are no third-party audio licences to track.
     /// </summary>
@@ -15,9 +16,12 @@ namespace Bella.Core
 
         private AudioSource sfx;
         private AudioSource music;
+        private AudioSource ambience;
         private readonly Dictionary<string, AudioClip> clips = new Dictionary<string, AudioClip>();
         private string currentMusic = "";
+        private string currentAmbience = "";
         private float musicTarget = 0.35f;
+        private float ambienceTarget = 0.16f;
         private float duck = 1f;
 
         public void Init()
@@ -29,6 +33,10 @@ namespace Bella.Core
             music.playOnAwake = false;
             music.loop = true;
             music.volume = 0f;
+            ambience = gameObject.AddComponent<AudioSource>();
+            ambience.playOnAwake = false;
+            ambience.loop = true;
+            ambience.volume = 0f;
 
             AudioClip[] all = Resources.LoadAll<AudioClip>("Audio");
             for (int i = 0; i < all.Length; i++) clips[all[i].name] = all[i];
@@ -73,6 +81,25 @@ namespace Bella.Core
             }
         }
 
+        /// <summary>The quiet nature layer under the music. Empty name = silence.</summary>
+        public void SetAmbience(string name)
+        {
+            if (name == currentAmbience) return;
+            currentAmbience = name;
+            AudioClip c;
+            if (!string.IsNullOrEmpty(name) && clips.TryGetValue(name, out c) && c != null)
+            {
+                ambience.clip = c;
+                ambience.volume = 0f;
+                if (SaveSystem.Data.musicOn) ambience.Play();
+            }
+            else
+            {
+                ambience.Stop();
+                ambience.clip = null;
+            }
+        }
+
         public void SetDuck(float factor)
         {
             duck = Mathf.Clamp01(factor);
@@ -83,18 +110,22 @@ namespace Bella.Core
             if (!SaveSystem.Data.musicOn)
             {
                 music.Stop();
+                ambience.Stop();
             }
-            else if (!music.isPlaying && music.clip != null)
+            else
             {
-                music.Play();
+                if (!music.isPlaying && music.clip != null) music.Play();
+                if (!ambience.isPlaying && ambience.clip != null) ambience.Play();
             }
         }
 
         private void Update()
         {
             if (music == null) return;
-            float target = SaveSystem.Data.musicOn ? musicTarget * duck : 0f;
-            music.volume = Mathf.MoveTowards(music.volume, target, Time.unscaledDeltaTime * 0.4f);
+            bool on = SaveSystem.Data.musicOn;
+            music.volume = Mathf.MoveTowards(music.volume, on ? musicTarget * duck : 0f, Time.unscaledDeltaTime * 0.4f);
+            if (ambience != null)
+                ambience.volume = Mathf.MoveTowards(ambience.volume, on ? ambienceTarget * duck : 0f, Time.unscaledDeltaTime * 0.2f);
         }
     }
 }

@@ -37,6 +37,8 @@ namespace Bella.MiniGames
             UIKit.Place(back.GetComponent<RectTransform>(), new Vector2(0f, 1f), new Vector2(0.5f, 0.5f), new Vector2(110f, -120f), new Vector2(140f, 140f));
 
             AudioManager.Play("whoosh");
+            if (G.DayNight != null) G.DayNight.SetMusicOverride(true);
+            if (G.Audio != null) G.Audio.SetMusic("music_play");
             OnBegin();
         }
 
