@@ -35,3 +35,6 @@ Goal: maximize what gets built with **minimum intervention from Pon** and **zero
 3. Pon: open Unity → press Play (the project sets itself up; see `UNITY_DAY.md`) → test → report feel in plain words.
 4. Art phases: Pon pastes the prompts from `ART_BIBLE.md` into ChatGPT/Gemini/Meshy, downloads results into `Assets/Art/...`, pushes, and tells Claude — Claude wires them up.
 5. Decisions only at the points flagged in `PLAN.md` §7.
+
+## 7. Asset upgrade (added 16 Nov 2026)
+Pon now has ChatGPT Plus, Gemini Pro, Tripo 3D and Pixabay. All prompts, file names and the Sonnet wiring guide are in `ASSET_PROMPTS.md`; raw files arrive in `art-inbox/`. This replaces the Meshy-first and Freesound notes above for new work.

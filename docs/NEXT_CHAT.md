@@ -10,6 +10,15 @@ Last updated: 16 Nov 2026.
 
 ## 1. Where the project is
 
+**Update, 16 Nov 2026 (evening) — the asset upgrade is planned.** Pon now has ChatGPT Plus, Gemini
+Pro, Tripo 3D and Pixabay, so the zero-spend, script-made look is no longer the ceiling.
+`docs/ASSET_PROMPTS.md` holds every generation prompt (about 145, plus 70 Pixabay searches), where
+each file goes, and a wiring guide written for Sonnet (its Part 2) with ready-made kickoff messages
+(Part 3). Pon uploads results to `art-inbox/`; nothing has been generated or wired yet. Rules that
+matter most: every generated asset is optional with today's look as the fallback; no Tripo model
+ships until Pon confirms it came from a plan that allows commercial use; `CREDITS.md` gets a row for
+every shipped file. The next asset session starts with the "Setup" message in Part 3.
+
 Every phase of `docs/PLAN.md` that can be done without Unity or a Google account is finished and on
 `main`: the full v1 game (46 scripts), Bella's rigged/animated model, faces, 24 sounds (5 music
 loops + 2 nature-ambience loops + 17 effects/voices), 57 icons, store listing, Play Console

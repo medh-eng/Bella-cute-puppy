@@ -1,0 +1,1478 @@
+[
+ {
+  "id": "A-01",
+  "title": "Game logo",
+  "outputs": "`Resources/UI/logo.png`",
+  "size": "1536\u00d71024 \u2192 trimmed, max 1024 wide"
+ },
+ {
+  "id": "A-02",
+  "title": "Title screen key art",
+  "outputs": "`Resources/UI/title_bg.jpg`",
+  "size": "1080\u00d71920 JPG"
+ },
+ {
+  "id": "A-03",
+  "title": "App icon v2",
+  "outputs": "`Resources/Portraits/app_icon.png`, `docs/store/app_icon_512.png`",
+  "size": "1024\u00d71024 \u2192 512\u00d7512"
+ },
+ {
+  "id": "A-04",
+  "title": "Loading and waiting pictures (set of 3, one request each)",
+  "outputs": "`Resources/UI/loading_1.png` \u2026 `_3.png`",
+  "size": "768\u00d7768"
+ },
+ {
+  "id": "A-05",
+  "title": "Studio mark",
+  "outputs": "`Resources/UI/studio.png`, website header",
+  "size": "max 768 wide"
+ },
+ {
+  "id": "A-06",
+  "title": "First-day story cards (4 pictures, one request each, same chat)",
+  "outputs": "`Resources/Story/intro_1.png` \u2026 `_4.png`",
+  "size": "810\u00d71080 JPG"
+ },
+ {
+  "id": "B-01",
+  "title": "Jelly buttons and badges (tintable)",
+  "outputs": "`Resources/UI/btn_round.png`, `btn_pill.png`, `btn_square.png`, `badge.png`",
+  "size": "512 px each (pill 768\u00d7256)"
+ },
+ {
+  "id": "B-02",
+  "title": "Popup panel frame (9-slice)",
+  "outputs": "`Resources/UI/panel_popup.png`",
+  "size": "512\u00d7512, border 96 px"
+ },
+ {
+  "id": "B-03",
+  "title": "Ribbon header and small parts",
+  "outputs": "`Resources/UI/ribbon.png`, `tag_price.png`, `tag_owned.png`, `tag_new.png`, `bubble_speech.png`, `bubble_thought.png`",
+  "size": "ribbon 768 wide, others 256\u2013384"
+ },
+ {
+  "id": "B-04",
+  "title": "Meters and progress bars",
+  "outputs": "`Resources/UI/ring.png`, `ring_full.png`, `bar_bone.png`, `bar_bone_fill.png`, `shield.png`",
+  "size": "ring 256, bars 768\u00d7192"
+ },
+ {
+  "id": "B-05",
+  "title": "Shop card and shelf",
+  "outputs": "`Resources/UI/card_shop.png`, `shelf.png`, `pedestal.png`",
+  "size": "card 384\u00d7512, shelf 768\u00d7128, pedestal 384"
+ },
+ {
+  "id": "B-06",
+  "title": "Daily present, three states",
+  "outputs": "`Resources/UI/gift_closed.png`, `gift_opening.png`, `gift_open.png`",
+  "size": "512 each"
+ },
+ {
+  "id": "B-07",
+  "title": "Seven-day reward tiles",
+  "outputs": "`Resources/UI/day_tile.png`, `day_tile_big.png`, `stamp.png`",
+  "size": "256 / 384 / 256"
+ },
+ {
+  "id": "B-08",
+  "title": "Tutorial hands",
+  "outputs": "`Resources/UI/hand_tap.png`, `hand_hold.png`, `hand_swipe.png`, `hand_circle.png`",
+  "size": "384 each"
+ },
+ {
+  "id": "C-01",
+  "title": "Care buttons (replaces the 5 big action buttons and need meters)",
+  "outputs": "`Resources/Icons/` \u2192 `bone`, `bath`, `zzz`, `ball`, `tricks`, `heart`, `health`, `bubbles`, `treat`",
+  "size": "256\u00d7256 each",
+  "cells": [
+   "bone",
+   "bath",
+   "zzz",
+   "ball",
+   "tricks",
+   "heart",
+   "health",
+   "bubbles",
+   "treat"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Icons"
+ },
+ {
+  "id": "C-02",
+  "title": "Menu buttons",
+  "outputs": "`Resources/Icons/` \u2192 `gift`, `book`, `wardrobe`, `clinic`, `gear`, `home`, `trophy`, `star`, `paw`",
+  "size": "256\u00d7256 each",
+  "cells": [
+   "gift",
+   "book",
+   "wardrobe",
+   "clinic",
+   "gear",
+   "home",
+   "trophy",
+   "star",
+   "paw"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Icons"
+ },
+ {
+  "id": "C-03",
+  "title": "Food (dog-safe foods only)",
+  "outputs": "`Resources/Icons/` \u2192 `food_kibble`, `food_treat`, `food_fancy`, `cake`, `food_carrot`, `food_watermelon`, `food_popsicle`, `food_water`, `food_pumpkin`",
+  "size": "256\u00d7256 each",
+  "cells": [
+   "food_kibble",
+   "food_treat",
+   "food_fancy",
+   "cake",
+   "food_carrot",
+   "food_watermelon",
+   "food_popsicle",
+   "food_water",
+   "food_pumpkin"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Icons"
+ },
+ {
+  "id": "C-04",
+  "title": "Bath and vet",
+  "outputs": "`Resources/Icons/` \u2192 `sponge`, `shower`, `towel`, `brush`, `drop`, `thermometer`, `medicine`, `bandage`, `stethoscope`",
+  "size": "256\u00d7256 each",
+  "cells": [
+   "sponge",
+   "shower",
+   "towel",
+   "brush",
+   "drop",
+   "thermometer",
+   "medicine",
+   "bandage",
+   "stethoscope"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Icons"
+ },
+ {
+  "id": "C-05",
+  "title": "Wardrobe items",
+  "outputs": "`Resources/Icons/` \u2192 `item_bow`, `item_bandana`, `item_partyhat`, `item_hat`, `item_flower`, `item_glasses`, `item_cape`, `item_crown`, `item_scarf`",
+  "size": "256\u00d7256 each",
+  "cells": [
+   "item_bow",
+   "item_bandana",
+   "item_partyhat",
+   "item_hat",
+   "item_flower",
+   "item_glasses",
+   "item_cape",
+   "item_crown",
+   "item_scarf"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Icons"
+ },
+ {
+  "id": "C-06",
+  "title": "Sky and nature",
+  "outputs": "`Resources/Icons/` \u2192 `sun`, `moon`, `cloud`, `rainbow`, `butterfly`, `sparkle`, `flower`, `leaf`, `raincloud`",
+  "size": "256\u00d7256 each",
+  "cells": [
+   "sun",
+   "moon",
+   "cloud",
+   "rainbow",
+   "butterfly",
+   "sparkle",
+   "flower",
+   "leaf",
+   "raincloud"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Icons"
+ },
+ {
+  "id": "C-07",
+  "title": "System buttons (simple, bold, readable when tiny)",
+  "outputs": "`Resources/Icons/` \u2192 `back`, `close`, `check`, `lock`, `question`, `sound_on`, `sound_off`, `camera`, `shop`",
+  "size": "256\u00d7256 each",
+  "cells": [
+   "back",
+   "close",
+   "check",
+   "lock",
+   "question",
+   "sound_on",
+   "sound_off",
+   "camera",
+   "shop"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Icons"
+ },
+ {
+  "id": "C-08",
+  "title": "New outfit icons (for the 3D outfit pack G-41 onwards)",
+  "outputs": "`Resources/Icons/` \u2192 `item_sunhat`, `item_beanie`, `item_headphones`, `item_backpack`, `item_tiara`, `item_chefhat`, `item_piratehat`, `item_wizardhat`, `item_sunglasses`",
+  "size": "256\u00d7256 each",
+  "cells": [
+   "item_sunhat",
+   "item_beanie",
+   "item_headphones",
+   "item_backpack",
+   "item_tiara",
+   "item_chefhat",
+   "item_piratehat",
+   "item_wizardhat",
+   "item_sunglasses"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Icons"
+ },
+ {
+  "id": "C-09",
+  "title": "New places and features",
+  "outputs": "`Resources/Icons/` \u2192 `place_garden`, `place_park`, `place_kitchen`, `place_bathroom`, `place_stage`, `photo`, `calendar`, `map`, `music`",
+  "size": "256\u00d7256 each",
+  "cells": [
+   "place_garden",
+   "place_park",
+   "place_kitchen",
+   "place_bathroom",
+   "place_stage",
+   "photo",
+   "calendar",
+   "map",
+   "music"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Icons"
+ },
+ {
+  "id": "C-10",
+  "title": "Toys",
+  "outputs": "`Resources/Icons/` \u2192 `toy_rope`, `toy_duck`, `toy_teddy`, `toy_frisbee`, `toy_plushbone`, `toy_tennis`, `toy_bubblewand`, `toy_kite`, `toy_squeaky`",
+  "size": "256\u00d7256 each",
+  "cells": [
+   "toy_rope",
+   "toy_duck",
+   "toy_teddy",
+   "toy_frisbee",
+   "toy_plushbone",
+   "toy_tennis",
+   "toy_bubblewand",
+   "toy_kite",
+   "toy_squeaky"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Icons"
+ },
+ {
+  "id": "D-01",
+  "title": "Portrait set 1 (replaces the 6 popup portraits, adds 3)",
+  "outputs": "`Resources/Portraits/` \u2192 `face_happy`, `face_excited`, `face_sad`, `face_sleepy`, `face_begging`, `face_silly`, `face_love`, `face_proud`, `face_surprised`",
+  "size": "512\u00d7512 each",
+  "cells": [
+   "face_happy",
+   "face_excited",
+   "face_sad",
+   "face_sleepy",
+   "face_begging",
+   "face_silly",
+   "face_love",
+   "face_proud",
+   "face_surprised"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Portraits"
+ },
+ {
+  "id": "D-02",
+  "title": "Portrait set 2 (9 new moods)",
+  "outputs": "`Resources/Portraits/` \u2192 `face_hungry`, `face_dirty`, `face_sniffles`, `face_clean`, `face_playful`, `face_party`, `face_chilly`, `face_summer`, `face_goodnight`",
+  "size": "512\u00d7512 each",
+  "cells": [
+   "face_hungry",
+   "face_dirty",
+   "face_sniffles",
+   "face_clean",
+   "face_playful",
+   "face_party",
+   "face_chilly",
+   "face_summer",
+   "face_goodnight"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Portraits"
+ },
+ {
+  "id": "D-03",
+  "title": "Sticker sheet 1 \u2014 firsts",
+  "outputs": "`Resources/Stickers/` \u2192 `first_pet`, `first_meal`, `first_bath`, `first_nap`, `first_fetch`, `first_trick`, `all_tricks`, `first_outfit`, `fashion_5`",
+  "size": "512\u00d7512 each",
+  "cells": [
+   "first_pet",
+   "first_meal",
+   "first_bath",
+   "first_nap",
+   "first_fetch",
+   "first_trick",
+   "all_tricks",
+   "first_outfit",
+   "fashion_5"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Stickers"
+ },
+ {
+  "id": "D-04",
+  "title": "Sticker sheet 2 \u2014 milestones",
+  "outputs": "`Resources/Stickers/` \u2192 `first_checkup`, `first_gift`, `streak_3`, `streak_7`, `streak_14`, `streak_30`, `grown_1`, `grown_2`, `cuddles_50`",
+  "size": "512\u00d7512 each",
+  "cells": [
+   "first_checkup",
+   "first_gift",
+   "streak_3",
+   "streak_7",
+   "streak_14",
+   "streak_30",
+   "grown_1",
+   "grown_2",
+   "cuddles_50"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Stickers"
+ },
+ {
+  "id": "D-05",
+  "title": "Sticker sheet 3 \u2014 friends and new adventures",
+  "outputs": "`Resources/Stickers/` \u2192 `butterfly_1`, `butterfly_20`, `friend_bird`, `friend_snail`, `garden_visit`, `rainy_day`, `first_photo`, `night_owl`, `first_story`",
+  "size": "512\u00d7512 each",
+  "cells": [
+   "butterfly_1",
+   "butterfly_20",
+   "friend_bird",
+   "friend_snail",
+   "garden_visit",
+   "rainy_day",
+   "first_photo",
+   "night_owl",
+   "first_story"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Stickers"
+ },
+ {
+  "id": "D-06",
+  "title": "Sticker sheet 4 \u2014 festivals",
+  "outputs": "`Resources/Stickers/` \u2192 `fest_lights`, `fest_colours`, `fest_winter`, `fest_birthday`, `fest_kites`, `fest_harvest`, `fest_newyear`, `fest_monsoon`, `fest_spring`",
+  "size": "512\u00d7512 each",
+  "cells": [
+   "fest_lights",
+   "fest_colours",
+   "fest_winter",
+   "fest_birthday",
+   "fest_kites",
+   "fest_harvest",
+   "fest_newyear",
+   "fest_monsoon",
+   "fest_spring"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Stickers"
+ },
+ {
+  "id": "D-07",
+  "title": "Growing-up card",
+  "outputs": "`Resources/UI/growth.png` (cut into `growth_1/2/3.png`)",
+  "size": "1536\u00d7768"
+ },
+ {
+  "id": "D-08",
+  "title": "Thought-bubble wishes",
+  "outputs": "`Resources/UI/wish_feed.png`, `wish_bath`, `wish_sleep`, `wish_play`, `wish_pet`, `wish_tricks`, `wish_clinic`, `wish_garden`, `wish_wardrobe`",
+  "size": "256 each",
+  "cells": [
+   "wish_feed",
+   "wish_bath",
+   "wish_sleep",
+   "wish_play",
+   "wish_pet",
+   "wish_tricks",
+   "wish_clinic",
+   "wish_garden",
+   "wish_wardrobe"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/UI"
+ },
+ {
+  "id": "E-01",
+  "title": "Wallpaper \u2014 paws",
+  "outputs": "`Resources/Surfaces/wall_paws.jpg`",
+  "size": "512\u00d7512 JPG, tileable"
+ },
+ {
+  "id": "E-02",
+  "title": "Wallpaper \u2014 clouds",
+  "outputs": "`Resources/Surfaces/wall_clouds.jpg`",
+  "size": "512\u00d7512 JPG, tileable"
+ },
+ {
+  "id": "E-03",
+  "title": "Wallpaper \u2014 hearts",
+  "outputs": "`Resources/Surfaces/wall_hearts.jpg`",
+  "size": "512\u00d7512 JPG, tileable"
+ },
+ {
+  "id": "E-04",
+  "title": "Wallpaper \u2014 night",
+  "outputs": "`Resources/Surfaces/wall_night.jpg`",
+  "size": "512\u00d7512 JPG, tileable"
+ },
+ {
+  "id": "E-05",
+  "title": "Wallpaper \u2014 jungle",
+  "outputs": "`Resources/Surfaces/wall_jungle.jpg`",
+  "size": "512\u00d7512 JPG, tileable"
+ },
+ {
+  "id": "E-06",
+  "title": "Wallpaper \u2014 sunny",
+  "outputs": "`Resources/Surfaces/wall_sunny.jpg`",
+  "size": "512\u00d7512 JPG, tileable"
+ },
+ {
+  "id": "E-07",
+  "title": "Wallpaper \u2014 rainbow",
+  "outputs": "`Resources/Surfaces/wall_rainbow.jpg`",
+  "size": "512\u00d7512 JPG, tileable"
+ },
+ {
+  "id": "E-08",
+  "title": "Wallpaper \u2014 tiles",
+  "outputs": "`Resources/Surfaces/wall_tiles.jpg`",
+  "size": "512\u00d7512 JPG, tileable"
+ },
+ {
+  "id": "E-09",
+  "title": "Floor \u2014 wood",
+  "outputs": "`Resources/Surfaces/floor_wood.jpg`",
+  "size": "512\u00d7512 JPG, tileable"
+ },
+ {
+  "id": "E-10",
+  "title": "Floor \u2014 checker",
+  "outputs": "`Resources/Surfaces/floor_checker.jpg`",
+  "size": "512\u00d7512 JPG, tileable"
+ },
+ {
+  "id": "E-11",
+  "title": "Floor \u2014 carpet",
+  "outputs": "`Resources/Surfaces/floor_carpet.jpg`",
+  "size": "512\u00d7512 JPG, tileable"
+ },
+ {
+  "id": "E-12",
+  "title": "Floor \u2014 grass",
+  "outputs": "`Resources/Surfaces/floor_grass.jpg`",
+  "size": "512\u00d7512 JPG, tileable"
+ },
+ {
+  "id": "E-13",
+  "title": "Floor \u2014 sand",
+  "outputs": "`Resources/Surfaces/floor_sand.jpg`",
+  "size": "512\u00d7512 JPG, tileable"
+ },
+ {
+  "id": "E-14",
+  "title": "Floor \u2014 stage",
+  "outputs": "`Resources/Surfaces/floor_stage.jpg`",
+  "size": "512\u00d7512 JPG, tileable"
+ },
+ {
+  "id": "E-15",
+  "title": "Rugs, seen from directly above",
+  "outputs": "`Resources/Surfaces/rug_rainbow.png`, `rug_paw.png`, `rug_donut.png`, `rug_flower.png`",
+  "size": "512 each",
+  "cells": [
+   "rug_rainbow",
+   "rug_paw",
+   "rug_donut",
+   "rug_flower"
+  ],
+  "grid": [
+   2,
+   2
+  ],
+  "dir": "Resources/Surfaces"
+ },
+ {
+  "id": "E-16",
+  "title": "Window scenery strips",
+  "outputs": "`Resources/Surfaces/view_hills.png`, `view_town.png`, `view_beach.png`, `view_snow.png`",
+  "size": "768\u00d7320 each",
+  "cells": [
+   "view_hills",
+   "view_town",
+   "view_beach",
+   "view_snow"
+  ],
+  "grid": [
+   4,
+   1
+  ],
+  "dir": "Resources/Surfaces"
+ },
+ {
+  "id": "E-17",
+  "title": "Pictures for the wall frame",
+  "outputs": "`Resources/Surfaces/pic_1.png` \u2026 `pic_9.png`",
+  "size": "256 each",
+  "cells": [
+   "pic_1",
+   "pic_2",
+   "pic_3",
+   "pic_4",
+   "pic_5",
+   "pic_6",
+   "pic_7",
+   "pic_8",
+   "pic_9"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Surfaces"
+ },
+ {
+  "id": "F-01",
+  "title": "Backdrop \u2014 Garden",
+  "outputs": "`Resources/Places/garden.jpg`",
+  "size": "1600\u00d71000 JPG"
+ },
+ {
+  "id": "F-02",
+  "title": "Backdrop \u2014 Park",
+  "outputs": "`Resources/Places/park.jpg`",
+  "size": "1600\u00d71000 JPG"
+ },
+ {
+  "id": "F-03",
+  "title": "Backdrop \u2014 Bathroom",
+  "outputs": "`Resources/Places/bathroom.jpg`",
+  "size": "1600\u00d71000 JPG"
+ },
+ {
+  "id": "F-04",
+  "title": "Backdrop \u2014 Kitchen",
+  "outputs": "`Resources/Places/kitchen.jpg`",
+  "size": "1600\u00d71000 JPG"
+ },
+ {
+  "id": "F-05",
+  "title": "Backdrop \u2014 Vet clinic",
+  "outputs": "`Resources/Places/clinic.jpg`",
+  "size": "1600\u00d71000 JPG"
+ },
+ {
+  "id": "F-06",
+  "title": "Backdrop \u2014 Trick stage",
+  "outputs": "`Resources/Places/stage.jpg`",
+  "size": "1600\u00d71000 JPG"
+ },
+ {
+  "id": "F-07",
+  "title": "Backdrop \u2014 Beach",
+  "outputs": "`Resources/Places/beach.jpg`",
+  "size": "1600\u00d71000 JPG"
+ },
+ {
+  "id": "F-08",
+  "title": "Backdrop \u2014 Bedroom at night",
+  "outputs": "`Resources/Places/bedroom_night.jpg`",
+  "size": "1600\u00d71000 JPG"
+ },
+ {
+  "id": "F-09",
+  "title": "Backdrop \u2014 Snowy garden",
+  "outputs": "`Resources/Places/snow.jpg`",
+  "size": "1600\u00d71000 JPG"
+ },
+ {
+  "id": "F-10",
+  "title": "Backdrop \u2014 Festival evening",
+  "outputs": "`Resources/Places/festival.jpg`",
+  "size": "1600\u00d71000 JPG"
+ },
+ {
+  "id": "F-11",
+  "title": "Backdrop \u2014 Photo studio \u2014 hearts",
+  "outputs": "`Resources/Places/studio_pink.jpg`",
+  "size": "1600\u00d71000 JPG"
+ },
+ {
+  "id": "F-12",
+  "title": "Backdrop \u2014 Photo studio \u2014 rainbow",
+  "outputs": "`Resources/Places/studio_rainbow.jpg`",
+  "size": "1600\u00d71000 JPG"
+ },
+ {
+  "id": "G-01",
+  "title": "Dog bed",
+  "outputs": "Resources/Props/bed.fbx + bed_tex.png",
+  "size_m": 1.25,
+  "where": "Room.cs bed (BedBase/BedCushion)",
+  "wave": 1
+ },
+ {
+  "id": "G-02",
+  "title": "Food bowl",
+  "outputs": "Resources/Props/bowl.fbx + bowl_tex.png",
+  "size_m": 0.46,
+  "where": "Room.cs Bowl/BowlInside",
+  "wave": 1
+ },
+ {
+  "id": "G-03",
+  "title": "Kibble mound",
+  "outputs": "Resources/Props/kibble.fbx + kibble_tex.png",
+  "size_m": 0.34,
+  "where": "Room.cs Kibble (shown when the bowl is full)",
+  "wave": 1
+ },
+ {
+  "id": "G-04",
+  "title": "Ball",
+  "outputs": "Resources/Props/ball.fbx + ball_tex.png",
+  "size_m": 0.22,
+  "where": "Room.cs Ball/BallBand",
+  "wave": 1
+ },
+ {
+  "id": "G-05",
+  "title": "Bathtub",
+  "outputs": "Resources/Props/tub.fbx + tub_tex.png",
+  "size_m": 1.55,
+  "where": "Room.cs Tub (keep the code-made water disc inside)",
+  "wave": 1
+ },
+ {
+  "id": "G-06",
+  "title": "Potted plant",
+  "outputs": "Resources/Props/plant.fbx + plant_tex.png",
+  "size_m": 0.75,
+  "where": "Room.cs Pot/Leaf1-3",
+  "wave": 1
+ },
+ {
+  "id": "G-07",
+  "title": "Toy shelf",
+  "outputs": "Resources/Props/toyshelf.fbx + toyshelf_tex.png",
+  "size_m": 0.9,
+  "where": "Room.cs BuildToyShelf",
+  "wave": 1
+ },
+ {
+  "id": "G-08",
+  "title": "Toy basket",
+  "outputs": "Resources/Props/basket.fbx + basket_tex.png",
+  "size_m": 0.55,
+  "where": "Room.cs BuildToyBasket",
+  "wave": 1
+ },
+ {
+  "id": "G-16",
+  "title": "Rubber duck",
+  "outputs": "Resources/Props/toy_duck.fbx + toy_duck_tex.png",
+  "size_m": 0.2,
+  "where": "floats in the tub during Bubble Bath",
+  "wave": 1
+ },
+ {
+  "id": "G-43",
+  "title": "Crown",
+  "outputs": "Resources/Props/hat_crown.fbx + hat_crown_tex.png",
+  "size_m": 0.22,
+  "where": "Accessories.cs 'crown'",
+  "wave": 1
+ },
+ {
+  "id": "G-71",
+  "title": "Pip the bluebird",
+  "outputs": "Resources/Props/friend_bird.fbx + friend_bird_tex.png",
+  "size_m": 0.16,
+  "where": "new Friends.cs: lands on the window sill in the morning",
+  "wave": 1
+ },
+ {
+  "id": "G-09",
+  "title": "Armchair",
+  "outputs": "Resources/Props/armchair.fbx + armchair_tex.png",
+  "size_m": 0.9,
+  "where": "new decor, left wall",
+  "wave": 2
+ },
+ {
+  "id": "G-10",
+  "title": "Star night-light",
+  "outputs": "Resources/Props/nightlight.fbx + nightlight_tex.png",
+  "size_m": 0.6,
+  "where": "Ambience.cs nightlight (keep the code glow)",
+  "wave": 2
+ },
+ {
+  "id": "G-11",
+  "title": "Water bowl",
+  "outputs": "Resources/Props/waterbowl.fbx + waterbowl_tex.png",
+  "size_m": 0.4,
+  "where": "new, beside the food bowl",
+  "wave": 2
+ },
+ {
+  "id": "G-12",
+  "title": "Window flower box",
+  "outputs": "Resources/Props/windowbox.fbx + windowbox_tex.png",
+  "size_m": 1.5,
+  "where": "on the WindowSill",
+  "wave": 2
+ },
+ {
+  "id": "G-15",
+  "title": "Rope toy",
+  "outputs": "Resources/Props/toy_rope.fbx + toy_rope_tex.png",
+  "size_m": 0.3,
+  "where": "fetch / play variants",
+  "wave": 2
+ },
+ {
+  "id": "G-17",
+  "title": "Teddy bear",
+  "outputs": "Resources/Props/toy_teddy.fbx + toy_teddy_tex.png",
+  "size_m": 0.3,
+  "where": "bed companion at night",
+  "wave": 2
+ },
+ {
+  "id": "G-18",
+  "title": "Frisbee",
+  "outputs": "Resources/Props/toy_frisbee.fbx + toy_frisbee_tex.png",
+  "size_m": 0.26,
+  "where": "park fetch (v1.1)",
+  "wave": 2
+ },
+ {
+  "id": "G-21",
+  "title": "Bone biscuit",
+  "outputs": "Resources/Props/food_treat.fbx + food_treat_tex.png",
+  "size_m": 0.2,
+  "where": "Feeding shop, placed on the bowl",
+  "wave": 2
+ },
+ {
+  "id": "G-22",
+  "title": "Fancy meal",
+  "outputs": "Resources/Props/food_fancy.fbx + food_fancy_tex.png",
+  "size_m": 0.42,
+  "where": "Feeding shop",
+  "wave": 2
+ },
+ {
+  "id": "G-23",
+  "title": "Birthday cake",
+  "outputs": "Resources/Props/food_cake.fbx + food_cake_tex.png",
+  "size_m": 0.4,
+  "where": "birthday / streak rewards",
+  "wave": 2
+ },
+ {
+  "id": "G-27",
+  "title": "Shampoo bottle",
+  "outputs": "Resources/Props/shampoo.fbx + shampoo_tex.png",
+  "size_m": 0.3,
+  "where": "Bath activity",
+  "wave": 2
+ },
+ {
+  "id": "G-28",
+  "title": "Sponge",
+  "outputs": "Resources/Props/sponge.fbx + sponge_tex.png",
+  "size_m": 0.2,
+  "where": "Bath activity",
+  "wave": 2
+ },
+ {
+  "id": "G-31",
+  "title": "Doctor's bag",
+  "outputs": "Resources/Props/vetbag.fbx + vetbag_tex.png",
+  "size_m": 0.4,
+  "where": "Clinic activity",
+  "wave": 2
+ },
+ {
+  "id": "G-41",
+  "title": "Top hat",
+  "outputs": "Resources/Props/hat_top.fbx + hat_top_tex.png",
+  "size_m": 0.34,
+  "where": "Accessories.cs 'tophat'",
+  "wave": 2
+ },
+ {
+  "id": "G-42",
+  "title": "Party hat",
+  "outputs": "Resources/Props/hat_party.fbx + hat_party_tex.png",
+  "size_m": 0.3,
+  "where": "Accessories.cs 'partyhat'",
+  "wave": 2
+ },
+ {
+  "id": "G-44",
+  "title": "Sun hat",
+  "outputs": "Resources/Props/hat_sun.fbx + hat_sun_tex.png",
+  "size_m": 0.4,
+  "where": "new outfit",
+  "wave": 2
+ },
+ {
+  "id": "G-45",
+  "title": "Beanie",
+  "outputs": "Resources/Props/hat_beanie.fbx + hat_beanie_tex.png",
+  "size_m": 0.26,
+  "where": "new outfit",
+  "wave": 2
+ },
+ {
+  "id": "G-49",
+  "title": "Hair bow",
+  "outputs": "Resources/Props/bow.fbx + bow_tex.png",
+  "size_m": 0.26,
+  "where": "Accessories.cs 'bow'",
+  "wave": 2
+ },
+ {
+  "id": "G-50",
+  "title": "Round glasses",
+  "outputs": "Resources/Props/glasses.fbx + glasses_tex.png",
+  "size_m": 0.3,
+  "where": "Accessories.cs 'glasses'",
+  "wave": 2
+ },
+ {
+  "id": "G-61",
+  "title": "Doghouse",
+  "outputs": "Resources/Props/doghouse.fbx + doghouse_tex.png",
+  "size_m": 1.2,
+  "where": "Garden place",
+  "wave": 2
+ },
+ {
+  "id": "G-62",
+  "title": "Garden tree",
+  "outputs": "Resources/Props/tree.fbx + tree_tex.png",
+  "size_m": 2.2,
+  "where": "Garden place",
+  "wave": 2
+ },
+ {
+  "id": "G-64",
+  "title": "Flower patch",
+  "outputs": "Resources/Props/flowers.fbx + flowers_tex.png",
+  "size_m": 0.5,
+  "where": "Garden place, repeated",
+  "wave": 2
+ },
+ {
+  "id": "G-72",
+  "title": "Momo the snail",
+  "outputs": "Resources/Props/friend_snail.fbx + friend_snail_tex.png",
+  "size_m": 0.18,
+  "where": "new Friends.cs: crosses the rug on rainy days",
+  "wave": 2
+ },
+ {
+  "id": "G-81",
+  "title": "Clay lamp",
+  "outputs": "Resources/Props/fest_diya.fbx + fest_diya_tex.png",
+  "size_m": 0.14,
+  "where": "Festival of Lights decor, 5 along the baseboard",
+  "wave": 2
+ },
+ {
+  "id": "G-82",
+  "title": "Paper star lantern",
+  "outputs": "Resources/Props/fest_lantern.fbx + fest_lantern_tex.png",
+  "size_m": 0.5,
+  "where": "Festival of Lights, hangs by the window",
+  "wave": 2
+ },
+ {
+  "id": "G-85",
+  "title": "Balloon bunch",
+  "outputs": "Resources/Props/fest_balloons.fbx + fest_balloons_tex.png",
+  "size_m": 1.0,
+  "where": "Birthday",
+  "wave": 2
+ },
+ {
+  "id": "G-88",
+  "title": "Present stack",
+  "outputs": "Resources/Props/fest_gifts.fbx + fest_gifts_tex.png",
+  "size_m": 0.5,
+  "where": "Birthday / winter / daily gift",
+  "wave": 2
+ },
+ {
+  "id": "G-13",
+  "title": "Rocking horse toy",
+  "outputs": "Resources/Props/rocking.fbx + rocking_tex.png",
+  "size_m": 0.6,
+  "where": "new decor",
+  "wave": 3
+ },
+ {
+  "id": "G-14",
+  "title": "Low bookcase",
+  "outputs": "Resources/Props/bookcase.fbx + bookcase_tex.png",
+  "size_m": 1.0,
+  "where": "new decor, right wall",
+  "wave": 3
+ },
+ {
+  "id": "G-19",
+  "title": "Plush bone",
+  "outputs": "Resources/Props/toy_plushbone.fbx + toy_plushbone_tex.png",
+  "size_m": 0.3,
+  "where": "play variants",
+  "wave": 3
+ },
+ {
+  "id": "G-20",
+  "title": "Tennis ball",
+  "outputs": "Resources/Props/toy_tennis.fbx + toy_tennis_tex.png",
+  "size_m": 0.2,
+  "where": "fetch variant",
+  "wave": 3
+ },
+ {
+  "id": "G-24",
+  "title": "Carrot",
+  "outputs": "Resources/Props/food_carrot.fbx + food_carrot_tex.png",
+  "size_m": 0.25,
+  "where": "Feeding shop",
+  "wave": 3
+ },
+ {
+  "id": "G-25",
+  "title": "Watermelon slice",
+  "outputs": "Resources/Props/food_watermelon.fbx + food_watermelon_tex.png",
+  "size_m": 0.25,
+  "where": "Feeding shop",
+  "wave": 3
+ },
+ {
+  "id": "G-26",
+  "title": "Pup-sicle",
+  "outputs": "Resources/Props/food_popsicle.fbx + food_popsicle_tex.png",
+  "size_m": 0.22,
+  "where": "Feeding shop, summer",
+  "wave": 3
+ },
+ {
+  "id": "G-29",
+  "title": "Shower head",
+  "outputs": "Resources/Props/showerhead.fbx + showerhead_tex.png",
+  "size_m": 0.3,
+  "where": "Bath activity",
+  "wave": 3
+ },
+ {
+  "id": "G-30",
+  "title": "Folded towel",
+  "outputs": "Resources/Props/towel.fbx + towel_tex.png",
+  "size_m": 0.35,
+  "where": "Bath activity",
+  "wave": 3
+ },
+ {
+  "id": "G-32",
+  "title": "Thermometer",
+  "outputs": "Resources/Props/thermometer.fbx + thermometer_tex.png",
+  "size_m": 0.25,
+  "where": "Clinic activity",
+  "wave": 3
+ },
+ {
+  "id": "G-33",
+  "title": "Medicine",
+  "outputs": "Resources/Props/medicine.fbx + medicine_tex.png",
+  "size_m": 0.22,
+  "where": "Clinic activity",
+  "wave": 3
+ },
+ {
+  "id": "G-34",
+  "title": "Stethoscope",
+  "outputs": "Resources/Props/stethoscope.fbx + stethoscope_tex.png",
+  "size_m": 0.3,
+  "where": "Clinic activity",
+  "wave": 3
+ },
+ {
+  "id": "G-46",
+  "title": "Chef hat",
+  "outputs": "Resources/Props/hat_chef.fbx + hat_chef_tex.png",
+  "size_m": 0.28,
+  "where": "new outfit",
+  "wave": 3
+ },
+ {
+  "id": "G-47",
+  "title": "Pirate hat",
+  "outputs": "Resources/Props/hat_pirate.fbx + hat_pirate_tex.png",
+  "size_m": 0.36,
+  "where": "new outfit",
+  "wave": 3
+ },
+ {
+  "id": "G-48",
+  "title": "Wizard hat",
+  "outputs": "Resources/Props/hat_wizard.fbx + hat_wizard_tex.png",
+  "size_m": 0.34,
+  "where": "new outfit",
+  "wave": 3
+ },
+ {
+  "id": "G-51",
+  "title": "Heart sunglasses",
+  "outputs": "Resources/Props/sunglasses.fbx + sunglasses_tex.png",
+  "size_m": 0.3,
+  "where": "new outfit",
+  "wave": 3
+ },
+ {
+  "id": "G-52",
+  "title": "Headphones",
+  "outputs": "Resources/Props/headphones.fbx + headphones_tex.png",
+  "size_m": 0.34,
+  "where": "new outfit",
+  "wave": 3
+ },
+ {
+  "id": "G-53",
+  "title": "Tiara",
+  "outputs": "Resources/Props/tiara.fbx + tiara_tex.png",
+  "size_m": 0.24,
+  "where": "new outfit",
+  "wave": 3
+ },
+ {
+  "id": "G-54",
+  "title": "Backpack",
+  "outputs": "Resources/Props/backpack.fbx + backpack_tex.png",
+  "size_m": 0.3,
+  "where": "new outfit (Back anchor)",
+  "wave": 3
+ },
+ {
+  "id": "G-63",
+  "title": "Fence piece",
+  "outputs": "Resources/Props/fence.fbx + fence_tex.png",
+  "size_m": 1.5,
+  "where": "Garden place, repeated",
+  "wave": 3
+ },
+ {
+  "id": "G-65",
+  "title": "Watering can",
+  "outputs": "Resources/Props/wateringcan.fbx + wateringcan_tex.png",
+  "size_m": 0.35,
+  "where": "Garden mini-game (v1.1)",
+  "wave": 3
+ },
+ {
+  "id": "G-66",
+  "title": "Mushroom stool",
+  "outputs": "Resources/Props/mushroom.fbx + mushroom_tex.png",
+  "size_m": 0.35,
+  "where": "Garden decor",
+  "wave": 3
+ },
+ {
+  "id": "G-73",
+  "title": "Dot the ladybird",
+  "outputs": "Resources/Props/friend_ladybird.fbx + friend_ladybird_tex.png",
+  "size_m": 0.1,
+  "where": "new Friends.cs: sits on the plant",
+  "wave": 3
+ },
+ {
+  "id": "G-74",
+  "title": "Hoppy the frog",
+  "outputs": "Resources/Props/friend_frog.fbx + friend_frog_tex.png",
+  "size_m": 0.16,
+  "where": "Garden / rainy days",
+  "wave": 3
+ },
+ {
+  "id": "G-83",
+  "title": "Little festive tree",
+  "outputs": "Resources/Props/fest_tree.fbx + fest_tree_tex.png",
+  "size_m": 0.9,
+  "where": "Winter holidays",
+  "wave": 3
+ },
+ {
+  "id": "G-84",
+  "title": "Snowman",
+  "outputs": "Resources/Props/fest_snowman.fbx + fest_snowman_tex.png",
+  "size_m": 0.6,
+  "where": "Winter holidays, garden",
+  "wave": 3
+ },
+ {
+  "id": "G-86",
+  "title": "Smiling pumpkin",
+  "outputs": "Resources/Props/fest_pumpkin.fbx + fest_pumpkin_tex.png",
+  "size_m": 0.35,
+  "where": "Harvest party",
+  "wave": 3
+ },
+ {
+  "id": "G-87",
+  "title": "Colour powder plates",
+  "outputs": "Resources/Props/fest_colours.fbx + fest_colours_tex.png",
+  "size_m": 0.4,
+  "where": "Festival of Colours",
+  "wave": 3
+ },
+ {
+  "id": "H-01",
+  "title": "Particles 1",
+  "outputs": "`Resources/Fx/` \u2192 `fx_heart`, `fx_star`, `fx_sparkle`, `fx_bubble`, `fx_drop`, `fx_note`, `fx_paw`, `fx_zzz`, `fx_ring`",
+  "size": "128\u2013256 each",
+  "cells": [
+   "fx_heart",
+   "fx_star",
+   "fx_sparkle",
+   "fx_bubble",
+   "fx_drop",
+   "fx_note",
+   "fx_paw",
+   "fx_zzz",
+   "fx_ring"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Fx"
+ },
+ {
+  "id": "H-02",
+  "title": "Particles 2 \u2014 soft shapes (all pure white, soft edges)",
+  "outputs": "`Resources/Fx/` \u2192 `fx_glow`, `fx_rays`, `fx_puff`, `fx_foam`, `fx_dust`, `fx_beam`, `fx_flare`, `fx_smoke`, `fx_dot`",
+  "size": "128\u2013256 each",
+  "cells": [
+   "fx_glow",
+   "fx_rays",
+   "fx_puff",
+   "fx_foam",
+   "fx_dust",
+   "fx_beam",
+   "fx_flare",
+   "fx_smoke",
+   "fx_dot"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Fx"
+ },
+ {
+  "id": "H-03",
+  "title": "Confetti, petals and weather",
+  "outputs": "`Resources/Fx/` \u2192 `fx_confetti_1`, `fx_confetti_2`, `fx_confetti_3`, `fx_petal`, `fx_leaf`, `fx_snow`, `fx_rain`, `fx_firework`, `fx_splat`",
+  "size": "128\u2013256 each",
+  "cells": [
+   "fx_confetti_1",
+   "fx_confetti_2",
+   "fx_confetti_3",
+   "fx_petal",
+   "fx_leaf",
+   "fx_snow",
+   "fx_rain",
+   "fx_firework",
+   "fx_splat"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Fx"
+ },
+ {
+  "id": "I-01",
+  "title": "Festival of Lights (Diwali week)",
+  "outputs": "`Resources/Seasons/lights_1.png` \u2026 `lights_9.png`",
+  "size": "384 each",
+  "cells": [
+   "lights_1",
+   "lights_2",
+   "lights_3",
+   "lights_4",
+   "lights_5",
+   "lights_6",
+   "lights_7",
+   "lights_8",
+   "lights_9"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Seasons"
+ },
+ {
+  "id": "I-02",
+  "title": "Festival of Colours (Holi)",
+  "outputs": "`Resources/Seasons/colours_1.png` \u2026 `colours_9.png`",
+  "size": "384 each",
+  "cells": [
+   "colours_1",
+   "colours_2",
+   "colours_3",
+   "colours_4",
+   "colours_5",
+   "colours_6",
+   "colours_7",
+   "colours_8",
+   "colours_9"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Seasons"
+ },
+ {
+  "id": "I-03",
+  "title": "Winter holidays",
+  "outputs": "`Resources/Seasons/winter_1.png` \u2026 `winter_9.png`",
+  "size": "384 each",
+  "cells": [
+   "winter_1",
+   "winter_2",
+   "winter_3",
+   "winter_4",
+   "winter_5",
+   "winter_6",
+   "winter_7",
+   "winter_8",
+   "winter_9"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Seasons"
+ },
+ {
+  "id": "I-04",
+  "title": "Birthday",
+  "outputs": "`Resources/Seasons/birthday_1.png` \u2026 `birthday_9.png`",
+  "size": "384 each",
+  "cells": [
+   "birthday_1",
+   "birthday_2",
+   "birthday_3",
+   "birthday_4",
+   "birthday_5",
+   "birthday_6",
+   "birthday_7",
+   "birthday_8",
+   "birthday_9"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Seasons"
+ },
+ {
+  "id": "I-05",
+  "title": "Rainy season",
+  "outputs": "`Resources/Seasons/monsoon_1.png` \u2026 `monsoon_9.png`",
+  "size": "384 each",
+  "cells": [
+   "monsoon_1",
+   "monsoon_2",
+   "monsoon_3",
+   "monsoon_4",
+   "monsoon_5",
+   "monsoon_6",
+   "monsoon_7",
+   "monsoon_8",
+   "monsoon_9"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Seasons"
+ },
+ {
+  "id": "I-06",
+  "title": "Kite day and spring",
+  "outputs": "`Resources/Seasons/kites_1.png` \u2026 `kites_9.png`",
+  "size": "384 each",
+  "cells": [
+   "kites_1",
+   "kites_2",
+   "kites_3",
+   "kites_4",
+   "kites_5",
+   "kites_6",
+   "kites_7",
+   "kites_8",
+   "kites_9"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Seasons"
+ },
+ {
+  "id": "I-07",
+  "title": "Harvest party",
+  "outputs": "`Resources/Seasons/harvest_1.png` \u2026 `harvest_9.png`",
+  "size": "384 each",
+  "cells": [
+   "harvest_1",
+   "harvest_2",
+   "harvest_3",
+   "harvest_4",
+   "harvest_5",
+   "harvest_6",
+   "harvest_7",
+   "harvest_8",
+   "harvest_9"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Seasons"
+ },
+ {
+  "id": "I-08",
+  "title": "New Year",
+  "outputs": "`Resources/Seasons/newyear_1.png` \u2026 `newyear_9.png`",
+  "size": "384 each",
+  "cells": [
+   "newyear_1",
+   "newyear_2",
+   "newyear_3",
+   "newyear_4",
+   "newyear_5",
+   "newyear_6",
+   "newyear_7",
+   "newyear_8",
+   "newyear_9"
+  ],
+  "grid": [
+   3,
+   3
+  ],
+  "dir": "Resources/Seasons"
+ },
+ {
+  "id": "J-01",
+  "title": "Feature graphic",
+  "outputs": "`docs/store/feature_graphic_1024x500.png`",
+  "size": "1024\u00d7500"
+ },
+ {
+  "id": "J-02",
+  "title": "Screenshot frame background",
+  "outputs": "`docs/store/frame_bg.png`",
+  "size": "1080\u00d71920"
+ },
+ {
+  "id": "J-03",
+  "title": "Hero poster (website top, social posts)",
+  "outputs": "`docs/assets/hero.jpg`",
+  "size": "1920\u00d71080"
+ },
+ {
+  "id": "J-04",
+  "title": "Square social post",
+  "outputs": "`docs/assets/social_square.jpg`",
+  "size": "1080\u00d71080"
+ },
+ {
+  "id": "J-05",
+  "title": "Eight-second teaser clips for social media",
+  "outputs": "website and social only",
+  "size": "8 s MP4"
+ }
+]
