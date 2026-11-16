@@ -39,6 +39,19 @@ namespace Bella.Systems
         }
     }
 
+    /// <summary>A food the Feeding shop sells. Spent treats buy one meal; free items cost nothing.</summary>
+    public class FoodDef
+    {
+        public string id, icon;
+        public int price;
+        public float hunger, happiness;
+
+        public FoodDef(string id, string icon, int price, float hunger, float happiness)
+        {
+            this.id = id; this.icon = icon; this.price = price; this.hunger = hunger; this.happiness = happiness;
+        }
+    }
+
     /// <summary>All of the game's content tables in one place — tune prices and add items here.</summary>
     public static class Catalog
     {
@@ -58,6 +71,21 @@ namespace Bella.Systems
             new OutfitDef("cape_hero",    "back", "cape",     "item_cape",     50, Art.Rose, Art.Gold),
             new OutfitDef("cape_royal",   "back", "cape",     "item_cape",     60, new Color(0.5f, 0.35f, 0.8f), Art.Gold),
             new OutfitDef("crown_gold",   "head", "crown",    "item_crown",    80, Art.Gold, Art.Rose),
+            new OutfitDef("bow_lilac",     "head", "bow",      "item_bow",      10, Art.Lilac, Art.Gold),
+            new OutfitDef("bandana_navy",  "neck", "bandana",  "item_bandana",  15, new Color(0.15f, 0.2f, 0.4f), Color.white),
+            new OutfitDef("glasses_gold",  "eyes", "glasses",  "item_glasses",  30, Art.Gold, Art.Ink),
+            new OutfitDef("bowtie_gold",   "neck", "bowtie",   "item_bow",      20, Art.Gold, Art.Ink),
+            new OutfitDef("flower_blue",   "head", "flower",   "item_flower",   25, Art.Sky, Art.Gold),
+            new OutfitDef("cape_midnight", "back", "cape",     "item_cape",     55, new Color(0.12f, 0.14f, 0.25f), Art.Sky),
+            new OutfitDef("crown_rose",    "head", "crown",    "item_crown",    85, Art.Rose, Art.Gold),
+        };
+
+        /// <summary>Foods for the Feeding shop (docs/GDD.md-style: buy with Treats, each feed is different).</summary>
+        public static readonly FoodDef[] Foods =
+        {
+            new FoodDef("kibble",     "food_kibble", 0,  35f, 0f),
+            new FoodDef("treat_meal", "food_treat",  8,  20f, 15f),
+            new FoodDef("fancy_meal", "food_fancy",  20, 50f, 25f),
         };
 
         public static readonly TrickDef[] Tricks =
@@ -97,6 +125,12 @@ namespace Bella.Systems
         public static OutfitDef FindOutfit(string id)
         {
             for (int i = 0; i < Outfits.Length; i++) if (Outfits[i].id == id) return Outfits[i];
+            return null;
+        }
+
+        public static FoodDef FindFood(string id)
+        {
+            for (int i = 0; i < Foods.Length; i++) if (Foods[i].id == id) return Foods[i];
             return null;
         }
 

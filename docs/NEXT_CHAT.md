@@ -15,9 +15,35 @@ Every phase of `docs/PLAN.md` that can be done without Unity or a Google account
 loops + 2 nature-ambience loops + 17 effects/voices), 57 icons, store listing, Play Console
 answers, privacy page, closed-test kit, feature graphic.
 
-**The honest limit:** nobody has opened this project in Unity yet. The scripts compile against
-hand-written stand-ins for the Unity API (`tools/stubcheck/check.sh`), and the animations were
-previewed in Blender, but the first real run is still ahead. Expect a short fix-up round after it.
+**Update, 16 Nov 2026 — Unity day happened.** Pon installed Unity 6.3 LTS with Android Build
+Support and opened the project for the first time: it built and played, first try — walking,
+eating, napping, fetching, bathing, tricks and wardrobe all worked. One real bug was found and
+fixed (see below). A fuller "what we've built" recap lives in `docs/ACHIEVEMENTS.md`.
+
+Found and fixed this session:
+- **Wardrobe camera bug**: `WardrobeActivity.cs` framed the camera at ground level (look-height
+  `0.02`), pushing Bella's head — and any hat — above the visible frame. Fixed to `0.6`, matching
+  Bath/Clinic/Tricks.
+- **Feeding became its own shop** (`MiniGames/FeedingActivity.cs`, new), same shape as Wardrobe:
+  kibble (free), a treat meal, and a fancy meal, each with its own hunger/happiness effect
+  (`Systems/Catalog.cs` → `FoodDef`/`Foods`). The HUD's Bone button now opens it
+  (`GameRoot.OnHudAction`) instead of feeding instantly.
+- **7 more outfit colour variants** added to `Catalog.cs` (19 outfits total) — no new geometry
+  needed, just new `OutfitDef` entries (clothing is built from primitives in `Accessories.cs`, not
+  from Meshy/Tripo3D, so new colours/shapes are free).
+- **4 new puppy-voice moods** synthesised the same from-scratch way as the rest of the audio
+  (`tools/pipeline/gen_audio.py`): `bark_happy`, `yawn_sleepy`, `whine_sad`, `whimper_hungry` —
+  wired into `IdleState.cs`, `BellaController.RequestSleep`/`RequestFeed`. Honest limit: synthesis
+  from sine waves and noise reads as an expressive cartoon dog, not a recording — real realism
+  needs a licensed sample library or a paid AI audio model, neither of which is in the zero-spend
+  plan.
+- 3 new icons for the Feeding shop (`food_kibble`, `food_treat`, `food_fancy`,
+  `tools/pipeline/gen_icons.py`).
+
+**Not yet done:** no phone build has been made or installed outside the Editor yet (next:
+`Bella → Build Android APK (test)` from `docs/UNITY_DAY.md` §Step 6) — this session's new code
+needs a fresh `Bella → Set Up Project` + Play pass first to catch anything the stub-only compile
+(`tools/stubcheck/check.sh`) couldn't.
 
 ### Checked without Unity on 12 Nov 2026 (so these are no longer guesses)
 

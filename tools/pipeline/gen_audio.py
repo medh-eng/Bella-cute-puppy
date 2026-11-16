@@ -41,6 +41,27 @@ save("bark",join([yip(),yip(880,560,0.15)],[0.09,0.05]),0.7)
 save("yip",join([yip(980,700,0.10)],[0.03]),0.6)
 tt=t(0.5); f=520+140*np.sin(2*np.pi*3.2*tt)-180*tt; ph=2*np.pi*np.cumsum(f)/SR
 save("whine",(np.sin(ph)+0.4*np.sin(2*ph)+0.2*np.sin(3*ph))*np.sin(np.pi*tt/0.5),0.4)
+
+# --- extra moods (same from-scratch synthesis as above — no recordings/samples
+#     are used anywhere in this project, so these aim for "more expressive
+#     cartoon dog" rather than photographic realism; true realism needs either
+#     a licensed sample library or a paid AI audio model, neither in scope).
+def noisy_yip(f0,f1,d,grit=0.35):
+    tt=t(d); f=f0+(f1-f0)*(tt/d)**0.7; ph=2*np.pi*np.cumsum(f)/SR
+    x=sum(np.sin(k*ph)/k**1.15 for k in range(1,10)); x+=grit*rng.standard_normal(len(tt))
+    return np.tanh(1.7*x)*np.sin(np.pi*(tt/d)**0.55)
+save("bark_happy", join([noisy_yip(900,1300,0.09,0.3), noisy_yip(1000,1500,0.08,0.3), noisy_yip(1100,1700,0.1,0.35)], [0.05,0.04,0.0]), 0.75)
+
+tt=t(1.1); f=330-170*(tt/1.1)**1.3; ph=2*np.pi*np.cumsum(f)/SR
+moan=(np.sin(ph)+0.35*np.sin(2*ph)+0.15*np.sin(0.5*ph))*np.sin(np.pi*(tt/1.1)**0.8)
+huff_t=t(0.35); k=np.exp(-np.arange(400)/120.0); k/=k.sum()
+huff=np.convolve(rng.standard_normal(len(huff_t)),k,mode="same")*np.sin(np.pi*huff_t/0.35)**1.5*0.5
+save("yawn_sleepy", np.concatenate([moan, huff]), 0.5)
+
+tt=t(1.3); f=420+90*np.sin(2*np.pi*2.0*tt)-230*(tt/1.3)**1.4; ph=2*np.pi*np.cumsum(f)/SR
+save("whine_sad", (np.sin(ph)+0.4*np.sin(2*ph)+0.18*np.sin(3*ph))*np.sin(np.pi*(tt/1.3)**0.9)*0.75, 0.38)
+
+save("whimper_hungry", join([noisy_yip(700,520,0.11,0.22) for _ in range(3)], [0.1,0.12,0.0]), 0.45)
 def crunch():
     tt=t(0.07); return rng.standard_normal(len(tt))*np.exp(-45*tt)*(1+np.sin(2*np.pi*90*tt))
 save("munch",join([crunch() for _ in range(5)],[0.11,0.09,0.12,0.1,0.05]),0.55)

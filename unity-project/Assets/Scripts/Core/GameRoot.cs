@@ -219,7 +219,7 @@ namespace Bella.Core
             Wander.Pause(10f);
             switch (action)
             {
-                case "feed": Bella.RequestFeed(); break;
+                case "feed": StartActivity<FeedingActivity>(); break;
                 case "sleep":
                     if (Bella.IsSleeping) Bella.WakeUp(); else Bella.RequestSleep();
                     break;

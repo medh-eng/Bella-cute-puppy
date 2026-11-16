@@ -112,7 +112,10 @@ namespace Bella.Pet
 
         // ---------------------------------------------------------------- care loops
 
-        public void RequestFeed()
+        public void RequestFeed() { RequestFeed(null); }
+
+        /// <summary>Feed with a specific food (Feeding shop); null = the plain default meal.</summary>
+        public void RequestFeed(FoodDef food)
         {
             if (Busy || InActivity || room == null) return;
             Busy = true;
@@ -127,12 +130,17 @@ namespace Bella.Pet
             {
                 Puppy.ClearLook();
                 AudioManager.Play("munch");
+                bool wasHungry = Needs.Hunger < 30f;
                 fsm.ChangeState(new InteractionState(Face, Anim, Expression.Soapy, "Eat", 2.6f, () =>
                 {
                     room.SetBowlFull(false);
-                    Needs.Feed();
-                    Needs.AddHappiness(4f);
+                    float hunger = food != null ? food.hunger : (Needs.Config != null ? Needs.Config.feedAmount : 35f);
+                    float happy = food != null ? food.happiness : 4f;
+                    Needs.Feed(hunger);
+                    Needs.AddHappiness(happy);
                     SaveSystem.Data.countMeals++;
+                    if (happy >= 20f) AudioManager.Voice("bark_happy");
+                    else if (wasHungry) AudioManager.Voice("whimper_hungry");
                     Celebrate(rewarded ? 2 : 0);
                     FinishCare("feed");
                 }));
@@ -145,6 +153,7 @@ namespace Bella.Pet
             Busy = true;
             bool rewarded = Needs.Energy < RewardBelow;
             AudioManager.Play("tap");
+            AudioManager.Voice("yawn_sleepy");
 
             fsm.ChangeState(new WalkToState(transform, Anim, room.BedPosition, WalkSpeed, false, () =>
             {

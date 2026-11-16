@@ -221,6 +221,41 @@ circ(d,96,46,14,(120,86,60,255),w=5*S)
 line(d,[(90,38),(78,22)],OL,5*S); line(d,[(102,38),(114,22)],OL,5*S)
 circ(d,78,22,5,(255,214,64,255),w=3*S); circ(d,114,22,5,(255,214,64,255),w=3*S)
 fin(im,"butterfly")
+
+# ---------------------------------------------------------------- feeding-shop foods
+# kibble: a round bowl with little pebble-shaped pieces
+im,d=new()
+circ(d,96,120,66,(255,255,255,255),ol=OL,w=LW)
+circ(d,96,120,54,(255,222,150,255),ol=(214,160,80,255),w=5*S)
+pebble=(168,120,56,255)
+for cx,cy,rx,ry,rot in ((76,112,15,11,10),(104,104,14,10,-14),(118,126,13,10,22),(84,134,13,10,-6),(100,138,12,9,16)):
+    tmp=Image.new("RGBA",(W,W),(0,0,0,0)); td=ImageDraw.Draw(tmp)
+    td.ellipse(P(cx-rx,cy-ry,cx+rx,cy+ry),fill=pebble,outline=OL,width=3*S)
+    tmp=tmp.rotate(rot,resample=Image.BICUBIC,center=(cx*S,cy*S)); im.alpha_composite(tmp)
+d=ImageDraw.Draw(im); shine(d,70,98,6)
+fin(im,"food_kibble")
+# treat meal: two dog-biscuit treats, crossed
+im,d=new()
+def biscuit(cx,cy,ang,col):
+    tmp=Image.new("RGBA",(W,W),(0,0,0,0)); t=ImageDraw.Draw(tmp)
+    t.rounded_rectangle(P(cx-46,cy-16,cx+46,cy+16),radius=14*S,fill=col,outline=OL,width=LW)
+    for sx in (-1,1):
+        t.ellipse(P(cx+sx*46-16,cy-20,cx+sx*46+16,cy-4),fill=col,outline=OL,width=5*S)
+        t.ellipse(P(cx+sx*46-16,cy+4,cx+sx*46+16,cy+20),fill=col,outline=OL,width=5*S)
+    tmp=tmp.rotate(ang,resample=Image.BICUBIC,center=(cx*S,cy*S)); return tmp
+im.alpha_composite(biscuit(92,110,28,(224,176,120,255)))
+im.alpha_composite(biscuit(108,132,-22,(240,196,142,255)))
+fin(im,"food_treat")
+# fancy meal: a plate with a gourmet heart-shaped cut + a sparkle garnish
+im,d=new()
+circ(d,96,112,74,(255,255,255,255),ol=OL,w=LW)
+circ(d,96,112,60,(238,238,236,255),ol=(205,205,200,255),w=4*S)
+poly(d,heart_pts(96,112,2.4),(224,96,110,255))
+shine(d,80,96,7)
+poly(d,star_pts(146,62,16,0.45,4),(255,214,64,255),w=4*S)
+poly(d,star_pts(54,146,11,0.45,4),(255,214,64,255),w=3*S)
+fin(im,"food_fancy")
+
 print(len(os.listdir(OUT)),"icons")
 # contact sheet
 fs=sorted(os.listdir(OUT)); cols=10; rows=(len(fs)+cols-1)//cols

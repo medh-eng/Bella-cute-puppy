@@ -60,11 +60,20 @@ namespace Bella.States
                 anim.PlayOnce("Sneeze", () => anim.Play("Idle", 0.25f));
                 return;
             }
-            if (needs.IsEnergyLow || needs.IsHungerCritical)
+            if (needs.IsEnergyLow)
             {
+                if (Random.value < 0.5f) AudioManager.Voice("yawn_sleepy");
                 anim.Play("Sit", 0.4f);
                 return;
             }
+            if (needs.IsHungerCritical)
+            {
+                if (Random.value < 0.5f) AudioManager.Voice("whimper_hungry");
+                anim.Play("Sit", 0.4f);
+                return;
+            }
+            if (needs.IsHappinessLow && !needs.IsUnwell && Random.value < 0.4f)
+                AudioManager.Voice("whine_sad");
             float r = Random.value;
             if (r < 0.35f) anim.Play("Sit", 0.4f);
             else if (r < 0.55f && needs.Mood01 > 0.6f) anim.Play("PlayBow", 0.35f);
