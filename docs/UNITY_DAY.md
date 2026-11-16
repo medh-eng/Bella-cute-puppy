@@ -14,7 +14,8 @@ with the words in the box at the bottom of this page.
 - [x] App id (`com.medhaneeka.bella`) and contact email — settled 16 Nov 2026.
 - [ ] Create the Google Play developer account (play.google.com/console, one-time US$25). Identity
       verification can take several days, so start early.
-- [x] GitHub Pages is on; the privacy policy is live.
+- [x] Privacy policy is live on Hostinger at `games.medhaneekahealthcare.in/privacy.html` (not
+      GitHub Pages — see `docs/WEBSITE.md`).
 - [ ] Optional: ask 5–6 families with Android phones to try the test build (an organisation Play
       account does not need the 12-tester closed test).
 

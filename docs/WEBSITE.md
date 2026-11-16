@@ -1,51 +1,51 @@
 # Website — Medhaneeka Games
 
-The games site lives in this repository's `docs/` folder and is served free by GitHub Pages.
-Nothing has to be uploaded anywhere: a push to `main` updates the live site within a minute or two.
+The site's source lives in this repository, in `docs/` (`index.html`, `bella.html`,
+`privacy.html`, `assets/`). It's plain HTML — no build step, no trackers, no outside fonts or
+scripts.
 
-| Page | File | Address today |
-|---|---|---|
-| Games hub (Bella, Corebound, Indistock, Vyuha) | `docs/index.html` | `https://medh-eng.github.io/Bella-cute-puppy/` |
-| Bella's own page | `docs/bella.html` | `https://medh-eng.github.io/Bella-cute-puppy/bella.html` |
-| Bella privacy policy (the address Play Console needs) | `docs/privacy.html` | `https://medh-eng.github.io/Bella-cute-puppy/privacy.html` |
+**Hosting: Hostinger**, on Pon's existing hosting plan, at `games.medhaneekahealthcare.in`. This
+was chosen over GitHub Pages because GitHub Pages' free tier requires the repository to stay
+public — Hostinger hosting keeps working once the repo is made private again.
 
-Images are in `docs/assets/`. The pages use no trackers, no cookies, no outside fonts or scripts.
-All links between pages are relative, so the site works at any address.
+## Setting up the subdomain (hPanel, from a phone)
 
-## Giving it its own subdomain: `games.medhaneekahealthcare.in`
+1. **hPanel → Domains → Subdomains** → create `games` under `medhaneekahealthcare.in`. Hostinger
+   creates the subdomain and a document-root folder for it (often
+   `public_html/games.medhaneekahealthcare.in` or similar — hPanel shows the exact path).
+2. **hPanel → Files → File Manager** → open that new folder → **Upload** → upload the zip Claude
+   provided (`games-medhaneekahealthcare-in.zip`) → **Extract** it there, so `index.html` sits
+   directly in the folder (not inside a subfolder).
+3. **hPanel → SSL** → make sure the subdomain has SSL (Hostinger issues one free per subdomain,
+   usually automatic within a few minutes).
+4. Visit `https://games.medhaneekahealthcare.in/` and `https://games.medhaneekahealthcare.in/privacy.html`
+   to confirm both load over HTTPS.
 
-Two steps, both from a phone. Do them in this order.
+## Keeping it updated
 
-**1. At the place where the domain's DNS is managed** (the registrar or hosting panel for
-`medhaneekahealthcare.in` → "DNS" / "Zone editor" → Add record):
+When Claude changes the site, it updates `docs/` in this repo and gives Pon a fresh zip of
+`index.html`, `bella.html`, `privacy.html` and `assets/` to upload the same way (step 2 above) —
+overwrite the existing files in File Manager, or delete the old ones first and re-extract.
 
-| Type | Name / Host | Value / Points to | TTL |
-|---|---|---|---|
-| CNAME | `games` | `medh-eng.github.io` | default |
+Nothing about this depends on the GitHub repo's visibility, so the repo can be made private at
+any point without the site going down.
 
-**2. On GitHub:** repository → **Settings → Pages → Custom domain** → type
-`games.medhaneekahealthcare.in` → **Save**. Wait for the DNS check to turn green (minutes to a few
-hours), then tick **Enforce HTTPS**.
+## Use the subdomain everywhere
 
-GitHub adds a file called `docs/CNAME` by itself — leave it alone. Do **not** create that file
-before the DNS record exists, or the site goes offline until it does.
-
-Afterwards the old `medh-eng.github.io/Bella-cute-puppy/...` addresses forward to the new ones
-automatically, so the privacy link already given to Google keeps working.
-
-## After the subdomain is live — changes on the main company site
-
-On `medhaneekahealthcare.in` (the uploaded theme):
-- Point the **Games ↗** menu item and the **Explore games** button to `https://games.medhaneekahealthcare.in/`
-- Remove the `/games/` page, or replace it with a redirect, so there is one games page, not two
+- **Play Console → privacy policy:** `https://games.medhaneekahealthcare.in/privacy.html`
+- **Play Console → store listing → website:** `https://games.medhaneekahealthcare.in/bella.html`
+- **Company site (medhaneekahealthcare.in):** point the **Games ↗** menu item and the
+  **Explore games** button to `https://games.medhaneekahealthcare.in/`, and remove the old
+  `/games/` page so there's one games page, not two.
 
 ## When a game launches
 
-In `docs/index.html`, swap that game's `Coming soon` pill for a link to its Google Play page.
-For Bella, also change the "Coming soon to Google Play" badge in `docs/bella.html` into a link:
+In `docs/index.html`, swap that game's `Coming soon` pill for a link to its Google Play page, then
+re-zip and re-upload. For Bella, also turn the "Coming soon to Google Play" badge in
+`docs/bella.html` into a link:
 `https://play.google.com/store/apps/details?id=com.medhaneeka.bella`
 
 ## Later, if the studio grows
 
-The hub can move to its own repository (for example `medh-eng/games-site`) and take the subdomain
-with it; Bella's pages would move along. Nothing about today's setup blocks that.
+The site can move to its own repository and keep the same subdomain and Hostinger folder; nothing
+here is tied to the Bella repo specifically.

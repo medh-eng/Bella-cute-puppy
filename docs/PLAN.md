@@ -95,7 +95,8 @@ Legend: ✅ done and in the repo · 🖥 needs the Unity PC session · 👤 need
 - [x] Age screen deliberately dropped — child-only audience, see `store/PLAY_CONSOLE_ANSWERS.md` §5
 - [x] Safe-area handling for Android's edge-to-edge display
 - [ ] 👤 Google Play developer account (US$25) — start early, verification takes days
-- [x] 👤 Turn on GitHub Pages; put a contact email in `docs/privacy.html` (16 Nov 2026)
+- [x] 👤 Put a contact email in `docs/privacy.html`; host it at `games.medhaneekahealthcare.in`
+      on Hostinger, not GitHub Pages (16 Nov 2026, see `docs/WEBSITE.md`)
 - [ ] 🖥 Six store screenshots (menu **Bella → Take Screenshot**)
 - [ ] 🖥 Upload keystore + signed `.aab`
 

@@ -85,9 +85,10 @@ There is no remaining pre-Unity work that is required. Pon can go straight to `d
 1. ~~Decisions~~ — all settled on 16 Nov 2026 (see §4).
 2. Google Play **organisation** account for Medhaneeka Healthcare Private Limited — applied for,
    D-U-N-S number applied for. Waiting on Dun & Bradstreet, then Google's verification.
-3. ~~GitHub Pages~~ — on; repo is public. Privacy policy has its contact email.
-4. Optional: the `games.medhaneekahealthcare.in` subdomain — one DNS record + one GitHub setting,
-   steps in `docs/WEBSITE.md`.
+3. ~~Website hosting~~ — site is hosted on Pon's existing Hostinger plan at
+   `games.medhaneekahealthcare.in`, not GitHub Pages (so it survives the repo going private
+   later). GitHub Pages was turned on earlier but is no longer the live address — steps for the
+   Hostinger subdomain are in `docs/WEBSITE.md`.
 5. Testers: an organisation account does not need the 12-tester closed test. Still worth asking
    5–6 families to try the build through **Internal testing** before launch.
 
@@ -144,7 +145,7 @@ text fitting on small phones.
 | 3 | Company name inside the app | **Medhaneeka Games** (`BellaProjectSetup.ApplyPlayerSettings`) |
 | 4 | Play account type | **Organisation** — Medhaneeka Healthcare Private Limited; no 12-tester test |
 | 5 | GitHub repo public? | **Yes**, Pages is on |
-| 6 | Website | Games hub + Bella page + privacy policy in `docs/`, served by Pages; subdomain steps in `docs/WEBSITE.md` |
+| 6 | Website | Games hub + Bella page + privacy policy in `docs/`, hosted on Hostinger at `games.medhaneekahealthcare.in`; steps in `docs/WEBSITE.md` |
 
 Suggested Play **developer name** (the name shown under the game in the store): "Medhaneeka Games"
 if Play Console allows a display name different from the legal name; otherwise the legal name.
@@ -187,9 +188,14 @@ if Play Console allows a display name different from the legal name; otherwise t
 - Regenerating assets: `tools/pipeline/` (Blender 4+/5 as the `bpy` Python module, numpy, Pillow);
   source mesh `art-source/bella_raw.glb`, rigged scene `art-source/bella_rigged_animated.blend`.
   If animations are re-exported, regenerate `Pet/BellaClips.cs` from `tools/pipeline/clips.json`.
-- The website in `docs/` (index.html, bella.html, privacy.html, assets/) is live on every push to
-  `main`. Preview with headless Chrome at 400 px and 1200 px before pushing. Keep it free of
-  outside scripts, fonts and trackers — the privacy page's claims rest on that too.
+- The website source (index.html, bella.html, privacy.html, assets/) lives in `docs/` here, but is
+  **served from Pon's Hostinger hosting**, not GitHub Pages — after any change, give Pon a fresh
+  zip of those files to upload (see `docs/WEBSITE.md`). Preview with headless Chrome at 400 px and
+  1200 px before handing it over. Keep it free of outside scripts, fonts and trackers — the
+  privacy page's claims rest on that too.
+- Repo note: public for now at Pon's choice, to be made private once work is complete. Nothing
+  about the website depends on this (see `docs/WEBSITE.md`); check before relying on any `.github.io`
+  address.
 - Facts checked on 11 Nov 2026 that will age: Play requires target API 36 for new apps; closed
   test = 12 testers × 14 days for new personal accounts; Unity 6.3 LTS is supported to Dec 2027.
   Re-check before upload.

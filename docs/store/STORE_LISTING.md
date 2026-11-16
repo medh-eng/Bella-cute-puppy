@@ -85,8 +85,7 @@ Screenshot shot-list (take these six, in this order):
 - **Category:** Simulation  (alternative: Casual)
 - **Tags:** Pet, Simulation, Casual
 - **Contact email:** `med25healthcare@gmail.com` (shown publicly on the store page)
-- **Website:** `https://medh-eng.github.io/Bella-cute-puppy/bella.html`
-  (or `https://games.medhaneekahealthcare.in/bella.html` once the subdomain in `docs/WEBSITE.md` is live)
+- **Website:** `https://games.medhaneekahealthcare.in/bella.html` (hosted on Hostinger — see `docs/WEBSITE.md`)
 
 ## Search phrases this listing is written to match
 

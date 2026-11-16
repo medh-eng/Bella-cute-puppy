@@ -13,15 +13,14 @@ A privacy-policy **web address** is compulsory for apps aimed at children.
 
 The policy page is already written: `docs/privacy.html`. To give it an address:
 
-1. On GitHub: repository **Settings → Pages → Build and deployment → Source: "Deploy from a branch"**
-   → Branch **main**, folder **/docs** → Save. (The repository must be public for free GitHub Pages.)
-2. After a minute the page is live at
-   `https://medh-eng.github.io/Bella-cute-puppy/privacy.html`
-3. Paste that address into Play Console.
+The policy is hosted on Pon's own Hostinger plan at `games.medhaneekahealthcare.in`, not GitHub
+Pages — this keeps working even after the GitHub repo is made private again (set-up steps in
+`docs/WEBSITE.md`).
 
-Done on 16 Nov 2026: Pages is on and the policy carries the contact address
-`med25healthcare@gmail.com` and the publisher's name. If the `games.medhaneekahealthcare.in`
-subdomain is set up later (`docs/WEBSITE.md`), the address above keeps working — it forwards.
+Paste this address into Play Console: **`https://games.medhaneekahealthcare.in/privacy.html`**
+
+Done on 16 Nov 2026: the policy text carries the contact address `med25healthcare@gmail.com` and
+the publisher's name.
 
 ## 2. App access
 
