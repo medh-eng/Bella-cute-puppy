@@ -90,12 +90,12 @@ Legend: ✅ done and in the repo · 🖥 needs the Unity PC session · 👤 need
 
 ### Phase 6 — Compliance + store prep ✅ (documents) / 🖥👤 (accounts and screenshots)
 - [x] Parental gate, parents' area, in-game privacy summary
-- [x] Privacy policy page (`docs/privacy.html`), store listing, every Play Console answer
+- [x] Privacy policy page (`docs/privacy-bella.html`), store listing, every Play Console answer
       (`docs/store/`), feature graphic, 512 px icon, credits/provenance (`CREDITS.md`)
 - [x] Age screen deliberately dropped — child-only audience, see `store/PLAY_CONSOLE_ANSWERS.md` §5
 - [x] Safe-area handling for Android's edge-to-edge display
 - [ ] 👤 Google Play developer account (US$25) — start early, verification takes days
-- [x] 👤 Put a contact email in `docs/privacy.html`; host it at `games.medhaneekahealthcare.in`
+- [x] 👤 Put a contact email in Bella's policy (`docs/privacy-bella.html`); host it at `games.medhaneekahealthcare.in`
       on Hostinger, not GitHub Pages (16 Nov 2026, see `docs/WEBSITE.md`)
 - [ ] 🖥 Six store screenshots (menu **Bella → Take Screenshot**)
 - [ ] 🖥 Upload keystore + signed `.aab`

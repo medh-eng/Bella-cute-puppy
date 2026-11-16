@@ -52,8 +52,10 @@ unity-project/            the Unity project — open THIS folder in Unity Hub (U
   Assets/Resources/       Bella's model + faces, icons, portraits, audio
 docs/                     plan, design, architecture, art bible, Unity-day guide, handoff
 docs/store/               store listing, Play Console answers, closed-test kit, graphics
-docs/privacy.html         privacy policy page (source; hosted on Hostinger, not GitHub Pages — see docs/WEBSITE.md)
-docs/index.html           Medhaneeka Games hub page; docs/bella.html is Bella's page (see docs/WEBSITE.md)
+docs/index.html           Medhaneeka Games hub page (hosted on Hostinger — see docs/WEBSITE.md)
+docs/privacy.html         website privacy policy; docs/privacy-bella.html is Bella's own policy
+docs/held-for-launch/     Bella's full web page, kept off the public site until launch
+tools/site/               builds the website upload zip
 art-source/               raw AI mesh, concept faces, the rigged + animated .blend
 tools/pipeline/           scripts that produced the model, animations, faces, icons and audio
 tools/stubcheck/          compile-check for all scripts without Unity (needs only dotnet)

@@ -11,13 +11,13 @@ advertising, no purchases, no accounts, and requests no Android permissions.
 
 A privacy-policy **web address** is compulsory for apps aimed at children.
 
-The policy page is already written: `docs/privacy.html`. To give it an address:
+The policy page is already written: `docs/privacy-bella.html`. To give it an address:
 
 The policy is hosted on Pon's own Hostinger plan at `games.medhaneekahealthcare.in`, not GitHub
 Pages — this keeps working even after the GitHub repo is made private again (set-up steps in
 `docs/WEBSITE.md`).
 
-Paste this address into Play Console: **`https://games.medhaneekahealthcare.in/privacy.html`**
+Paste this address into Play Console: **`https://games.medhaneekahealthcare.in/privacy-bella.html`**
 
 Done on 16 Nov 2026: the policy text carries the contact address `med25healthcare@gmail.com` and
 the publisher's name.

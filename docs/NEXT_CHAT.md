@@ -150,7 +150,7 @@ text fitting on small phones.
 | # | Decision | Settled as |
 |---|---|---|
 | 1 | Android package id | **`com.medhaneeka.bella`** (`BellaProjectSetup.PackageId`) — permanent after the first Play upload |
-| 2 | Public contact email | **med25healthcare@gmail.com** (same address as the company site) — in `docs/privacy.html`, the store listing and the website |
+| 2 | Public contact email | **med25healthcare@gmail.com** (same address as the company site) — in `docs/privacy-bella.html`, the store listing and the website |
 | 3 | Company name inside the app | **Medhaneeka Games** (`BellaProjectSetup.ApplyPlayerSettings`) |
 | 4 | Play account type | **Organisation** — Medhaneeka Healthcare Private Limited; no 12-tester test |
 | 5 | GitHub repo public? | **Yes**, Pages is on |
@@ -197,7 +197,12 @@ if Play Console allows a display name different from the legal name; otherwise t
 - Regenerating assets: `tools/pipeline/` (Blender 4+/5 as the `bpy` Python module, numpy, Pillow);
   source mesh `art-source/bella_raw.glb`, rigged scene `art-source/bella_rigged_animated.blend`.
   If animations are re-exported, regenerate `Pet/BellaClips.cs` from `tools/pipeline/clips.json`.
-- The website source (index.html, bella.html, privacy.html, assets/) lives in `docs/` here, but is
+- **Website rule (Pon, 16 Nov 2026): nothing about any game is disclosed publicly before it is on
+  Google Play.** The public site shows only names, logos and "Coming soon" for five games (Bella,
+  Black Swan 2049, Corebound, Indistock, Vyuha), a general `privacy.html` and Bella's own
+  `privacy-bella.html`. Bella's full page waits in `docs/held-for-launch/`. Build the upload with
+  `python3 tools/site/make_upload.py` (single-file pages, images built in).
+- The website source (index.html, privacy.html, privacy-bella.html, assets/) lives in `docs/` here, but is
   **served from Pon's Hostinger hosting**, not GitHub Pages — after any change, give Pon a fresh
   zip of those files to upload (see `docs/WEBSITE.md`). Preview with headless Chrome at 400 px and
   1200 px before handing it over. Keep it free of outside scripts, fonts and trackers — the

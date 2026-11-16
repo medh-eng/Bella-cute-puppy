@@ -85,7 +85,7 @@ Screenshot shot-list (take these six, in this order):
 - **Category:** Simulation  (alternative: Casual)
 - **Tags:** Pet, Simulation, Casual
 - **Contact email:** `med25healthcare@gmail.com` (shown publicly on the store page)
-- **Website:** `https://games.medhaneekahealthcare.in/bella.html` (hosted on Hostinger — see `docs/WEBSITE.md`)
+- **Website:** `https://games.medhaneekahealthcare.in/` (hosted on Hostinger — see `docs/WEBSITE.md`)
 
 ## Search phrases this listing is written to match
 
