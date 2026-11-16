@@ -4,7 +4,7 @@
 *"Continue Bella — repo medh-eng/Bella-cute-puppy, read docs/NEXT_CHAT.md."*
 If the Unity session has happened, paste the report from the bottom of `docs/UNITY_DAY.md` too.
 
-Last updated: 13 Nov 2026.
+Last updated: 16 Nov 2026.
 
 ---
 
@@ -56,11 +56,14 @@ Worth a look on Unity day: how the heart-wing butterflies read in motion, ambien
 There is no remaining pre-Unity work that is required. Pon can go straight to `docs/UNITY_DAY.md`.
 
 ### B. Things only Pon can do (phone is enough)
-1. **Decisions** (see §4) — package id and contact email at minimum.
-2. Google Play developer account (US$25; verification can take days).
-3. GitHub → Settings → Pages → branch `main`, folder `/docs` (repo must be public), so
-   `docs/privacy.html` has a web address. Then replace `CONTACT-EMAIL-HERE` in that file.
-4. Collect 15–20 tester Gmail addresses (`docs/store/CLOSED_TEST_KIT.md`).
+1. ~~Decisions~~ — all settled on 16 Nov 2026 (see §4).
+2. Google Play **organisation** account for Medhaneeka Healthcare Private Limited — applied for,
+   D-U-N-S number applied for. Waiting on Dun & Bradstreet, then Google's verification.
+3. ~~GitHub Pages~~ — on; repo is public. Privacy policy has its contact email.
+4. Optional: the `games.medhaneekahealthcare.in` subdomain — one DNS record + one GitHub setting,
+   steps in `docs/WEBSITE.md`.
+5. Testers: an organisation account does not need the 12-tester closed test. Still worth asking
+   5–6 families to try the build through **Internal testing** before launch.
 
 ### C. Unity day (PC) — `docs/UNITY_DAY.md`
 Install Unity 6.3 LTS → open → Play checklist → 6 screenshots → test APK on phone → keystore → AAB.
@@ -76,7 +79,9 @@ Install Unity 6.3 LTS → open → Play checklist → 6 screenshots → test APK
 4. Put the chosen screenshots in `docs/store/screenshots/`.
 
 ### E. Then
-Closed test (14 days) → production access → launch → v1.1 (§5).
+Internal test with a few families → production review → launch → v1.1 (§5). (The 14-day closed
+test in `docs/store/CLOSED_TEST_KIT.md` only applies if the account ends up personal after all.)
+On launch day: put the Play link on the website (`docs/WEBSITE.md` → "When a game launches").
 
 ## 3. If something is wrong on first run — most likely causes first
 
@@ -104,7 +109,21 @@ FBX (the checks above used Blender's importer), accessory positions on the real 
 (`BellaModel.BuildAnchors`), how the roll-over, dance and nap read in motion, music loop points,
 text fitting on small phones.
 
-## 4. Decisions only Pon can make
+## 4. Decisions — all settled 16 Nov 2026
+
+| # | Decision | Settled as |
+|---|---|---|
+| 1 | Android package id | **`com.medhaneeka.bella`** (`BellaProjectSetup.PackageId`) — permanent after the first Play upload |
+| 2 | Public contact email | **med25healthcare@gmail.com** (same address as the company site) — in `docs/privacy.html`, the store listing and the website |
+| 3 | Company name inside the app | **Medhaneeka Games** (`BellaProjectSetup.ApplyPlayerSettings`) |
+| 4 | Play account type | **Organisation** — Medhaneeka Healthcare Private Limited; no 12-tester test |
+| 5 | GitHub repo public? | **Yes**, Pages is on |
+| 6 | Website | Games hub + Bella page + privacy policy in `docs/`, served by Pages; subdomain steps in `docs/WEBSITE.md` |
+
+Suggested Play **developer name** (the name shown under the game in the store): "Medhaneeka Games"
+if Play Console allows a display name different from the legal name; otherwise the legal name.
+
+### Original table, kept for reference
 
 | # | Decision | Current default | Why it matters |
 |---|---|---|---|
@@ -142,6 +161,9 @@ text fitting on small phones.
 - Regenerating assets: `tools/pipeline/` (Blender 4+/5 as the `bpy` Python module, numpy, Pillow);
   source mesh `art-source/bella_raw.glb`, rigged scene `art-source/bella_rigged_animated.blend`.
   If animations are re-exported, regenerate `Pet/BellaClips.cs` from `tools/pipeline/clips.json`.
+- The website in `docs/` (index.html, bella.html, privacy.html, assets/) is live on every push to
+  `main`. Preview with headless Chrome at 400 px and 1200 px before pushing. Keep it free of
+  outside scripts, fonts and trackers — the privacy page's claims rest on that too.
 - Facts checked on 11 Nov 2026 that will age: Play requires target API 36 for new apps; closed
   test = 12 testers × 14 days for new personal accounts; Unity 6.3 LTS is supported to Dec 2027.
   Re-check before upload.

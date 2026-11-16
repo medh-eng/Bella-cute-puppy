@@ -19,7 +19,9 @@ The policy page is already written: `docs/privacy.html`. To give it an address:
    `https://medh-eng.github.io/Bella-cute-puppy/privacy.html`
 3. Paste that address into Play Console.
 
-Before publishing, open `docs/privacy.html` and replace **CONTACT-EMAIL-HERE** with a real address.
+Done on 16 Nov 2026: Pages is on and the policy carries the contact address
+`med25healthcare@gmail.com` and the publisher's name. If the `games.medhaneekahealthcare.in`
+subdomain is set up later (`docs/WEBSITE.md`), the address above keeps working — it forwards.
 
 ## 2. App access
 

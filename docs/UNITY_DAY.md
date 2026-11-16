@@ -11,11 +11,12 @@ with the words in the box at the bottom of this page.
 
 ## Before the day (can be done from the phone)
 
-- [ ] Decide the two open choices in `docs/NEXT_CHAT.md` → "Decisions only Pon can make" (app id, contact email).
+- [x] App id (`com.medhaneeka.bella`) and contact email — settled 16 Nov 2026.
 - [ ] Create the Google Play developer account (play.google.com/console, one-time US$25). Identity
       verification can take several days, so start early.
-- [ ] Turn on GitHub Pages for the privacy policy (`docs/store/PLAY_CONSOLE_ANSWERS.md` step 1).
-- [ ] Start collecting 15–20 testers' Gmail addresses (`docs/store/CLOSED_TEST_KIT.md`).
+- [x] GitHub Pages is on; the privacy policy is live.
+- [ ] Optional: ask 5–6 families with Android phones to try the test build (an organisation Play
+      account does not need the 12-tester closed test).
 
 ## Step 1 — Install Unity (≈ 45–60 min, mostly download)
 

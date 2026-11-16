@@ -27,7 +27,7 @@ namespace Bella.EditorTools
     {
         public const string ScenePath = "Assets/Scenes/Main.unity";
         public const string MaterialsDir = "Assets/Resources/Materials";
-        public const string PackageId = "com.bellacutepuppy.game";   // CHANGE before the first Play upload if you want another id
+        public const string PackageId = "com.medhaneeka.bella";   // decided 16 Nov 2026 — permanent after the first Play upload
         private const string DoneKey = "Bella.SetupDone.v4";
 
         static BellaProjectSetup()
@@ -165,7 +165,7 @@ namespace Bella.EditorTools
 
         private static void ApplyPlayerSettings()
         {
-            PlayerSettings.companyName = "Bella Puppy Games";
+            PlayerSettings.companyName = "Medhaneeka Games";
             PlayerSettings.productName = "Bella the Cute Puppy";
             if (string.IsNullOrEmpty(PlayerSettings.bundleVersion) || PlayerSettings.bundleVersion == "0.1" || PlayerSettings.bundleVersion == "1.0")
                 PlayerSettings.bundleVersion = "1.0.0";

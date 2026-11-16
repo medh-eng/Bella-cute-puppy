@@ -95,7 +95,7 @@ Legend: ✅ done and in the repo · 🖥 needs the Unity PC session · 👤 need
 - [x] Age screen deliberately dropped — child-only audience, see `store/PLAY_CONSOLE_ANSWERS.md` §5
 - [x] Safe-area handling for Android's edge-to-edge display
 - [ ] 👤 Google Play developer account (US$25) — start early, verification takes days
-- [ ] 👤 Turn on GitHub Pages; put a contact email in `docs/privacy.html`
+- [x] 👤 Turn on GitHub Pages; put a contact email in `docs/privacy.html` (16 Nov 2026)
 - [ ] 🖥 Six store screenshots (menu **Bella → Take Screenshot**)
 - [ ] 🖥 Upload keystore + signed `.aab`
 
@@ -153,8 +153,12 @@ Unchanged in spirit: **Sonnet** for all spec'd production work (scripts, docs, d
 | Faces | Texture-swap, not blendshapes | 2026-11-11 |
 | v1 monetization | None (no ads, no IAP) | carried over |
 
+Decisions 2–4 below were settled on 16 Nov 2026: package id **`com.medhaneeka.bella`**, contact
+email **med25healthcare@gmail.com**, **organisation** Play account (Medhaneeka Healthcare Private
+Limited, D-U-N-S applied for). See `docs/NEXT_CHAT.md` §4.
+
 Open decisions for Pon (answer anytime):
 1. ~~Bella's signature trait~~ — settled by the generated art: teal collar with a gold paw tag.
-3. Android package id — currently `com.bellacutepuppy.game`. It can never be changed after the first upload.
-4. Public contact email for the store page and privacy policy.
+3. ~~Android package id~~ — `com.medhaneeka.bella`. It can never be changed after the first upload.
+4. ~~Public contact email~~ — med25healthcare@gmail.com.
 2. Google Play account: personal ($25, needs the 12-tester test) — or do you have a registered business entity to use an organization account (exempt from the tester requirement)? The clinic's registration might qualify; worth checking.

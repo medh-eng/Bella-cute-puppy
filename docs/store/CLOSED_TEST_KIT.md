@@ -1,5 +1,10 @@
 # Closed-test kit — the 12 testers × 14 days step
 
+> **16 Nov 2026: probably not needed.** Pon is registering an **organisation** account (Medhaneeka
+> Healthcare Private Limited), which is exempt from this step. Keep this file in case the account
+> ends up personal. The tester messages and feedback questions below are still handy for a small
+> voluntary test through Internal testing.
+
 Google requires a **personal** developer account (created after 13 Nov 2023) to run a closed test
 with **at least 12 testers opted in for 14 days in a row** before it may apply for production.
 Since 2026 Google also looks at whether testers really *used* the app. An organisation account

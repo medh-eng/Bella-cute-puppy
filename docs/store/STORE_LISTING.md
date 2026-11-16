@@ -84,8 +84,9 @@ Screenshot shot-list (take these six, in this order):
 - **App or game:** Game
 - **Category:** Simulation  (alternative: Casual)
 - **Tags:** Pet, Simulation, Casual
-- **Contact email:** *(Pon to choose — this address is shown publicly on the store page)*
-- **Website:** optional — the GitHub Pages address from `docs/store/PLAY_CONSOLE_ANSWERS.md` works
+- **Contact email:** `med25healthcare@gmail.com` (shown publicly on the store page)
+- **Website:** `https://medh-eng.github.io/Bella-cute-puppy/bella.html`
+  (or `https://games.medhaneekahealthcare.in/bella.html` once the subdomain in `docs/WEBSITE.md` is live)
 
 ## Search phrases this listing is written to match
 
