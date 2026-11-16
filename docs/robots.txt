@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://games.medhaneekahealthcare.in/sitemap.xml
