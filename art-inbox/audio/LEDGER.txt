@@ -1,1 +1,21 @@
-# file name | Pixabay title | artist | page URL | date downloaded
+# file name | what it is | where it came from | date added (a Pixabay file: add its page title, artist and URL here)
+music_fest_lights.ogg | original upload: music_fest_lights.mp3 sha256:e7e20a695b84 | supplied by Pon; origin and licence to be confirmed before release | 2026-11-17
+music_fest_colours.ogg | original upload: music_fest_colours.mp3 sha256:12b2a2beed23 | supplied by Pon; origin and licence to be confirmed before release | 2026-11-17
+music_title.ogg | original upload: music_title.mp3 sha256:a6248d59fb87 | supplied by Pon; origin and licence to be confirmed before release | 2026-11-17
+music_night.ogg | original upload: music_night.mp3 sha256:188b38edfc0b | supplied by Pon; origin and licence to be confirmed before release | 2026-11-17
+music_morning.ogg | original upload: music_morning.mp3 sha256:ed0e4412b348 | supplied by Pon; origin and licence to be confirmed before release | 2026-11-17
+music_stage.ogg | original upload: music_stage.mp3 sha256:ff573d57294d | supplied by Pon; origin and licence to be confirmed before release | 2026-11-17
+music_fest_winter.ogg | original upload: music_fest_winter.mp3 sha256:e429c49332bf | supplied by Pon; origin and licence to be confirmed before release | 2026-11-17
+music_garden.ogg | original upload: music_garden.mp3 sha256:765e38c827bf | supplied by Pon; origin and licence to be confirmed before release | 2026-11-17
+music_fest_party.ogg | original upload: music_fest_party.mp3 sha256:8613ddee4ea2 | supplied by Pon; origin and licence to be confirmed before release | 2026-11-17
+music_play.ogg | original upload: music_play.mp3 sha256:bd9153d56a3c | supplied by Pon; origin and licence to be confirmed before release | 2026-11-17
+music_evening.ogg | original upload: music_evening.mp3 sha256:e5c2167e8d11 | supplied by Pon; origin and licence to be confirmed before release | 2026-11-17
+music_bath.ogg | original upload: music_bath.mp3 sha256:740bb4d6c2f6 | supplied by Pon; origin and licence to be confirmed before release | 2026-11-17
+bark_2.wav | original upload: bark_2.mp3 sha256:ca9913fd1b15 | supplied by Pon; origin and licence to be confirmed before release | 2026-11-17
+music_shop.ogg | original upload: music_shop.mp3 sha256:6bffdf30111a | supplied by Pon; origin and licence to be confirmed before release | 2026-11-17
+yip_1.wav | original upload: yip_1.mp3 sha256:cbc3a62b3cff | supplied by Pon; origin and licence to be confirmed before release | 2026-11-17
+whine_sad_1.wav | original upload: whine_sad.mp3 sha256:03ba6d96313f | supplied by Pon; origin and licence to be confirmed before release | 2026-11-17
+whine_sad_2.wav | original upload: whine_sad.mp3 sha256:03ba6d96313f | supplied by Pon; origin and licence to be confirmed before release | 2026-11-17
+whine_sad_3.wav | original upload: whine_sad.mp3 sha256:03ba6d96313f | supplied by Pon; origin and licence to be confirmed before release | 2026-11-17
+whine_sad_4.wav | original upload: whine_sad.mp3 sha256:03ba6d96313f | supplied by Pon; origin and licence to be confirmed before release | 2026-11-17
+music_day.ogg | original upload: music_day.mp3 sha256:c37897d74498 | supplied by Pon; origin and licence to be confirmed before release | 2026-11-17

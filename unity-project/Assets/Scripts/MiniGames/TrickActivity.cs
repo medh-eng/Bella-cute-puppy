@@ -26,6 +26,8 @@ namespace Bella.MiniGames
         private float trailFade;
         private Image hintIcon;
 
+        protected override string Tune { get { return "music_stage"; } }
+
         protected override void OnBegin()
         {
             // trick cards: gesture picture + three stars

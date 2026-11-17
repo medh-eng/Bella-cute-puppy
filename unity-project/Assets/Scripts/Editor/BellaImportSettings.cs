@@ -8,11 +8,11 @@ namespace Bella.EditorTools
     /// imports them — so nobody ever has to click through an Inspector:
     ///   Icons / Portraits : crisp UI pictures (no mip-maps, no resizing, clean transparent edges)
     ///   Bella's model     : generic skeleton with its bones kept as objects, no extra materials
-    ///   Audio             : music is compressed, short sounds stay instant
+    ///   Audio             : music is compressed stereo, short sounds stay instant and mono
     /// </summary>
     public class BellaImportSettings : AssetPostprocessor
     {
-        public override uint GetVersion() { return 2; }
+        public override uint GetVersion() { return 3; }
 
         private void OnPreprocessTexture()
         {
@@ -64,7 +64,7 @@ namespace Bella.EditorTools
             s.compressionFormat = music ? AudioCompressionFormat.Vorbis : AudioCompressionFormat.ADPCM;
             s.quality = 0.6f;
             ai.defaultSampleSettings = s;
-            ai.forceToMono = true;
+            ai.forceToMono = !assetPath.Contains("/music_");   // music keeps its stereo; sounds and ambience are mono
         }
     }
 }

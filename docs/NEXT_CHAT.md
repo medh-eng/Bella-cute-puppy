@@ -85,6 +85,19 @@ Pictures of what to expect are in `docs/preview/`.
 
 Worth a look on Unity day: how the heart-wing butterflies read in motion, ambience volume balance (`AudioManager.ambienceTarget = 0.16`), bunting/shelf placement on the real camera.
 
+**Update, 17 Nov 2026 — first audio batch absorbed.** Pon supplied 14 music tracks and 3 puppy sounds
+(`art-inbox/audio/REPORT.md` has the numbers). `tools/pipeline/ingest_audio.py` turns uploads into game
+files: music → seamless looping stereo OGG at the old tracks' loudness, sounds → trimmed mono WAV, names
+ending `_1`, `_2` = random variants. The five period/play tracks replaced their synthesised `.wav`s;
+`bark_2`, `yip_1`, `whine_sad_1…4` replaced `bark`, `yip`, `whine_sad` (variant support and a gentler
+pitch wobble for real recordings are in `Core/AudioManager.cs`). Mini-games now pick their own tune
+(`Activity.Tune`: bath → `music_bath`, wardrobe and feeding → `music_shop`, tricks → `music_stage`, rest →
+`music_play`). **Not wired yet, waiting on features:** `music_title` (title screen), `music_garden`
+(garden place), `music_fest_*` (Seasons). **Open:** the source/licence of every supplied file is not recorded
+(ledger and `CREDITS.md` say so) — ask Pon before release. **Not compiled:** no .NET SDK in that session, so
+`tools/stubcheck/check.sh` still has to be run; and every loop needs one listen in Unity (flagged ones in the
+report first). More audio is coming — re-run the script with `--src <folder>`.
+
 ## 2. What is left, in order
 
 ### A. Nothing blocks Unity day

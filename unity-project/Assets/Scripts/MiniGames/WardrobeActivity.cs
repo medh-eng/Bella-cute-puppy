@@ -25,6 +25,8 @@ namespace Bella.MiniGames
         private bool turning;
         private float yaw = 180f;
 
+        protected override string Tune { get { return "music_shop"; } }
+
         protected override void OnBegin()
         {
             // treats, top right

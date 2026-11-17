@@ -27,6 +27,8 @@ namespace Bella.MiniGames
         private bool wasNeeded;
         private Material soapMaterial;
 
+        protected override string Tune { get { return "music_bath"; } }
+
         protected override void OnBegin()
         {
             wasNeeded = Bella.Needs.Hygiene < 75f;

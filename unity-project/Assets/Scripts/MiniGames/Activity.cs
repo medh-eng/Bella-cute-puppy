@@ -38,9 +38,12 @@ namespace Bella.MiniGames
 
             AudioManager.Play("whoosh");
             if (G.DayNight != null) G.DayNight.SetMusicOverride(true);
-            if (G.Audio != null) G.Audio.SetMusic("music_play");
+            if (G.Audio != null) G.Audio.SetMusic(G.Audio.Has(Tune) ? Tune : "music_play");
             OnBegin();
         }
+
+        /// <summary>Music clip this mini-game plays; falls back to music_play when the clip is missing.</summary>
+        protected virtual string Tune { get { return "music_play"; } }
 
         protected abstract void OnBegin();
         protected virtual void OnEnd() { }

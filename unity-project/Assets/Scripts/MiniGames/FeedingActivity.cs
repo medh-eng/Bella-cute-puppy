@@ -22,6 +22,8 @@ namespace Bella.MiniGames
         private GameObject treatsPill;
         private bool feeding;
 
+        protected override string Tune { get { return "music_shop"; } }
+
         protected override void OnBegin()
         {
             Image pill = UIKit.Panel("Treats", UI, new Color(1f, 1f, 1f, 0.92f), false);

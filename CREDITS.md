@@ -1,7 +1,7 @@
 # Credits and asset provenance
 
 A paper trail for Google Play review: where every asset in the shipped game came from.
-Nothing in the build is taken from another game, a stock library or a third-party sound pack.
+Nothing in the build is taken from another game. The supplied audio listed below is the exception: its source must be confirmed and recorded before release.
 
 | Asset | Files | How it was made | Licence position |
 |---|---|---|---|
@@ -12,6 +12,7 @@ Nothing in the build is taken from another game, a stock library or a third-part
 | Portraits and app icon | `Assets/Resources/Portraits/` | Cropped from the project's own expression sheet, background cut out by script | Original work |
 | UI icons (54) | `Assets/Resources/Icons/` | Drawn by script — `tools/pipeline/gen_icons.py` | Original work |
 | Sound effects and both music loops | `Assets/Resources/Audio/` | Synthesised by script — `tools/pipeline/gen_audio.py` (no samples used) | Original work |
+| Supplied music (14 tracks) and puppy sounds (`bark_2`, `yip_1`, `whine_sad_1…4`) | `Assets/Resources/Audio/` | Supplied by Pon on 17 Nov 2026, prepared by `tools/pipeline/ingest_audio.py` (loop cross-fade, loudness match). Each file's upload name and checksum are in `art-inbox/audio/LEDGER.txt` | **Source and licence still to be recorded before release** — add the site/tool and licence terms to the ledger and this row |
 | Room, furniture, accessories, particles | — | Built from primitives in code at run time | Original work |
 | Store feature graphic | `docs/store/feature_graphic_1024x500.png` | Composed from the project's own portrait and icons | Original work |
 | Font | — | Unity's built-in runtime font (`LegacyRuntime.ttf`) | Ships with the Unity engine |
