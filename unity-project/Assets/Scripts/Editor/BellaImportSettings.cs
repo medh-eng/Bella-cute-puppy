@@ -12,7 +12,7 @@ namespace Bella.EditorTools
     /// </summary>
     public class BellaImportSettings : AssetPostprocessor
     {
-        public override uint GetVersion() { return 3; }
+        public override uint GetVersion() { return 4; }
 
         private void OnPreprocessTexture()
         {
@@ -29,6 +29,17 @@ namespace Bella.EditorTools
                 ti.wrapMode = TextureWrapMode.Clamp;
                 ti.filterMode = FilterMode.Bilinear;
                 ti.maxTextureSize = 1024;
+            }
+            else if (assetPath.Contains("/UI/") || assetPath.Contains("/Story/") || assetPath.Contains("/Stickers/"))
+            {
+                // generated interface art: crisp, clamped, no mip-maps; big pictures may stay larger
+                ti.textureType = TextureImporterType.Default;
+                ti.npotScale = TextureImporterNPOTScale.None;
+                ti.mipmapEnabled = false;
+                ti.alphaIsTransparency = true;
+                ti.wrapMode = TextureWrapMode.Clamp;
+                ti.filterMode = FilterMode.Bilinear;
+                ti.maxTextureSize = (assetPath.Contains("title_bg") || assetPath.Contains("/Story/")) ? 2048 : 1024;
             }
             else if (assetPath.Contains("/Bella/"))
             {
