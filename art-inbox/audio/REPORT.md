@@ -24,3 +24,38 @@ whine_sad_3           1.54s  gain -3.0 dB  peak -4.3 dBFS  132 KB
 whine_sad_4           2.59s  gain +11.8 dB  peak -5.1 dBFS  223 KB
 music_day             155.0s -> loop  139.8s (start 0.0, cut 142.3) match 0.66 seam -4.8 dB  gain -7.8 dB (was -10.7 LUFS)  2063 KB
 ```
+
+## Batch 2 — 17 Nov 2026 (11 uploads → sounds)
+
+```
+sniff_1               0.79s  gain +22.0 dB  peak -4.6 dBFS  68 KB
+sniff_2               0.72s  gain +16.1 dB  peak -7.0 dBFS  62 KB
+sniff_3               0.96s  gain +19.3 dB  peak -5.2 dBFS  82 KB
+munch_1               3.33s  gain +5.3 dB  peak -2.0 dBFS  286 KB
+munch_2               1.07s  gain +7.4 dB  peak -2.0 dBFS  92 KB
+munch_3               1.21s  gain +12.6 dB  peak -2.0 dBFS  104 KB
+munch_4               2.36s  gain +5.0 dB  peak -2.0 dBFS  203 KB
+  removed superseded synthesised munch.wav (reproducible with gen_audio.py)
+yawn_sleepy           2.50s  gain -0.1 dB  peak -2.0 dBFS  215 KB
+bark_happy_1          2.86s  gain +1.8 dB  peak -2.0 dBFS  246 KB
+  removed superseded synthesised bark_happy.wav (reproducible with gen_audio.py)
+bark_1                1.01s  gain -2.3 dB  peak -5.0 dBFS  86 KB
+bark_3                1.15s  gain +0.3 dB  peak -4.9 dBFS  98 KB
+lap                   1.53s  gain -2.4 dB  peak -2.0 dBFS  131 KB
+bark_happy_2          2.16s  gain +1.6 dB  peak -2.0 dBFS  186 KB
+bark_happy_3          2.55s  gain +4.9 dB  peak -2.0 dBFS  219 KB
+bark_happy_4          2.17s  gain +3.9 dB  peak -2.0 dBFS  186 KB
+bark_happy_5          2.28s  gain +1.5 dB  peak -2.0 dBFS  196 KB
+pant                  4.26s  gain +14.6 dB  peak -2.0 dBFS  366 KB
+whimper_hungry_1      1.49s  gain +8.5 dB  peak -7.0 dBFS  128 KB
+whimper_hungry_2      1.12s  gain +11.0 dB  peak -2.0 dBFS  96 KB
+whimper_hungry_3      1.40s  gain +9.2 dB  peak -3.3 dBFS  120 KB
+  removed superseded synthesised whimper_hungry.wav (reproducible with gen_audio.py)
+snore_1               1.42s  gain +2.7 dB  peak -2.0 dBFS  122 KB
+snore_2               1.35s  gain +4.5 dB  peak -2.0 dBFS  116 KB
+snore_3               1.36s  gain -4.3 dB  peak -2.0 dBFS  117 KB
+snore_4               3.08s  gain -2.5 dB  peak -2.0 dBFS  265 KB
+snore_5               1.37s  gain +5.4 dB  peak -2.0 dBFS  118 KB
+snore_6               3.39s  gain -1.4 dB  peak -2.0 dBFS  292 KB
+  removed superseded synthesised snore.wav (reproducible with gen_audio.py)
+```

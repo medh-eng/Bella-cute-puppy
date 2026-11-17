@@ -29,7 +29,21 @@ MUSIC_DEFAULT = -18.5
 AMB_TARGET = -22.0
 VOICE_TARGET = -16.0          # LUFS for sounds, with the peak ceiling below
 SFX_PEAK_DB = -2.0
-SPLIT = {"whine_sad"}         # recordings that hold several separate whines -> variants
+# Long recordings that hold many sounds in a row are cut into separate clips (variants).
+#   kind "events": cut at the pauses; "chunks": continuous sound, cut at its quietest points.
+#   keep = how many clips to keep, min/max = clip length in seconds, rel = drop clips this many dB
+#   quieter than the loudest. Anything not listed is simply trimmed and kept whole.
+RULES = {
+    "whine_sad":      dict(kind="events", thr=-42, gap=0.12, min=0.5, max=3.0, keep=6, rel=-18),
+    "snore":          dict(kind="events", thr=-42, gap=0.12, min=1.2, max=3.6, keep=6, rel=-14),
+    "munch":          dict(kind="events", thr=-42, gap=0.12, min=0.8, max=3.6, keep=4, rel=-12),
+    "whimper_hungry": dict(kind="events", thr=-42, gap=0.12, min=0.7, max=2.0, keep=3, rel=-12),
+    "sniff":          dict(kind="events", thr=-42, gap=0.12, min=0.6, max=1.5, keep=3, rel=-12),
+    "yawn_sleepy":    dict(kind="events", thr=-38, gap=0.25, min=1.0, max=3.5, keep=1, rel=-12),
+    "pant":           dict(kind="events", thr=-38, gap=0.25, min=2.0, max=6.0, keep=1, rel=-12),
+    "lap":            dict(kind="chunks", target=2.2, max=3.2, keep=2, rel=-12),
+    "bark_happy_2":   dict(kind="chunks", target=1.8, max=2.6, keep=4, rel=-12),
+}
 
 
 def run(cmd, data=None):
@@ -174,6 +188,42 @@ def split_events(x, thr_db=-42.0, min_len=0.5, merge_gap=0.12):
     return out
 
 
+def split_chunks(x, target, max_len, rel_db=-12.0):
+    """Cut continuous sound into pieces of about `target` s, each cut at the quietest point nearby."""
+    mono = np.abs(x).max(axis=1)
+    fr = SR // 100
+    nf = len(mono) // fr
+    env = mono[:nf * fr].reshape(nf, fr).max(axis=1)
+    env = np.convolve(env, np.ones(5) / 5, mode="same")
+    cuts, start = [0], 0
+    while True:
+        lo, hi = start + int(target * 0.6 * 100), start + int(max_len * 100)
+        if hi >= nf:
+            cuts.append(nf)
+            break
+        cut = lo + int(np.argmin(env[lo:hi]))
+        cuts.append(cut)
+        start = cut
+    pieces = [x[a * fr:b * fr] for a, b in zip(cuts[:-1], cuts[1:]) if b - a > int(0.4 * 100)]
+    if len(pieces) > 2:
+        pieces = pieces[1:-1]             # the first and last pieces are usually ramps in and out
+    return pieces
+
+
+def pick(pieces, rule):
+    """Apply the rule's length and level limits, then keep the best few in their original order."""
+    lo, hi = rule.get("min", 0.0), rule["max"]
+    cand = [p for p in pieces if lo <= len(p) / SR <= hi + 0.4]
+    if not cand:
+        cand = pieces
+    top = max(float(np.max(np.abs(p))) for p in cand)
+    cand = [p for p in cand if float(np.max(np.abs(p))) >= top * 10 ** (rule["rel"] / 20)]
+    if len(cand) > rule["keep"]:
+        order = sorted(range(len(cand)), key=lambda i: -float(np.max(np.abs(cand[i]))))[:rule["keep"]]
+        cand = [cand[i] for i in sorted(order)]
+    return cand
+
+
 def write_wav(path, x):
     mono = x.mean(axis=1)
     pcm = (np.clip(mono, -1, 1) * 32767).astype("<i2")
@@ -202,6 +252,8 @@ def main():
     ledger = open(a.ledger).read() if os.path.exists(a.ledger) else ""
     new_ledger = []
     report = []
+    reserved = {re.sub(r"^[0-9a-f]{8}-", "", os.path.splitext(f)[0]) for f in files}
+    used = set()
     for f in files:
         stem = re.sub(r"^[0-9a-f]{8}-", "", os.path.splitext(f)[0])
         path = os.path.join(a.src, f)
@@ -226,11 +278,30 @@ def main():
                           f"match {info['match']:.2f} seam {info['seam_vs_median_db']:+.1f} dB  gain {g:+.1f} dB (was {L} LUFS)"
                           f"  {os.path.getsize(dst)//1024} KB{flag}")
         else:
-            pieces = split_events(x) if stem in SPLIT else [trim(x)]
-            if stem in SPLIT and pieces:        # drop faint background bits that would only be noise once levelled
-                top = max(float(np.max(np.abs(p))) for p in pieces)
-                pieces = [p for p in pieces if float(np.max(np.abs(p))) >= top * 10 ** (-18 / 20)]
-            names = [f"{stem}_{i + 1}" for i in range(len(pieces))] if stem in SPLIT else [stem]
+            rule = RULES.get(stem)
+            if rule is None:
+                pieces = [trim(x)]
+                names = [stem]
+            else:
+                if rule["kind"] == "events":
+                    pieces = split_events(x, rule["thr"], min(rule["min"], 0.5), rule["gap"])
+                else:
+                    pieces = split_chunks(x, rule["target"], rule["max"])
+                pieces = pick(pieces, rule) if pieces else [trim(x)]
+                base = re.sub(r"_\d+$", "", stem)
+                if len(pieces) == 1:
+                    names = [stem]
+                elif stem != base:                  # numbered upload: first piece keeps the number, the rest get free ones
+                    names = [stem]
+                    n = int(stem.rsplit("_", 1)[1])
+                    while len(names) < len(pieces):
+                        n += 1
+                        nm = f"{base}_{n}"
+                        if nm not in reserved and nm not in used:
+                            names.append(nm)
+                else:
+                    names = [f"{stem}_{i + 1}" for i in range(len(pieces))]
+            used.update(names)
             for nm, p in zip(names, pieces):
                 p = fade(p)
                 y, (L, g) = gain_for(p, VOICE_TARGET)
@@ -241,7 +312,7 @@ def main():
             # a recording or variants supersede the synthesised sound of the base name
             base = re.sub(r"_\d+$", "", stem)
             old = os.path.join(a.out, base + ".wav")
-            if os.path.exists(old) and (base != stem or stem in SPLIT):
+            if os.path.exists(old) and (base != stem or "".join(names) != stem):
                 os.remove(old)
                 report.append(f"  removed superseded synthesised {base}.wav (reproducible with gen_audio.py)")
         for m in made:

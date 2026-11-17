@@ -64,7 +64,7 @@ namespace Bella.States
             zzzTimer -= Time.deltaTime;
             if (zzzTimer <= 0f)
             {
-                zzzTimer = 2.2f;
+                zzzTimer = UnityEngine.Random.Range(3.2f, 4.4f);   // snore clips are up to ~3.4 s; keep breaths from piling up
                 if (zzzPoint != null) Fx.Zzz(zzzPoint.position + Vector3.up * 0.25f);
                 AudioManager.Play("snore", 0.35f);
             }

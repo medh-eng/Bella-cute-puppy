@@ -212,6 +212,7 @@ namespace Bella.Pet
                             Needs.Tire(6f);
                             SaveSystem.Data.countFetches++;
                             Celebrate(Progress.PlayTreats(1));
+                            AudioManager.Play("pant", 0.55f);   // out of breath after the run
                             FinishCare("fetch");
                         }, 180f));
                     }));

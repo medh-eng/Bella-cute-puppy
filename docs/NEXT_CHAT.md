@@ -93,7 +93,11 @@ ending `_1`, `_2` = random variants. The five period/play tracks replaced their 
 pitch wobble for real recordings are in `Core/AudioManager.cs`). Mini-games now pick their own tune
 (`Activity.Tune`: bath → `music_bath`, wardrobe and feeding → `music_shop`, tricks → `music_stage`, rest →
 `music_play`). **Not wired yet, waiting on features:** `music_title` (title screen), `music_garden`
-(garden place), `music_fest_*` (Seasons). **Open:** the source/licence of every supplied file is not recorded
+(garden place), `music_fest_*` (Seasons). **Batch 2 (same day):** `bark_1…3`, `bark_happy_1…5`, `whimper_hungry_1…3`, `yawn_sleepy`, `munch_1…4`, `snore_1…6`,
+`sniff_1…3`, `lap`, `pant`. Long recordings holding many sounds in a row are cut into separate clips by `RULES` in
+`ingest_audio.py`. New hooks: `sniff` (idle, 20 % of idle moments, quiet), `pant` (after fetch), snore breaths spaced
+3.2–4.4 s. `lap` waits for a water bowl; still missing real recordings: `yip_2/3`, `whine_1/2`, `sparkle`-type effects, `howl`, `paws`, `shake`, `growl_play`,
+`lick`. **Open:** the source/licence of every supplied file is not recorded
 (ledger and `CREDITS.md` say so) — ask Pon before release. **Not compiled:** no .NET SDK in that session, so
 `tools/stubcheck/check.sh` still has to be run; and every loop needs one listen in Unity (flagged ones in the
 report first). More audio is coming — re-run the script with `--src <folder>`.
