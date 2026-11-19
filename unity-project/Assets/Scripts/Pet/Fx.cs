@@ -51,7 +51,9 @@ namespace Bella.Pet
                 new Keyframe(0f, 0.2f), new Keyframe(0.2f, 1f), new Keyframe(0.75f, 1f), new Keyframe(1f, 0f)));
 
             ParticleSystemRenderer r = go.GetComponent<ParticleSystemRenderer>();
-            r.material = Art.SpriteMat(Color.white, Art.Tex("Icons/" + icon));
+            string fxName = icon == "bubbles" ? "fx_bubble" : "fx_" + icon;       // generated sprite if present, else the old icon
+            Texture2D tex = Art.TryTex("Fx/" + fxName);
+            r.material = Art.SpriteMat(Color.white, tex != null ? tex : Art.Tex("Icons/" + icon));
             r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             r.receiveShadows = false;
 

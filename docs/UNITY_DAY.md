@@ -68,6 +68,11 @@ with the words in the box at the bottom of this page.
 - [ ] **Clinic** (right side): three rounds of pick-the-tool
 - [ ] **Book** (left side): sticker book opens
 - [ ] **Gear** (top right): a sum appears; answering it opens the parents' page
+- [ ] **Decor** button (house icon, bottom left): wallpaper and floor shop opens, buying and wearing a wallpaper changes the room
+- [ ] Bath, Clinic and Tricks each show their own backdrop and return to the room afterwards
+- [ ] Furniture looks right: bed, bowls (food and water side by side), ball, plant, toy shelf, basket, armchair and star lamp in the left corner. In the bath: tub with water just under the rim and the duck floating
+- [ ] Thought bubble shows the little wish pictures; hearts, stars, sparkles and bubbles look like the new glossy sprites
+- [ ] Try 20:9 and 4:3 in the Game tab's resolution list, and look for anything cut off
 - [ ] Sounds and music play
 
 **If you see a brown, blocky puppy made of balls** instead of the fluffy Bella, the model did not

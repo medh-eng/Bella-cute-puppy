@@ -12,7 +12,7 @@ namespace Bella.EditorTools
     /// </summary>
     public class BellaImportSettings : AssetPostprocessor
     {
-        public override uint GetVersion() { return 6; }
+        public override uint GetVersion() { return 7; }
 
         private void OnPreprocessTexture()
         {
@@ -42,7 +42,7 @@ namespace Bella.EditorTools
                 ti.filterMode = FilterMode.Bilinear;
                 ti.maxTextureSize = 2048;
             }
-            else if (assetPath.Contains("/Icons/") || assetPath.Contains("/Portraits/"))
+            else if (assetPath.Contains("/Icons/") || assetPath.Contains("/Portraits/") || assetPath.Contains("/Fx/"))
             {
                 ti.textureType = TextureImporterType.Default;
                 ti.npotScale = TextureImporterNPOTScale.None;

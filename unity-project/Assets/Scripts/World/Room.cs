@@ -108,6 +108,11 @@ namespace Bella.World
             Art.Prim(PrimitiveType.Sphere, "Leaf2", t, new Vector3(1.58f, 0.5f, 2.2f), new Vector3(0.3f, 0.36f, 0.3f), Art.Leaf * 0.92f);
             Art.Prim(PrimitiveType.Sphere, "Leaf3", t, new Vector3(1.92f, 0.52f, 2.22f), new Vector3(0.3f, 0.36f, 0.3f), Art.Leaf * 0.92f);
 
+            // new decor: armchair and star lamp in the left corner, water bowl beside the food bowl
+            Art.Prop("armchair", t, new Vector3(-2.55f, 0f, 1.2f), 0.9f, 40f);
+            Art.Prop("nightlight", t, new Vector3(-2.7f, 0f, 2.3f), 0.6f, 20f);
+            Art.Prop("waterbowl", t, BowlPosition + new Vector3(0.6f, 0f, 0.1f), 0.4f);
+
             BuildBunting(t);
             BuildToyShelf(t);
             BuildToyBasket(t);

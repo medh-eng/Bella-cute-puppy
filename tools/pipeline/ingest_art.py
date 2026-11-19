@@ -28,7 +28,8 @@ READY = os.path.join(ROOT, "art-source", "ready")   # processed, game-ready, wai
 PLACES_READY = {"F-10": "festival", "F-11": "studio_pink", "F-12": "studio_rainbow"}
 RUGS = ["rug_rainbow", "rug_paw", "rug_donut", "rug_flower"]
 VIEWS = ["view_hills", "view_town", "view_beach", "view_snow"]
-FX = {"H-02": ["fx_glow", "fx_rays", "fx_puff", "fx_foam", "fx_dust", "fx_beam", "fx_flare", "fx_smoke", "fx_dot"],
+FX = {"H-01": ["fx_heart", "fx_star", "fx_sparkle", "fx_bubble", "fx_drop", "fx_note", "fx_paw", "fx_zzz", "fx_ring"],
+      "H-02": ["fx_glow", "fx_rays", "fx_puff", "fx_foam", "fx_dust", "fx_beam", "fx_flare", "fx_smoke", "fx_dot"],
       "H-03": ["fx_confetti_1", "fx_confetti_2", "fx_confetti_3", "fx_petal", "fx_leaf", "fx_snow", "fx_rain",
                "fx_firework", "fx_splat"]}
 SEASONS = {"I-01": "lights", "I-02": "colours", "I-03": "winter", "I-04": "birthday"}
