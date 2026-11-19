@@ -85,7 +85,7 @@ namespace Bella.UI
                 if (w != wish)
                 {
                     wish = w;
-                    if (wish != "") icon.sprite = Art.Icon(IconFor(wish));
+                    if (wish != "") icon.sprite = Art.TrySprite("UI/wish_" + wish) ?? Art.Icon(IconFor(wish));
                 }
             }
 

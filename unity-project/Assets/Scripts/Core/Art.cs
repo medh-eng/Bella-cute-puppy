@@ -18,6 +18,8 @@ namespace Bella.Core
         private static Mesh coneMesh;
         private static readonly Dictionary<string, Sprite> iconCache = new Dictionary<string, Sprite>();
         private static readonly Dictionary<string, Texture2D> texCache = new Dictionary<string, Texture2D>();
+        private static readonly Dictionary<string, Texture2D> tryCache = new Dictionary<string, Texture2D>();
+        private static readonly Dictionary<string, Sprite> trySpriteCache = new Dictionary<string, Sprite>();
 
         // ---------------------------------------------------------------- materials
 
@@ -174,6 +176,82 @@ namespace Bella.Core
             s.name = resourcePath;
             iconCache[resourcePath] = s;
             return s;
+        }
+
+
+        // ---------------------------------------------------------------- optional (generated) art
+
+        /// <summary>Like Tex(), but quiet: returns null when the file is not there (generated art is optional).</summary>
+        public static Texture2D TryTex(string resourcePath)
+        {
+            Texture2D t;
+            if (tryCache.TryGetValue(resourcePath, out t)) return t;      // misses are cached too (null)
+            t = Resources.Load<Texture2D>(resourcePath);
+            tryCache[resourcePath] = t;
+            return t;
+        }
+
+        /// <summary>A tileable surface texture (wallpaper, floor): wraps instead of clamping. Null when missing.</summary>
+        public static Texture2D TileTex(string resourcePath)
+        {
+            Texture2D t = TryTex(resourcePath);
+            if (t != null) t.wrapMode = TextureWrapMode.Repeat;
+            return t;
+        }
+
+        /// <summary>Sprite from Resources, or null when the file is missing.</summary>
+        public static Sprite TrySprite(string resourcePath)
+        {
+            Sprite s;
+            if (trySpriteCache.TryGetValue(resourcePath, out s) && s != null) return s;
+            Texture2D t = TryTex(resourcePath);
+            if (t == null) return null;
+            s = UnityEngine.Sprite.Create(t, new Rect(0, 0, t.width, t.height), new Vector2(0.5f, 0.5f), 100f);
+            s.name = resourcePath;
+            trySpriteCache[resourcePath] = s;
+            return s;
+        }
+
+        /// <summary>
+        /// A generated 3D model from Resources/Props, scaled so its largest side is `size` metres and standing
+        /// on the floor at localPos. Returns null when the model is not there, so the caller builds the
+        /// primitive version exactly as before.
+        /// </summary>
+        public static GameObject Prop(string name, Transform parent, Vector3 localPos, float size, float yaw = 0f)
+        {
+            GameObject src = Resources.Load<GameObject>("Props/" + name);
+            if (src == null) return null;
+            var holder = new GameObject("Prop_" + name);
+            holder.transform.SetParent(parent, false);
+            holder.transform.localPosition = localPos;
+            holder.transform.localRotation = Quaternion.Euler(0f, yaw, 0f);
+            GameObject inst = Object.Instantiate(src, holder.transform, false);
+            inst.transform.localPosition = Vector3.zero;
+            Material mat = Lit(Color.white, TryTex("Props/" + name + "_tex"));
+            bool any = false; Vector3 min = Vector3.zero, max = Vector3.zero;
+            MeshFilter[] mfs = inst.GetComponentsInChildren<MeshFilter>();
+            for (int i = 0; i < mfs.Length; i++)
+            {
+                Renderer r = mfs[i].GetComponent<Renderer>();
+                if (r != null) r.sharedMaterial = mat;
+                if (mfs[i].sharedMesh == null) continue;
+                Bounds b = mfs[i].sharedMesh.bounds;
+                Matrix4x4 m = holder.transform.worldToLocalMatrix * mfs[i].transform.localToWorldMatrix;
+                for (int c = 0; c < 8; c++)
+                {
+                    Vector3 pt = m.MultiplyPoint3x4(b.center + Vector3.Scale(b.extents,
+                        new Vector3((c & 1) == 0 ? -1f : 1f, (c & 2) == 0 ? -1f : 1f, (c & 4) == 0 ? -1f : 1f)));
+                    if (!any) { min = max = pt; any = true; } else { min = Vector3.Min(min, pt); max = Vector3.Max(max, pt); }
+                }
+            }
+            if (!any) { Object.Destroy(holder); return null; }
+            Vector3 dim = max - min;
+            float biggest = Mathf.Max(dim.x, Mathf.Max(dim.y, dim.z));
+            float k = biggest > 0.0001f ? size / biggest : 1f;
+            inst.transform.localScale = inst.transform.localScale * k;
+            Vector3 centre = (min + max) * 0.5f;
+            inst.transform.localPosition = -new Vector3(centre.x, min.y, centre.z) * k;
+            return holder;
         }
 
         /// <summary>Rounded 9-slice panel sprite.</summary>

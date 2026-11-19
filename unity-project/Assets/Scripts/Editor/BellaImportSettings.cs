@@ -12,7 +12,7 @@ namespace Bella.EditorTools
     /// </summary>
     public class BellaImportSettings : AssetPostprocessor
     {
-        public override uint GetVersion() { return 4; }
+        public override uint GetVersion() { return 5; }
 
         private void OnPreprocessTexture()
         {
@@ -20,7 +20,29 @@ namespace Bella.EditorTools
             var ti = assetImporter as TextureImporter;
             if (ti == null) return;
 
-            if (assetPath.Contains("/Icons/") || assetPath.Contains("/Portraits/"))
+            if (assetPath.Contains("/Surfaces/"))
+            {
+                // wallpapers and floors tile (Repeat + mip-maps); rugs / window strips / wall pictures stay crisp
+                bool tile = assetPath.Contains("/wall_") || assetPath.Contains("/floor_");
+                ti.textureType = TextureImporterType.Default;
+                ti.npotScale = TextureImporterNPOTScale.None;
+                ti.mipmapEnabled = tile;
+                ti.alphaIsTransparency = !tile;
+                ti.wrapMode = tile ? TextureWrapMode.Repeat : TextureWrapMode.Clamp;
+                ti.filterMode = FilterMode.Bilinear;
+                ti.maxTextureSize = 512;
+            }
+            else if (assetPath.Contains("/Places/"))
+            {
+                // scenery backdrops: one big picture, no mip-maps, clamped
+                ti.textureType = TextureImporterType.Default;
+                ti.npotScale = TextureImporterNPOTScale.None;
+                ti.mipmapEnabled = false;
+                ti.wrapMode = TextureWrapMode.Clamp;
+                ti.filterMode = FilterMode.Bilinear;
+                ti.maxTextureSize = 2048;
+            }
+            else if (assetPath.Contains("/Icons/") || assetPath.Contains("/Portraits/"))
             {
                 ti.textureType = TextureImporterType.Default;
                 ti.npotScale = TextureImporterNPOTScale.None;

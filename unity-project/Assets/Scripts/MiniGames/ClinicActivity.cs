@@ -44,6 +44,9 @@ namespace Bella.MiniGames
         private float sneezeTimer;
         private Ailment current;
 
+        protected override string Place { get { return "clinic"; } }
+        protected override string PlaceFloor { get { return "floor_checker"; } }
+
         protected override void OnBegin()
         {
             wasUnwell = Bella.Needs.IsUnwell;

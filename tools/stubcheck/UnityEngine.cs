@@ -11,6 +11,7 @@ namespace UnityEngine
         public static void DestroyImmediate(Object o) {}
         public static T Instantiate<T>(T original) where T : Object => original;
         public static T Instantiate<T>(T original, Transform parent) where T : Object => original;
+        public static T Instantiate<T>(T original, Transform parent, bool instantiateInWorldSpace) where T : Object => original;
         public static T FindObjectOfType<T>() where T : Object => null;
         public static T[] FindObjectsOfType<T>() where T : Object => new T[0];
         public static void DontDestroyOnLoad(Object o) {}
@@ -30,7 +31,7 @@ namespace UnityEngine
     }
     public class ScriptableObject : Object { public static T CreateInstance<T>() where T : ScriptableObject => null; }
     public class Coroutine {} public class YieldInstruction {} public class WaitForSeconds : YieldInstruction { public WaitForSeconds(float s) {} }
-    public sealed class GameObject : Object { public T[] GetComponentsInChildren<T>(bool includeInactive) => new T[0];
+    public sealed class GameObject : Object { public T[] GetComponentsInChildren<T>(bool includeInactive) => new T[0]; public T[] GetComponentsInChildren<T>() => new T[0];
         public GameObject() {} public GameObject(string name) {} public GameObject(string name, params Type[] components) {}
         public Transform transform => null; public string tag { get; set; } public bool activeSelf => true; public bool activeInHierarchy => true; public int layer { get; set; }
         public void SetActive(bool v) {}
@@ -41,7 +42,7 @@ namespace UnityEngine
     public enum PrimitiveType { Sphere, Capsule, Cylinder, Cube, Plane, Quad }
     public class Transform : Component, IEnumerable {
         public Vector3 position { get; set; } public Vector3 localPosition { get; set; } public Quaternion rotation { get; set; } public Quaternion localRotation { get; set; }
-        public Vector3 localScale { get; set; } public Vector3 lossyScale => default; public Vector3 eulerAngles { get; set; } public Vector3 localEulerAngles { get; set; }
+        public Vector3 localScale { get; set; } public Matrix4x4 worldToLocalMatrix => default; public Matrix4x4 localToWorldMatrix => default; public Vector3 lossyScale => default; public Vector3 eulerAngles { get; set; } public Vector3 localEulerAngles { get; set; }
         public Vector3 forward { get; set; } public Vector3 up { get; set; } public Vector3 right { get; set; }
         public Transform parent { get; set; } public int childCount => 0; public Transform GetChild(int i) => null;
         public void SetParent(Transform p) {} public void SetParent(Transform p, bool worldPositionStays) {}
@@ -75,7 +76,7 @@ namespace UnityEngine
     public struct Vector3 {
         public float x, y, z; public Vector3(float x, float y, float z) { this.x = x; this.y = y; this.z = z; } public Vector3(float x, float y) { this.x = x; this.y = y; z = 0; }
         public static Vector3 zero => default; public static Vector3 one => new Vector3(1, 1, 1); public static Vector3 up => new Vector3(0, 1, 0); public static Vector3 forward => new Vector3(0, 0, 1); public static Vector3 right => new Vector3(1, 0, 0); public static Vector3 down => new Vector3(0, -1, 0); public static Vector3 back => new Vector3(0,0,-1); public static Vector3 left => new Vector3(-1,0,0);
-        public float magnitude => (float)Math.Sqrt(x * x + y * y + z * z); public float sqrMagnitude => x * x + y * y + z * z; public Vector3 normalized => this;
+        public static Vector3 Scale(Vector3 a, Vector3 b) => default; public static Vector3 Min(Vector3 a, Vector3 b) => default; public static Vector3 Max(Vector3 a, Vector3 b) => default; public float magnitude => (float)Math.Sqrt(x * x + y * y + z * z); public float sqrMagnitude => x * x + y * y + z * z; public Vector3 normalized => this;
         public static Vector3 operator +(Vector3 a, Vector3 b) => a; public static Vector3 operator -(Vector3 a, Vector3 b) => a; public static Vector3 operator -(Vector3 a) => a;
         public static Vector3 operator *(Vector3 a, float d) => a; public static Vector3 operator *(float d, Vector3 a) => a; public static Vector3 operator /(Vector3 a, float d) => a;
         public static bool operator ==(Vector3 a, Vector3 b) => true; public static bool operator !=(Vector3 a, Vector3 b) => false;
@@ -121,7 +122,8 @@ namespace UnityEngine
     public enum ScreenOrientation { Portrait, LandscapeLeft, AutoRotation }
     public static class SleepTimeout { public const int NeverSleep = -1; public const int SystemSetting = -2; }
     public static class JsonUtility { public static string ToJson(object o) => ""; public static string ToJson(object o, bool pretty) => ""; public static T FromJson<T>(string s) => default; }
-    public static class Resources { public static T Load<T>(string p) where T : Object => null; public static T[] LoadAll<T>(string p) where T : Object => new T[0]; public static T GetBuiltinResource<T>(string p) where T : Object => null; }
+    public class AsyncOperation { }
+    public static class Resources { public static AsyncOperation UnloadUnusedAssets() => null; public static T Load<T>(string p) where T : Object => null; public static T[] LoadAll<T>(string p) where T : Object => new T[0]; public static T GetBuiltinResource<T>(string p) where T : Object => null; }
     public static class Input {
         public static bool GetMouseButtonDown(int b) => false; public static bool GetMouseButton(int b) => false; public static bool GetMouseButtonUp(int b) => false; public static Vector3 mousePosition => default;
         public static int touchCount => 0; public static Touch GetTouch(int i) => default; public static bool GetKeyDown(KeyCode k) => false;
@@ -152,13 +154,14 @@ namespace UnityEngine
     public class Texture : Object { public int width => 0; public int height => 0; public TextureWrapMode wrapMode { get; set; } public FilterMode filterMode { get; set; } }
     public class Texture2D : Texture { public Texture2D(int w, int h) {} public static Texture2D whiteTexture => null; public void SetPixel(int x, int y, Color c) {} public void Apply() {} }
     public enum TextureWrapMode { Repeat, Clamp } public enum FilterMode { Point, Bilinear, Trilinear }
-    public class Material : Object { public Material(Shader s) {} public Material(Material m) {} public Color color { get; set; } public Texture mainTexture { get; set; } public Shader shader { get; set; } public int renderQueue { get; set; }
+    public class Material : Object { public Vector2 mainTextureScale { get; set; } public Material(Shader s) {} public Material(Material m) {} public Color color { get; set; } public Texture mainTexture { get; set; } public Shader shader { get; set; } public int renderQueue { get; set; }
         public bool HasProperty(string n) => false; public void SetColor(string n, Color c) {} public void SetFloat(string n, float f) {} public void SetTexture(string n, Texture t) {} }
     public class Renderer : Component { public Material material { get; set; } public Material sharedMaterial { get; set; } public Material[] sharedMaterials { get; set; } public bool enabled { get; set; } public Bounds bounds => default;
         public Rendering.ShadowCastingMode shadowCastingMode { get; set; } public bool receiveShadows { get; set; } }
     public class MeshRenderer : Renderer {} public class SkinnedMeshRenderer : Renderer { public bool updateWhenOffscreen { get; set; } public Transform rootBone { get; set; } public Transform[] bones { get; set; } public Bounds localBounds { get; set; } public Mesh sharedMesh { get; set; } }
     public class MeshFilter : Component { public Mesh sharedMesh { get; set; } public Mesh mesh { get; set; } }
-    public class Mesh : Object { public void SetVertices(List<Vector3> v) {} public void SetTriangles(List<int> t, int submesh) {} public void RecalculateNormals() {} public void RecalculateBounds() {} }
+    public class Mesh : Object { public Bounds bounds { get; set; } public void SetVertices(List<Vector3> v) {} public void SetTriangles(List<int> t, int submesh) {} public void RecalculateNormals() {} public void RecalculateBounds() {} }
+    public struct Matrix4x4 { public Vector3 MultiplyPoint3x4(Vector3 p) => p; public static Matrix4x4 operator *(Matrix4x4 a, Matrix4x4 b) => default; }
     public struct Bounds { public Vector3 center, size, min, max, extents; }
     public class Sprite : Object {
         public static Sprite Create(Texture2D t, Rect r, Vector2 pivot) => null; public static Sprite Create(Texture2D t, Rect r, Vector2 pivot, float ppu) => null;

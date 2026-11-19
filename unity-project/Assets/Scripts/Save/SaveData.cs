@@ -49,6 +49,11 @@ namespace Bella.Save
 
         public bool sniffles = false;
 
+        // Room decor (wallpapers and floors bought in the Decor shop). Empty id = the original look.
+        public List<string> ownedThemes = new List<string>();
+        public string wallId = "";
+        public string floorId = "";
+
         // Daily allowance of treats from repeatable play (fetch, extra tricks...).
         public string playPayDateKey = "";
         public int playPaidToday = 0;
@@ -103,6 +108,9 @@ namespace Bella.Save
             if (learnedTricks == null) learnedTricks = new List<string>();
             if (trickProgress == null) trickProgress = new List<TrickProgress>();
             if (stickers == null) stickers = new List<string>();
+            if (ownedThemes == null) ownedThemes = new List<string>();
+            if (wallId == null) wallId = "";
+            if (floorId == null) floorId = "";
             if (lastStreakDateKey == null) lastStreakDateKey = "";
             if (lastGiftDateKey == null) lastGiftDateKey = "";
             if (playPayDateKey == null) playPayDateKey = "";

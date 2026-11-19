@@ -39,11 +39,17 @@ namespace Bella.MiniGames
             AudioManager.Play("whoosh");
             if (G.DayNight != null) G.DayNight.SetMusicOverride(true);
             if (G.Audio != null) G.Audio.SetMusic(G.Audio.Has(Tune) ? Tune : "music_play");
+            if (Place != null) G.Room.ShowPlace(Place, PlaceFloor);
             OnBegin();
         }
 
         /// <summary>Music clip this mini-game plays; falls back to music_play when the clip is missing.</summary>
         protected virtual string Tune { get { return "music_play"; } }
+
+        /// <summary>Scenery backdrop (Resources/Places name) shown behind this mini-game; null keeps the living room.</summary>
+        protected virtual string Place { get { return null; } }
+        /// <summary>Floor surface (Resources/Surfaces name) used in that place; null keeps the current floor.</summary>
+        protected virtual string PlaceFloor { get { return null; } }
 
         protected abstract void OnBegin();
         protected virtual void OnEnd() { }
@@ -57,6 +63,7 @@ namespace Bella.MiniGames
             try { OnEnd(); }
             catch (Exception e) { Diagnostics.Note(GetType().Name + " cleanup: " + e.Message); }
             if (Canvas != null) Destroy(Canvas.gameObject);
+            if (G.Room != null) G.Room.HomePlace();
             G.ActivityFinished(this);
             Destroy(gameObject);
         }

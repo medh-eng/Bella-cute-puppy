@@ -29,6 +29,9 @@ namespace Bella.MiniGames
 
         protected override string Tune { get { return "music_bath"; } }
 
+        protected override string Place { get { return "bathroom"; } }
+        protected override string PlaceFloor { get { return "floor_checker"; } }
+
         protected override void OnBegin()
         {
             wasNeeded = Bella.Needs.Hygiene < 75f;

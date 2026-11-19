@@ -52,6 +52,18 @@ namespace Bella.Systems
         }
     }
 
+    /// <summary>A wallpaper or floor for the Decor shop. `file` is the name under Resources/Surfaces.</summary>
+    public class ThemeDef
+    {
+        public string id, kind, file;   // kind: "wall" or "floor"
+        public int price;
+
+        public ThemeDef(string id, string kind, string file, int price)
+        {
+            this.id = id; this.kind = kind; this.file = file; this.price = price;
+        }
+    }
+
     /// <summary>All of the game's content tables in one place — tune prices and add items here.</summary>
     public static class Catalog
     {
@@ -79,6 +91,30 @@ namespace Bella.Systems
             new OutfitDef("cape_midnight", "back", "cape",     "item_cape",     55, new Color(0.12f, 0.14f, 0.25f), Art.Sky),
             new OutfitDef("crown_rose",    "head", "crown",    "item_crown",    85, Art.Rose, Art.Gold),
         };
+
+        /// <summary>Wallpapers and floors. The original look is always free and never listed here.</summary>
+        public static readonly ThemeDef[] Themes =
+        {
+            new ThemeDef("wall_paws",    "wall",  "wall_paws",    10),
+            new ThemeDef("wall_clouds",  "wall",  "wall_clouds",  15),
+            new ThemeDef("wall_hearts",  "wall",  "wall_hearts",  15),
+            new ThemeDef("wall_sunny",   "wall",  "wall_sunny",   15),
+            new ThemeDef("wall_rainbow", "wall",  "wall_rainbow", 20),
+            new ThemeDef("wall_jungle",  "wall",  "wall_jungle",  20),
+            new ThemeDef("wall_night",   "wall",  "wall_night",   25),
+            new ThemeDef("wall_tiles",   "wall",  "wall_tiles",   25),
+            new ThemeDef("floor_wood",    "floor", "floor_wood",    10),
+            new ThemeDef("floor_checker", "floor", "floor_checker", 15),
+            new ThemeDef("floor_carpet",  "floor", "floor_carpet",  20),
+            new ThemeDef("floor_grass",   "floor", "floor_grass",   25),
+            new ThemeDef("floor_sand",    "floor", "floor_sand",    25),
+        };
+
+        public static ThemeDef FindTheme(string id)
+        {
+            for (int i = 0; i < Themes.Length; i++) if (Themes[i].id == id) return Themes[i];
+            return null;
+        }
 
         /// <summary>Foods for the Feeding shop (docs/GDD.md-style: buy with Treats, each feed is different).</summary>
         public static readonly FoodDef[] Foods =

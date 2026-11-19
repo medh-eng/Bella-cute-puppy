@@ -28,6 +28,9 @@ namespace Bella.MiniGames
 
         protected override string Tune { get { return "music_stage"; } }
 
+        protected override string Place { get { return "stage"; } }
+        protected override string PlaceFloor { get { return "floor_wood"; } }
+
         protected override void OnBegin()
         {
             // trick cards: gesture picture + three stars

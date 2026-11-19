@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Bella.Core;
 
@@ -26,6 +27,17 @@ namespace Bella.World
         private Vector3 ballHome = new Vector3(-1.2f, 0.11f, -0.2f);
         private Coroutine ballRoutine;
 
+        // Optional generated art: wallpapers / floors (Decor shop) and scenery backdrops (mini-game places).
+        private Renderer floorRend;
+        private Renderer[] wallRends;
+        private Material floorOriginal;
+        private Material[] wallOriginals;
+        private string wallTheme = "", floorTheme = "";
+        private GameObject backdrop;
+        private Texture2D backdropTex;
+        private readonly List<GameObject> hiddenForPlace = new List<GameObject>();
+        public bool InPlace { get { return backdrop != null; } }
+
         public void Build()
         {
             Transform t = transform;
@@ -35,15 +47,19 @@ namespace Bella.World
 
             // Floor + rug
             GameObject floor = Art.Prim(PrimitiveType.Plane, "Floor", t, new Vector3(0f, 0f, 1f), new Vector3(1.2f, 1f, 1.2f), wood);
-            floor.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            floorRend = floor.GetComponent<Renderer>();
+            floorRend.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            floorOriginal = floorRend.sharedMaterial;
             Art.Prim(PrimitiveType.Cylinder, "Rug", t, new Vector3(0f, 0.004f, 0.25f), new Vector3(2.5f, 0.004f, 1.9f), Art.Teal);
             Art.Prim(PrimitiveType.Cylinder, "RugInner", t, new Vector3(0f, 0.008f, 0.25f), new Vector3(2.05f, 0.004f, 1.5f), new Color(0.80f, 0.95f, 0.90f));
 
             // Walls
-            Art.Prim(PrimitiveType.Cube, "WallBack", t, new Vector3(0f, 2f, 2.75f), new Vector3(12f, 4f, 0.1f), wall);
+            GameObject wallBack = Art.Prim(PrimitiveType.Cube, "WallBack", t, new Vector3(0f, 2f, 2.75f), new Vector3(12f, 4f, 0.1f), wall);
             Art.Prim(PrimitiveType.Cube, "Baseboard", t, new Vector3(0f, 0.09f, 2.69f), new Vector3(12f, 0.18f, 0.06f), trim);
-            Art.Prim(PrimitiveType.Cube, "WallLeft", t, new Vector3(-3.2f, 2f, 0.5f), new Vector3(0.1f, 4f, 8f), wall * 0.97f);
-            Art.Prim(PrimitiveType.Cube, "WallRight", t, new Vector3(3.2f, 2f, 0.5f), new Vector3(0.1f, 4f, 8f), wall * 0.97f);
+            GameObject wallLeft = Art.Prim(PrimitiveType.Cube, "WallLeft", t, new Vector3(-3.2f, 2f, 0.5f), new Vector3(0.1f, 4f, 8f), wall * 0.97f);
+            GameObject wallRight = Art.Prim(PrimitiveType.Cube, "WallRight", t, new Vector3(3.2f, 2f, 0.5f), new Vector3(0.1f, 4f, 8f), wall * 0.97f);
+            wallRends = new[] { wallBack.GetComponent<Renderer>(), wallLeft.GetComponent<Renderer>(), wallRight.GetComponent<Renderer>() };
+            wallOriginals = new[] { wallRends[0].sharedMaterial, wallRends[1].sharedMaterial, wallRends[2].sharedMaterial };
             // Wainscot stripe gives the wall some life.
             Art.Prim(PrimitiveType.Cube, "Stripe", t, new Vector3(0f, 0.95f, 2.695f), new Vector3(12f, 0.07f, 0.03f), Art.Pink);
 
@@ -207,6 +223,87 @@ namespace Bella.World
             Art.Prim(PrimitiveType.Sphere, "BasketBall1", t, p + new Vector3(-0.1f, 0.3f, -0.05f), Vector3.one * 0.17f, Art.Teal);
             Art.Prim(PrimitiveType.Sphere, "BasketBall2", t, p + new Vector3(0.1f, 0.31f, 0.08f), Vector3.one * 0.16f, Art.Pink);
             Art.Prim(PrimitiveType.Sphere, "BasketBall3", t, p + new Vector3(0.02f, 0.34f, -0.12f), Vector3.one * 0.14f, Art.Gold);
+        }
+
+
+        // ---------------------------------------------------------------- generated surfaces and places
+
+        /// <summary>
+        /// Wallpaper and floor from Resources/Surfaces (empty id, or a missing file, = the original
+        /// primitive-colour look). Safe to call again at any time.
+        /// </summary>
+        public void ApplyTheme(string wallId, string floorId)
+        {
+            wallTheme = wallId ?? ""; floorTheme = floorId ?? "";
+            SetSurface(floorRend, floorOriginal, floorTheme, new Vector2(6f, 6f));
+            if (wallRends == null) return;
+            Vector2[] tiling = { new Vector2(6f, 2f), new Vector2(4f, 2f), new Vector2(4f, 2f) };
+            for (int i = 0; i < wallRends.Length; i++)
+                SetSurface(wallRends[i], wallOriginals[i], wallTheme, tiling[i]);
+        }
+
+        private static void SetSurface(Renderer r, Material original, string id, Vector2 tiling)
+        {
+            if (r == null) return;
+            Texture2D tex = string.IsNullOrEmpty(id) ? null : Art.TileTex("Surfaces/" + id);
+            if (tex == null) { r.sharedMaterial = original; return; }
+            Material m = Art.Lit(Color.white, tex);
+            m.mainTextureScale = tiling;
+            r.sharedMaterial = m;
+        }
+
+        /// <summary>
+        /// Swap the room for a scenery backdrop (Resources/Places/id.jpg) while a mini-game runs: the wall
+        /// decor, bed and bowl are hidden, the picture hangs just in front of the back wall, and the floor
+        /// can change too. Returns false (and changes nothing) when the picture is missing.
+        /// </summary>
+        public bool ShowPlace(string placeId, string floorId)
+        {
+            if (string.IsNullOrEmpty(placeId) || backdrop != null) return false;
+            Texture2D tex = Resources.Load<Texture2D>("Places/" + placeId);
+            if (tex == null) return false;
+            tex.wrapMode = TextureWrapMode.Clamp;
+            backdropTex = tex;
+
+            // Hide everything on the wall and the furniture; keep floor, walls, tub and ball.
+            hiddenForPlace.Clear();
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                GameObject c = transform.GetChild(i).gameObject;
+                string n = c.name;
+                if (n == "Floor" || n == "WallBack" || n == "WallLeft" || n == "WallRight" || n == "Tub" || n == "Ball") continue;
+                if (!c.activeSelf) continue;
+                c.SetActive(false);
+                hiddenForPlace.Add(c);
+            }
+
+            backdrop = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            backdrop.name = "PlaceBackdrop";
+            Destroy(backdrop.GetComponent<Collider>());
+            backdrop.transform.SetParent(transform, false);
+            backdrop.transform.localPosition = new Vector3(0f, 2f, 2.695f);   // just in front of the back wall's face (z 2.70)
+            backdrop.transform.localScale = new Vector3(6.3f, 4f, 1f);
+            Renderer r = backdrop.GetComponent<Renderer>();
+            r.sharedMaterial = Art.SpriteMat(Color.white, tex);
+            r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            r.receiveShadows = false;
+
+            if (!string.IsNullOrEmpty(floorId)) SetSurface(floorRend, floorOriginal, floorId, new Vector2(6f, 6f));
+            return true;
+        }
+
+        /// <summary>Back to the living room: restores hidden decor and the player's chosen wallpaper and floor.</summary>
+        public void HomePlace()
+        {
+            if (backdrop == null) return;
+            Destroy(backdrop);
+            backdrop = null;
+            for (int i = 0; i < hiddenForPlace.Count; i++)
+                if (hiddenForPlace[i] != null) hiddenForPlace[i].SetActive(true);
+            hiddenForPlace.Clear();
+            backdropTex = null;
+            ApplyTheme(wallTheme, floorTheme);
+            Resources.UnloadUnusedAssets();
         }
 
         public void SetBowlFull(bool full)

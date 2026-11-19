@@ -123,6 +123,7 @@ namespace Bella.Core
             Room = new GameObject("Room").AddComponent<Room>();
             Room.transform.SetParent(transform, false);
             Room.Build();
+            Room.ApplyTheme(SaveSystem.Data.wallId, SaveSystem.Data.floorId);
 
             // --- Bella
             var bellaGo = new GameObject("Bella");
@@ -227,6 +228,7 @@ namespace Bella.Core
                 case "bath": StartActivity<BathActivity>(); break;
                 case "tricks": StartActivity<TrickActivity>(); break;
                 case "wardrobe": StartActivity<WardrobeActivity>(); break;
+                case "decor": StartActivity<DecorActivity>(); break;
                 case "clinic": StartActivity<ClinicActivity>(); break;
                 case "stickers": AudioManager.Play("tap"); stickers.Show(); break;
                 case "gift": Progress.ClaimGift(); break;
