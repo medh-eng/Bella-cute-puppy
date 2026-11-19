@@ -220,6 +220,15 @@ namespace Bella.Pet
             });
         }
 
+        /// <summary>Run speed, shared with mini-games that drive her with their own states.</summary>
+        public float Run => RunSpeed;
+
+        /// <summary>Lets a mini-game put Bella into a state of its own (only while it owns her).</summary>
+        public void RunState(IState state)
+        {
+            fsm.ChangeState(state);
+        }
+
         /// <summary>Wander helper — walks to a point unless she is busy.</summary>
         public bool WalkToPoint(Vector3 point, Action onArrived)
         {

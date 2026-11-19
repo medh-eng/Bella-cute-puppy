@@ -47,7 +47,7 @@ namespace UnityEngine
         public Transform parent { get; set; } public int childCount => 0; public Transform GetChild(int i) => null;
         public void SetParent(Transform p) {} public void SetParent(Transform p, bool worldPositionStays) {}
         public Transform Find(string n) => null; public Vector3 TransformPoint(Vector3 p) => p; public Vector3 InverseTransformPoint(Vector3 p) => p; public Vector3 TransformDirection(Vector3 p) => p;
-        public void Rotate(float x, float y, float z) {} public void Rotate(Vector3 e) {} public void LookAt(Vector3 p) {}
+        public void Rotate(float x, float y, float z) {} public void Rotate(Vector3 e) {} public void Rotate(Vector3 axis, float angle, Space relativeTo = Space.Self) {} public void LookAt(Vector3 p) {}
         public void SetAsFirstSibling() {} public void SetAsLastSibling() {} public void SetSiblingIndex(int i) {}
         public IEnumerator GetEnumerator() => null;
     }
@@ -130,7 +130,9 @@ namespace UnityEngine
     }
     public struct Touch { public int fingerId; public Vector2 position; }
     public enum KeyCode { Escape, Space }
-    public struct Ray {} public struct RaycastHit { public Vector3 point => default; public Collider collider => null; public Transform transform => null; public Vector3 normal => default; }
+    public enum Space { World, Self }
+    public struct Ray { public Vector3 GetPoint(float distance) => default; }
+    public struct Plane { public Plane(Vector3 inNormal, Vector3 inPoint) {} public bool Raycast(Ray ray, out float enter) { enter = 0f; return false; } } public struct RaycastHit { public Vector3 point => default; public Collider collider => null; public Transform transform => null; public Vector3 normal => default; }
     public static class Physics { public static bool Raycast(Ray r, out RaycastHit h, float max) { h = default; return false; } public static bool Raycast(Ray r, out RaycastHit h) { h = default; return false; } }
     public class Collider : Component { public bool enabled { get; set; } public bool isTrigger { get; set; } }
     public class CapsuleCollider : Collider { public Vector3 center { get; set; } public float radius { get; set; } public float height { get; set; } public int direction { get; set; } }

@@ -18,6 +18,15 @@ Last updated: 18 Nov 2026.
 
 **Update, 17 Nov 2026 — first generated art is in the repo.** Pon generated Waves 1–2 art in ChatGPT; `art-inbox/INTAKE_2026-11-17.md` lists every file, what was accepted and what is held. Accepted: logo, title screen, studio mark, story cards, jelly buttons, popup panel, loading pictures, B-03…B-08 UI parts (flat vector, provisional), app icon and foreground, and 89 icons (C-01…C-10 except the pirate hat). **Not wired yet** — next is §2.3/2.4 of `docs/ASSET_PROMPTS.md` (Art helpers, title screen, UI skin). Held for regeneration: all Bella portraits and stickers (names do not match pictures — D-01…D-05) and `item_piratehat`. Still missing from the pack: audio is already in; E, F, G, H, I, J are not generated.
 
+**Update, 19 Nov 2026 (evening) — Fetch mini-game and tap-to-move written, NOT yet compiled or played.**
+New: `MiniGames/FetchActivity.cs` (HUD play button now opens it), `States/FetchChaseState.cs`,
+`BellaController.Run`/`RunState`, tap-to-move in `PetInteraction.cs`, stickers `fetch_10`/`fetch_50`, stubcheck
+stubs for `Plane`, `Space`, `Ray.GetPoint`, `Transform.Rotate(axis, angle, space)`. The session had no .NET SDK
+and no route to download one, so `tools/stubcheck/check.sh` still has to be run first. Things to judge in
+Unity: flick strength (`Release()`), grab reach, mouth offset of the carried ball (`UpdateCarried`), camera
+framing (`Focus` in `OnBegin`), drop onto the mat. Old `BellaController.RequestFetch` is kept but unused.
+Plan for rooms and more mini-games: `docs/ROOMS_AND_MINIGAMES.md`.
+
 **Update, 16 Nov 2026 (evening) — the asset upgrade is planned.** Pon now has ChatGPT Plus, Gemini
 Pro, Tripo 3D and Pixabay, so the zero-spend, script-made look is no longer the ceiling.
 `docs/ASSET_PROMPTS.md` holds every generation prompt (about 145, plus 70 Pixabay searches), where

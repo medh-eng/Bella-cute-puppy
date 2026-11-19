@@ -142,6 +142,8 @@ namespace Bella.Systems
             new StickerDef("first_bath",   "bath",     "First bath",       Art.Sky),
             new StickerDef("first_nap",    "zzz",      "First nap",        Art.Lilac),
             new StickerDef("first_fetch",  "ball",     "First fetch",      Art.Leaf),
+            new StickerDef("fetch_10",     "ball",     "Fetch fan",        Art.Orange),
+            new StickerDef("fetch_50",     "trophy",   "Fetch champion",   Art.Gold),
             new StickerDef("first_trick",  "tricks",   "First trick",      Art.Gold),
             new StickerDef("all_tricks",   "trophy",   "Trick master",     Art.Gold),
             new StickerDef("first_outfit", "wardrobe", "Dressed up",       Art.Teal),

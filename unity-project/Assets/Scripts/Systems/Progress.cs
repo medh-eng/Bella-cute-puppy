@@ -173,6 +173,8 @@ namespace Bella.Systems
             Try("first_bath", d.countBaths >= 1);
             Try("first_nap", d.countNaps >= 1);
             Try("first_fetch", d.countFetches >= 1);
+            Try("fetch_10", d.countFetches >= 10);
+            Try("fetch_50", d.countFetches >= 50);
             Try("first_trick", d.learnedTricks.Count >= 1);
             Try("all_tricks", d.learnedTricks.Count >= Catalog.Tricks.Length);
             Try("first_outfit", d.ownedOutfits.Count >= 1);

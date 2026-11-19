@@ -224,7 +224,7 @@ namespace Bella.Core
                 case "sleep":
                     if (Bella.IsSleeping) Bella.WakeUp(); else Bella.RequestSleep();
                     break;
-                case "play": Bella.RequestFetch(); break;
+                case "play": StartActivity<FetchActivity>(); break;
                 case "bath": StartActivity<BathActivity>(); break;
                 case "tricks": StartActivity<TrickActivity>(); break;
                 case "wardrobe": StartActivity<WardrobeActivity>(); break;
