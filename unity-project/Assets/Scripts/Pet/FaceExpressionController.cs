@@ -28,6 +28,22 @@ namespace Bella.Pet
 
         public Expression Current { get; private set; } = Expression.Happy;
 
+        private float munchTimer, munchStep;
+        private bool munchOpen;
+
+        /// <summary>Chew for a while: the mouth opens and closes (two eyes-closed faces swapped quickly).</summary>
+        public void Munch(float seconds)
+        {
+            munchTimer = seconds;
+            munchStep = 0f;
+        }
+
+        public void StopMunch()
+        {
+            munchTimer = 0f;
+            Apply();
+        }
+
         public void Init(Renderer renderer, bool realModel)
         {
             faceRenderer = renderer;
@@ -71,6 +87,20 @@ namespace Bella.Pet
 
         private void Update()
         {
+            if (munchTimer > 0f)
+            {
+                munchTimer -= Time.deltaTime;
+                munchStep -= Time.deltaTime;
+                if (munchStep <= 0f)
+                {
+                    munchStep = 0.17f;
+                    munchOpen = !munchOpen;
+                    ApplyMunch(munchOpen);
+                }
+                if (munchTimer <= 0f) Apply();
+                return;
+            }
+
             if (holdTimer > 0f)
             {
                 holdTimer -= Time.deltaTime;
@@ -96,6 +126,20 @@ namespace Bella.Pet
                 blinkTimer = Random.Range(2.2f, 5.5f);
                 blinkHold = 0.13f;
                 material.mainTexture = blinkTexture;
+            }
+        }
+
+        private void ApplyMunch(bool open)
+        {
+            if (material == null) return;
+            if (textureMode)
+            {
+                Texture2D t = textures[(int)(open ? Expression.Excited : Expression.Soapy)];
+                if (t != null) material.mainTexture = t;
+            }
+            else
+            {
+                material.color = open ? new Color(1.00f, 0.80f, 0.55f) : new Color(0.80f, 0.95f, 1.00f);
             }
         }
 

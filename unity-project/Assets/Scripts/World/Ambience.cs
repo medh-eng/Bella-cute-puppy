@@ -201,8 +201,15 @@ namespace Bella.World
             if (dayNight.IsNight) UpdateFireflies();
             if (nightlight != null && nightlight.gameObject.activeSelf)
             {
+                RoomObject lampObj = room.FindObject("nightlight");       // the glow follows the star lamp when it is moved
+                if (lampObj != null)
+                {
+                    Vector3 lp = lampObj.transform.localPosition;
+                    nightlight.transform.localPosition = new Vector3(lp.x, 0.62f, lp.z + 0.1f);
+                    nightlight.transform.localScale = Vector3.one * 0.75f;
+                }
                 Color c = nightlight.material.color;
-                c.a = 0.55f + 0.2f * Mathf.Sin(time * 1.3f);
+                c.a = 0.32f + 0.12f * Mathf.Sin(time * 1.3f);       // a soft halo behind the star lamp
                 nightlight.material.color = c;
             }
         }

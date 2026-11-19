@@ -133,7 +133,7 @@ namespace Bella.Core
             Needs.Init(ScriptableObject.CreateInstance<NeedDecayConfig>());
             Bella = bellaGo.AddComponent<BellaController>();
             Bella.Init(Needs, Room);
-            gameObject.AddComponent<PetInteraction>().Init(Cam, Bella);
+            gameObject.AddComponent<PetInteraction>().Init(Cam, Bella, Room);
 
             DayNight = gameObject.AddComponent<DayNight>();
             DayNight.Init(sun, Cam, Room, Audio);

@@ -52,6 +52,7 @@ namespace Bella.Save
         // Room decor (wallpapers and floors bought in the Decor shop). Empty id = the original look.
         public List<string> ownedThemes = new List<string>();
         public string wallId = "";
+        public List<string> objectSpots = new List<string>();   // "id|x|z" for furniture the player moved
         public string floorId = "";
 
         // Daily allowance of treats from repeatable play (fetch, extra tricks...).
@@ -110,6 +111,7 @@ namespace Bella.Save
             if (stickers == null) stickers = new List<string>();
             if (ownedThemes == null) ownedThemes = new List<string>();
             if (wallId == null) wallId = "";
+            if (objectSpots == null) objectSpots = new List<string>();
             if (floorId == null) floorId = "";
             if (lastStreakDateKey == null) lastStreakDateKey = "";
             if (lastGiftDateKey == null) lastGiftDateKey = "";

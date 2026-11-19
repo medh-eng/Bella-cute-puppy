@@ -73,6 +73,10 @@ with the words in the box at the bottom of this page.
 - [ ] Furniture looks right: bed, bowls (food and water side by side), ball, plant, toy shelf, basket, armchair and star lamp in the left corner. In the bath: tub with water just under the rim and the duck floating
 - [ ] Thought bubble shows the little wish pictures; hearts, stars, sparkles and bubbles look like the new glossy sprites
 - [ ] Try 20:9 and 4:3 in the Game tab's resolution list, and look for anything cut off
+- [ ] Tap the empty floor: Bella walks there. Tap the bed (she hops on and sleeps, hops off when she wakes), bowl (eats, mouth moves), ball (fetch), water bowl, armchair, lamp, plant, basket (she walks over and reacts)
+- [ ] Press and hold a piece of furniture for half a second, drag it, let go: it stays there next time you open the game. She walks around furniture, not through it
+- [ ] Shadow under Bella is steady (no flicker). In the bath she sits inside the tub, chest and head above the rim, nothing poking out underneath
+- [ ] Ball fetch: the ball lands in front of her and she never walks through it
 - [ ] Sounds and music play
 
 **If you see a brown, blocky puppy made of balls** instead of the fluffy Bella, the model did not

@@ -26,6 +26,13 @@ namespace Bella.World
             timer = Mathf.Max(timer, seconds);
         }
 
+        /// <summary>The player sent her somewhere herself: forget the wander walk, wait a while before the next one.</summary>
+        public void Interrupted()
+        {
+            walking = false;
+            timer = Mathf.Max(timer, 10f);
+        }
+
         private void Update()
         {
             if (bella == null || walking) return;

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Bella.Core;
+using Bella.States;
 
 namespace Bella.World
 {
@@ -14,12 +15,27 @@ namespace Bella.World
     public class Room : MonoBehaviour
     {
         public Vector3 HomePoint => new Vector3(0f, 0f, 0.15f);
-        public Vector3 BedPosition => new Vector3(-0.92f, 0f, 1.2f);
-        public Vector3 BowlPosition => new Vector3(1.0f, 0f, 1.0f);
+        public Vector3 BedPosition => PosOf("bed", new Vector3(-0.92f, 0f, 1.2f));
+        public Vector3 BowlPosition => PosOf("bowl", new Vector3(1.0f, 0f, 1.0f));
         public Vector3 BowlStandPoint => BowlPosition + (HomePoint - BowlPosition).normalized * 0.5f;
+
+        // Tappable, movable furniture (see RoomObject). Positions are remembered in the save file.
+        private readonly Dictionary<string, RoomObject> objs = new Dictionary<string, RoomObject>();
+        public IEnumerable<RoomObject> Objects { get { return objs.Values; } }
+        public RoomObject FindObject(string id) { RoomObject o; return objs.TryGetValue(id, out o) ? o : null; }
+
+        private Vector3 PosOf(string id, Vector3 fallback)
+        {
+            RoomObject o;
+            return objs.TryGetValue(id, out o) && o != null ? o.transform.localPosition : fallback;
+        }
 
         public Renderer WindowSky { get; private set; }
         public Renderer WindowOrb { get; private set; }
+
+        /// <summary>Height of the (flattened) tub's inside floor and of its water, metres.</summary>
+        public const float TubFloor = 0.07f;
+        public const float TubWaterY = 0.27f;
 
         private GameObject kibble;
         private GameObject ball;
@@ -54,10 +70,10 @@ namespace Bella.World
             Art.Prim(PrimitiveType.Cylinder, "RugInner", t, new Vector3(0f, 0.008f, 0.25f), new Vector3(2.05f, 0.004f, 1.5f), new Color(0.80f, 0.95f, 0.90f));
 
             // Walls
-            GameObject wallBack = Art.Prim(PrimitiveType.Cube, "WallBack", t, new Vector3(0f, 2f, 2.75f), new Vector3(12f, 4f, 0.1f), wall);
+            GameObject wallBack = Art.Prim(PrimitiveType.Cube, "WallBack", t, new Vector3(0f, 1.8f, 2.75f), new Vector3(12f, 4.4f, 0.1f), wall);
             Art.Prim(PrimitiveType.Cube, "Baseboard", t, new Vector3(0f, 0.09f, 2.69f), new Vector3(12f, 0.18f, 0.06f), trim);
-            GameObject wallLeft = Art.Prim(PrimitiveType.Cube, "WallLeft", t, new Vector3(-3.2f, 2f, 0.5f), new Vector3(0.1f, 4f, 8f), wall * 0.97f);
-            GameObject wallRight = Art.Prim(PrimitiveType.Cube, "WallRight", t, new Vector3(3.2f, 2f, 0.5f), new Vector3(0.1f, 4f, 8f), wall * 0.97f);
+            GameObject wallLeft = Art.Prim(PrimitiveType.Cube, "WallLeft", t, new Vector3(-3.2f, 1.8f, 0.5f), new Vector3(0.1f, 4.4f, 8f), wall * 0.97f);
+            GameObject wallRight = Art.Prim(PrimitiveType.Cube, "WallRight", t, new Vector3(3.2f, 1.8f, 0.5f), new Vector3(0.1f, 4.4f, 8f), wall * 0.97f);
             wallRends = new[] { wallBack.GetComponent<Renderer>(), wallLeft.GetComponent<Renderer>(), wallRight.GetComponent<Renderer>() };
             wallOriginals = new[] { wallRends[0].sharedMaterial, wallRends[1].sharedMaterial, wallRends[2].sharedMaterial };
             // Wainscot stripe gives the wall some life.
@@ -102,40 +118,46 @@ namespace Bella.World
             pic.transform.localScale = new Vector3(0.52f, 0.52f, 1f);
             pic.GetComponent<Renderer>().sharedMaterial = Art.SpriteMat(Color.white, Art.Tex("Icons/paw"));
 
-            // Plant
-            Art.Prim(PrimitiveType.Cylinder, "Pot", t, new Vector3(1.75f, 0.17f, 2.25f), new Vector3(0.34f, 0.17f, 0.34f), Art.Orange);
-            Art.Prim(PrimitiveType.Sphere, "Leaf1", t, new Vector3(1.75f, 0.62f, 2.25f), new Vector3(0.5f, 0.6f, 0.5f), Art.Leaf);
-            Art.Prim(PrimitiveType.Sphere, "Leaf2", t, new Vector3(1.58f, 0.5f, 2.2f), new Vector3(0.3f, 0.36f, 0.3f), Art.Leaf * 0.92f);
-            Art.Prim(PrimitiveType.Sphere, "Leaf3", t, new Vector3(1.92f, 0.52f, 2.22f), new Vector3(0.3f, 0.36f, 0.3f), Art.Leaf * 0.92f);
+            // ---- furniture: tap = Bella walks there, long-press then drag = move it (positions are saved)
+            RoomObject plant = MakeObject("plant", new Vector3(1.75f, 0f, 2.25f), 0.2f, 0.9f);
+            Art.Prim(PrimitiveType.Cylinder, "Pot", plant.transform, new Vector3(0f, 0.17f, 0f), new Vector3(0.34f, 0.17f, 0.34f), Art.Orange);
+            Art.Prim(PrimitiveType.Sphere, "Leaf1", plant.transform, new Vector3(0f, 0.62f, 0f), new Vector3(0.5f, 0.6f, 0.5f), Art.Leaf);
+            Art.Prim(PrimitiveType.Sphere, "Leaf2", plant.transform, new Vector3(-0.17f, 0.5f, -0.05f), new Vector3(0.3f, 0.36f, 0.3f), Art.Leaf * 0.92f);
+            Art.Prim(PrimitiveType.Sphere, "Leaf3", plant.transform, new Vector3(0.17f, 0.52f, -0.03f), new Vector3(0.3f, 0.36f, 0.3f), Art.Leaf * 0.92f);
 
-            // new decor: armchair and star lamp in the left corner, water bowl beside the food bowl
-            Art.Prop("armchair", t, new Vector3(-2.55f, 0f, 1.2f), 0.9f, 40f);
-            Art.Prop("nightlight", t, new Vector3(-2.7f, 0f, 2.3f), 0.6f, 20f);
-            Art.Prop("waterbowl", t, BowlPosition + new Vector3(0.6f, 0f, 0.1f), 0.4f);
+            RoomObject chair = MakeObject("armchair", new Vector3(-1.25f, 0f, 2.1f), 0.5f, 0.9f, 12f);
+            Art.Prop("armchair", chair.transform, Vector3.zero, 0.9f);
+            RoomObject lamp = MakeObject("nightlight", new Vector3(-0.3f, 0f, 2.35f), 0.2f, 0.6f);
+            Art.Prop("nightlight", lamp.transform, Vector3.zero, 0.6f);
+            RoomObject water = MakeObject("waterbowl", new Vector3(1.48f, 0f, 1.28f), 0.2f, 0.2f);
+            Art.Prop("waterbowl", water.transform, Vector3.zero, 0.4f);
 
             BuildBunting(t);
             BuildToyShelf(t);
             BuildToyBasket(t);
 
             // Bed
-            Vector3 bed = BedPosition;
-            if (Art.Prop("bed", t, bed, 1.25f) == null)
+            RoomObject bedObj = MakeObject("bed", new Vector3(-0.92f, 0f, 1.2f), 0.62f, 0.3f);
+            if (Art.Prop("bed", bedObj.transform, Vector3.zero, 1.25f) == null)
             {
-                Art.Prim(PrimitiveType.Cylinder, "BedBase", t, bed + new Vector3(0f, 0.07f, 0f), new Vector3(1.25f, 0.07f, 1.05f), Art.Lilac);
-                Art.Prim(PrimitiveType.Cylinder, "BedCushion", t, bed + new Vector3(0f, 0.09f, 0f), new Vector3(1.0f, 0.065f, 0.82f), Art.Cream);
+                Art.Prim(PrimitiveType.Cylinder, "BedBase", bedObj.transform, new Vector3(0f, 0.07f, 0f), new Vector3(1.25f, 0.07f, 1.05f), Art.Lilac);
+                Art.Prim(PrimitiveType.Cylinder, "BedCushion", bedObj.transform, new Vector3(0f, 0.09f, 0f), new Vector3(1.0f, 0.065f, 0.82f), Art.Cream);
             }
 
             // Bowl + kibble
-            Vector3 bowl = BowlPosition;
-            if (Art.Prop("bowl", t, bowl, 0.46f) == null)
+            RoomObject bowlObj = MakeObject("bowl", new Vector3(1.0f, 0f, 1.0f), 0.25f, 0.25f);
+            if (Art.Prop("bowl", bowlObj.transform, Vector3.zero, 0.46f) == null)
             {
-                Art.Prim(PrimitiveType.Cylinder, "Bowl", t, bowl + new Vector3(0f, 0.06f, 0f), new Vector3(0.46f, 0.06f, 0.46f), Art.Rose);
-                Art.Prim(PrimitiveType.Cylinder, "BowlInside", t, bowl + new Vector3(0f, 0.064f, 0f), new Vector3(0.37f, 0.06f, 0.37f), new Color(0.75f, 0.22f, 0.27f));
+                Art.Prim(PrimitiveType.Cylinder, "Bowl", bowlObj.transform, new Vector3(0f, 0.06f, 0f), new Vector3(0.46f, 0.06f, 0.46f), Art.Rose);
+                Art.Prim(PrimitiveType.Cylinder, "BowlInside", bowlObj.transform, new Vector3(0f, 0.064f, 0f), new Vector3(0.37f, 0.06f, 0.37f), new Color(0.75f, 0.22f, 0.27f));
             }
-            kibble = Art.Prop("kibble", t, bowl + new Vector3(0f, 0.05f, 0f), 0.34f);
+            kibble = Art.Prop("kibble", bowlObj.transform, new Vector3(0f, 0.05f, 0f), 0.34f);
             if (kibble == null)
-                kibble = Art.Prim(PrimitiveType.Sphere, "Kibble", t, bowl + new Vector3(0f, 0.105f, 0f), new Vector3(0.34f, 0.1f, 0.34f), new Color(0.62f, 0.4f, 0.22f));
+                kibble = Art.Prim(PrimitiveType.Sphere, "Kibble", bowlObj.transform, new Vector3(0f, 0.105f, 0f), new Vector3(0.34f, 0.1f, 0.34f), new Color(0.62f, 0.4f, 0.22f));
             kibble.SetActive(false);
+
+            WalkToState.Steer = Steer;
+            WalkToState.Clamp = PushOut;
 
             // Ball
             // generated model: an empty "Ball" centre point with the model hung around it (it moves and spins as before)
@@ -150,15 +172,24 @@ namespace Bella.World
                 Art.Prim(PrimitiveType.Cylinder, "BallBand", ball.transform, Vector3.zero, new Vector3(1.03f, 0.12f, 1.03f), Art.Gold);
             }
 
+            // the ball can be tapped (she fetches it) but not moved
+            SphereCollider ballCol = ball.AddComponent<SphereCollider>();
+            ballCol.radius = ball == ballRoot ? 0.2f : 0.9f;
+            RoomObject ballObj = ball.AddComponent<RoomObject>();
+            ballObj.id = "ball"; ballObj.movable = false; ballObj.solid = false; ballObj.radius = 0.15f; ballObj.height = 0.25f;
+
             // Bath tub (hidden until Bubble Bath)
             tub = new GameObject("Tub");
             tub.transform.SetParent(t, false);
             tub.transform.localPosition = HomePoint;
-            if (Art.Prop("tub", tub.transform, Vector3.zero, 1.45f) != null)
+            GameObject tubModel = Art.Prop("tub", tub.transform, Vector3.zero, 1.45f);
+            if (tubModel != null)
             {
-                // the generated tub is taller than the old one: lift the water to just under its rim
-                Art.Prim(PrimitiveType.Cylinder, "Water", tub.transform, new Vector3(0f, 0.52f, 0f), new Vector3(1.15f, 0.02f, 0.58f), new Color(0.62f, 0.86f, 0.98f));
-                Art.Prop("toy_duck", tub.transform, new Vector3(0.3f, 0.53f, 0.05f), 0.24f, -25f);
+                // The generated tub is tall (rim about 0.6 m): squash it to 55 % so Bella sits in it with her head
+                // and chest showing. Its inside floor is then about 0.07 m high (BathActivity lifts her by TubFloor).
+                tubModel.transform.localScale = new Vector3(1f, 0.55f, 1f);
+                Art.Prim(PrimitiveType.Cylinder, "Water", tub.transform, new Vector3(0f, TubWaterY, 0f), new Vector3(1.15f, 0.02f, 0.58f), new Color(0.62f, 0.86f, 0.98f));
+                Art.Prop("toy_duck", tub.transform, new Vector3(0.35f, TubWaterY + 0.01f, 0.08f), 0.22f, -25f);
             }
             else
             {
@@ -248,16 +279,129 @@ namespace Bella.World
         /// <summary>A wicker toy basket in the back corner, out of Bella's wander area.</summary>
         private void BuildToyBasket(Transform t)
         {
-            if (Art.Prop("basket", t, new Vector3(-1.9f, 0f, 2.05f), 0.55f) != null) return;
+            RoomObject o = MakeObject("basket", new Vector3(1.15f, 0f, 2.2f), 0.28f, 0.5f);
+            if (Art.Prop("basket", o.transform, Vector3.zero, 0.55f) != null) return;
             var wicker = new Color(0.82f, 0.62f, 0.40f);
-            Vector3 p = new Vector3(-1.9f, 0f, 2.05f);
-            Art.Prim(PrimitiveType.Cylinder, "Basket", t, p + new Vector3(0f, 0.16f, 0f), new Vector3(0.55f, 0.16f, 0.55f), wicker);
-            Art.Prim(PrimitiveType.Cylinder, "BasketInner", t, p + new Vector3(0f, 0.17f, 0f), new Vector3(0.47f, 0.16f, 0.47f), wicker * 0.75f);
-            Art.Prim(PrimitiveType.Sphere, "BasketBall1", t, p + new Vector3(-0.1f, 0.3f, -0.05f), Vector3.one * 0.17f, Art.Teal);
-            Art.Prim(PrimitiveType.Sphere, "BasketBall2", t, p + new Vector3(0.1f, 0.31f, 0.08f), Vector3.one * 0.16f, Art.Pink);
-            Art.Prim(PrimitiveType.Sphere, "BasketBall3", t, p + new Vector3(0.02f, 0.34f, -0.12f), Vector3.one * 0.14f, Art.Gold);
+            Transform b = o.transform;
+            Art.Prim(PrimitiveType.Cylinder, "Basket", b, new Vector3(0f, 0.16f, 0f), new Vector3(0.55f, 0.16f, 0.55f), wicker);
+            Art.Prim(PrimitiveType.Cylinder, "BasketInner", b, new Vector3(0f, 0.17f, 0f), new Vector3(0.47f, 0.16f, 0.47f), wicker * 0.75f);
+            Art.Prim(PrimitiveType.Sphere, "BasketBall1", b, new Vector3(-0.1f, 0.3f, -0.05f), Vector3.one * 0.17f, Art.Teal);
+            Art.Prim(PrimitiveType.Sphere, "BasketBall2", b, new Vector3(0.1f, 0.31f, 0.08f), Vector3.one * 0.16f, Art.Pink);
+            Art.Prim(PrimitiveType.Sphere, "BasketBall3", b, new Vector3(0.02f, 0.34f, -0.12f), Vector3.one * 0.14f, Art.Gold);
         }
 
+        // ---------------------------------------------------------------- tappable / movable furniture
+
+        private RoomObject MakeObject(string id, Vector3 defaultPos, float radius, float height, float yaw = 0f)
+        {
+            var go = new GameObject("Obj_" + id);
+            go.transform.SetParent(transform, false);
+            go.transform.localPosition = SavedSpot(id, defaultPos);
+            go.transform.localRotation = Quaternion.Euler(0f, yaw, 0f);
+            BoxCollider box = go.AddComponent<BoxCollider>();
+            box.center = new Vector3(0f, height * 0.5f, 0f);
+            box.size = new Vector3(radius * 2f, height, radius * 2f);
+            RoomObject o = go.AddComponent<RoomObject>();
+            o.id = id; o.radius = radius; o.height = height; o.home = defaultPos;
+            objs[id] = o;
+            return o;
+        }
+
+        private static Vector3 SavedSpot(string id, Vector3 fallback)
+        {
+            var list = Bella.Save.SaveSystem.Data.objectSpots;
+            for (int i = 0; i < list.Count; i++)
+            {
+                string[] p = list[i].Split('|');
+                float x, z;
+                if (p.Length == 3 && p[0] == id
+                    && float.TryParse(p[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out x)
+                    && float.TryParse(p[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out z))
+                    return ClampSpot(new Vector3(x, 0f, z));
+            }
+            return fallback;
+        }
+
+        /// <summary>Keeps furniture inside what the camera shows.</summary>
+        public static Vector3 ClampSpot(Vector3 p)
+        {
+            return new Vector3(Mathf.Clamp(p.x, -1.6f, 1.6f), 0f, Mathf.Clamp(p.z, -0.7f, 2.4f));
+        }
+
+        /// <summary>Put a piece of furniture down at a new spot and remember it.</summary>
+        public void SetObjectSpot(RoomObject o, Vector3 p, bool save)
+        {
+            if (o == null) return;
+            o.transform.localPosition = ClampSpot(p);
+            if (!save) return;
+            var list = Bella.Save.SaveSystem.Data.objectSpots;
+            for (int i = list.Count - 1; i >= 0; i--) if (list[i].StartsWith(o.id + "|")) list.RemoveAt(i);
+            Vector3 q = o.transform.localPosition;
+            list.Add(o.id + "|" + q.x.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture) + "|" +
+                     q.z.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture));
+            Bella.Save.SaveSystem.Flush();
+        }
+
+        /// <summary>Where Bella may walk: the floor the camera shows.</summary>
+        public static Vector3 ClampWalk(Vector3 p)
+        {
+            return new Vector3(Mathf.Clamp(p.x, -1.6f, 1.6f), 0f, Mathf.Clamp(p.z, -0.6f, 2.3f));
+        }
+
+        private const float WalkMargin = 0.2f;
+
+        /// <summary>Pushes a floor point out of every solid piece of furniture.</summary>
+        public Vector3 PushOut(Vector3 p)
+        {
+            foreach (RoomObject o in objs.Values)
+            {
+                if (o == null || !o.solid || !o.gameObject.activeInHierarchy) continue;
+                Vector3 c = o.transform.localPosition;
+                float dx = p.x - c.x, dz = p.z - c.z;
+                float r = o.radius + WalkMargin, m = Mathf.Sqrt(dx * dx + dz * dz);
+                if (m >= r) continue;
+                if (m < 0.001f) { dx = 0f; dz = -1f; m = 1f; }
+                p.x = c.x + dx / m * r;
+                p.z = c.z + dz / m * r;
+            }
+            return p;
+        }
+
+        /// <summary>
+        /// Next point to aim at when walking from -> to: the target itself, or a point beside the first
+        /// piece of furniture that is in the way.
+        /// </summary>
+        public Vector3 Steer(Vector3 from, Vector3 to)
+        {
+            Vector3 d = to - from; d.y = 0f;
+            float len = d.magnitude;
+            if (len < 0.05f) return to;
+            Vector3 dir = d / len;
+            RoomObject block = null; float bestAlong = len;
+            foreach (RoomObject o in objs.Values)
+            {
+                if (o == null || !o.solid || !o.gameObject.activeInHierarchy) continue;
+                Vector3 c = o.transform.localPosition;
+                float r = o.radius + WalkMargin;
+                Vector3 toC = new Vector3(c.x - from.x, 0f, c.z - from.z);
+                float along = Vector3.Dot(toC, dir);
+                if (along < 0.05f || along > len + r) continue;
+                float side = Mathf.Abs(toC.x * dir.z - toC.z * dir.x);       // distance from the centre to the line of travel
+                if (side >= r) continue;
+                Vector3 tt = new Vector3(c.x - to.x, 0f, c.z - to.z);
+                if (tt.magnitude < r) continue;                                // the target is next to / inside it: just go there
+                if (along < bestAlong) { bestAlong = along; block = o; }
+            }
+            if (block == null) return to;
+            Vector3 cc = block.transform.localPosition;
+            float rr = block.radius + WalkMargin + 0.08f;
+            Vector3 toCc = new Vector3(cc.x - from.x, 0f, cc.z - from.z);
+            float cross = toCc.x * dir.z - toCc.z * dir.x;                     // which side the centre lies on
+            Vector3 perp = cross > 0f ? new Vector3(dir.z, 0f, -dir.x) : new Vector3(-dir.z, 0f, dir.x);
+            Vector3 way = new Vector3(cc.x, 0f, cc.z) + perp * -rr;
+            // aim just past the obstacle, on the clear side
+            return new Vector3(way.x, from.y, way.z);
+        }
 
         // ---------------------------------------------------------------- generated surfaces and places
 
@@ -314,8 +458,8 @@ namespace Bella.World
             backdrop.name = "PlaceBackdrop";
             Destroy(backdrop.GetComponent<Collider>());
             backdrop.transform.SetParent(transform, false);
-            backdrop.transform.localPosition = new Vector3(0f, 2f, 2.695f);   // just in front of the back wall's face (z 2.70)
-            backdrop.transform.localScale = new Vector3(6.3f, 4f, 1f);
+            backdrop.transform.localPosition = new Vector3(0f, 1.9f, 2.695f);   // bottom edge a hand below the floor, so no gap   // just in front of the back wall's face (z 2.70)
+            backdrop.transform.localScale = new Vector3(6.3f, 4.2f, 1f);
             Renderer r = backdrop.GetComponent<Renderer>();
             r.sharedMaterial = Art.SpriteMat(Color.white, tex);
             r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
@@ -349,17 +493,42 @@ namespace Bella.World
             if (tub != null) tub.SetActive(show);
         }
 
+        private bool NearFurniture(Vector3 p, float extra)
+        {
+            foreach (RoomObject o in objs.Values)
+            {
+                if (o == null || !o.solid) continue;
+                Vector3 c = o.transform.localPosition;
+                float dx = p.x - c.x, dz = p.z - c.z;
+                if (dx * dx + dz * dz < (o.radius + extra) * (o.radius + extra)) return true;
+            }
+            return false;
+        }
+
         public Vector3 RandomFloorPoint(float minDistanceFromHome = 0f)
         {
-            for (int i = 0; i < 12; i++)
+            for (int i = 0; i < 16; i++)
             {
                 var p = new Vector3(UnityEngine.Random.Range(-0.95f, 0.95f), 0f, UnityEngine.Random.Range(-0.35f, 0.75f));
-                if ((p - BedPosition).magnitude < 0.75f) continue;
-                if ((p - BowlPosition).magnitude < 0.6f) continue;
+                if (NearFurniture(p, 0.35f)) continue;
                 if ((p - HomePoint).magnitude < minDistanceFromHome) continue;
                 return p;
             }
             return HomePoint + new Vector3(0.6f, 0f, 0.1f);
+        }
+
+        /// <summary>A floor point at least minDistance from where she stands, clear of furniture (for fetch).</summary>
+        public Vector3 RandomFloorPointAwayFrom(Vector3 from, float minDistance)
+        {
+            for (int i = 0; i < 30; i++)
+            {
+                var p = new Vector3(UnityEngine.Random.Range(-1.2f, 1.2f), 0f, UnityEngine.Random.Range(-0.4f, 1.0f));
+                if (NearFurniture(p, 0.4f)) continue;
+                if ((p - from).magnitude < minDistance) continue;
+                return p;
+            }
+            // nothing fits: the far side of the room from her
+            return new Vector3(from.x > 0f ? -1.0f : 1.0f, 0f, 0.3f);
         }
 
         // ---------------------------------------------------------------- ball
@@ -392,7 +561,7 @@ namespace Bella.World
             {
                 float k = e / dur;
                 Vector3 p = Vector3.Lerp(from, to, k);
-                p.y += Mathf.Sin(k * Mathf.PI) * 0.9f;
+                p.y += Mathf.Sin(k * Mathf.PI) * 1.7f;      // a high lob: it comes down in front of Bella, never through her
                 ball.transform.position = p;
                 ball.transform.Rotate(360f * Time.deltaTime, 0f, 0f);
                 yield return null;

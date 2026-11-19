@@ -76,7 +76,7 @@ namespace UnityEngine
     public struct Vector3 {
         public float x, y, z; public Vector3(float x, float y, float z) { this.x = x; this.y = y; this.z = z; } public Vector3(float x, float y) { this.x = x; this.y = y; z = 0; }
         public static Vector3 zero => default; public static Vector3 one => new Vector3(1, 1, 1); public static Vector3 up => new Vector3(0, 1, 0); public static Vector3 forward => new Vector3(0, 0, 1); public static Vector3 right => new Vector3(1, 0, 0); public static Vector3 down => new Vector3(0, -1, 0); public static Vector3 back => new Vector3(0,0,-1); public static Vector3 left => new Vector3(-1,0,0);
-        public static Vector3 Scale(Vector3 a, Vector3 b) => default; public static Vector3 Min(Vector3 a, Vector3 b) => default; public static Vector3 Max(Vector3 a, Vector3 b) => default; public float magnitude => (float)Math.Sqrt(x * x + y * y + z * z); public float sqrMagnitude => x * x + y * y + z * z; public Vector3 normalized => this;
+        public static Vector3 Scale(Vector3 a, Vector3 b) => default; public static Vector3 Min(Vector3 a, Vector3 b) => default; public static Vector3 Max(Vector3 a, Vector3 b) => default; public float magnitude => (float)Math.Sqrt(x * x + y * y + z * z); public float sqrMagnitude => x * x + y * y + z * z; public void Normalize() { } public Vector3 normalized => this;
         public static Vector3 operator +(Vector3 a, Vector3 b) => a; public static Vector3 operator -(Vector3 a, Vector3 b) => a; public static Vector3 operator -(Vector3 a) => a;
         public static Vector3 operator *(Vector3 a, float d) => a; public static Vector3 operator *(float d, Vector3 a) => a; public static Vector3 operator /(Vector3 a, float d) => a;
         public static bool operator ==(Vector3 a, Vector3 b) => true; public static bool operator !=(Vector3 a, Vector3 b) => false;
@@ -131,7 +131,7 @@ namespace UnityEngine
     public struct Touch { public int fingerId; public Vector2 position; }
     public enum KeyCode { Escape, Space }
     public enum Space { World, Self }
-    public struct Ray { public Vector3 GetPoint(float distance) => default; }
+    public struct Ray { public Vector3 origin => default; public Vector3 direction => default; public Vector3 GetPoint(float distance) => default; }
     public struct Plane { public Plane(Vector3 inNormal, Vector3 inPoint) {} public bool Raycast(Ray ray, out float enter) { enter = 0f; return false; } } public struct RaycastHit { public Vector3 point => default; public Collider collider => null; public Transform transform => null; public Vector3 normal => default; }
     public static class Physics { public static bool Raycast(Ray r, out RaycastHit h, float max) { h = default; return false; } public static bool Raycast(Ray r, out RaycastHit h) { h = default; return false; } }
     public class Collider : Component { public bool enabled { get; set; } public bool isTrigger { get; set; } }

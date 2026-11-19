@@ -24,6 +24,18 @@ namespace Bella.Pet
         /// <summary>Raises the whole puppy (metres) — e.g. onto her bed cushion while she naps.</summary>
         public float HeightOffset { get; set; }
 
+        /// <summary>Extra instant lift (metres) while she hops onto / off something. Not smoothed.</summary>
+        public float HopLift { get; set; }
+
+        /// <summary>True while she eats: the head bobs with every chew.</summary>
+        public bool Chewing { get; set; }
+
+        /// <summary>Jump straight to a height with no easing (the end of a hop).</summary>
+        public void SnapHeight(float h)
+        {
+            HeightOffset = h; height = h; heightVel = 0f;
+        }
+
         private float height, heightVel;
         private float squash, squashVel;
         private float excitement;
@@ -67,7 +79,7 @@ namespace Bella.Pet
             Transform pivot = model.Pivot;
 
             height = Mathf.SmoothDamp(height, HeightOffset, ref heightVel, 0.2f);
-            pivot.localPosition = new Vector3(0f, height, 0f);
+            pivot.localPosition = new Vector3(0f, height + HopLift, 0f);
 
             // --- squash & stretch on the whole puppy ------------------------------
             squash = Mathf.SmoothDamp(squash, 0f, ref squashVel, 0.16f);
@@ -108,6 +120,10 @@ namespace Bella.Pet
                         model.Head.rotation = Quaternion.AngleAxis(angle, axis) * model.Head.rotation;
                 }
             }
+
+            // --- chewing: a quick nod of the head, in time with the mouth
+            if (Chewing && model.Head != null)
+                model.Head.rotation = Quaternion.AngleAxis(Mathf.Sin(Time.time * 15f) * 5f, pivot.right) * model.Head.rotation;
 
             // --- floppy ears lag behind vertical head movement -----------------------
             if (model.Head != null && model.EarL != null && model.EarR != null && dt > 1e-5f)

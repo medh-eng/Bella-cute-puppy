@@ -39,6 +39,7 @@ namespace Bella.Pet
         private IdleState idle;
         private SleepState sleepState;
         private float petCooldown;
+        private Coroutine hopRoutine;
 
         private const float WalkSpeed = 0.95f;
         private const float RunSpeed = 2.3f;
@@ -74,7 +75,8 @@ namespace Bella.Pet
             col.radius = 0.36f;
             col.height = 1.05f;
 
-            Art.GroundDisc("BlobShadow", transform, new Vector3(0f, 0.012f, 0f), 0.85f, new Color(0f, 0f, 0f, 0.22f));
+            // 3 cm above the floor: the rug discs top out at 1.2 cm, and a shadow at the same height flickered against them
+            Art.GroundDisc("BlobShadow", transform, new Vector3(0f, 0.03f, 0f), 0.85f, new Color(0f, 0f, 0f, 0.22f));
 
             idle = new IdleState(Needs, Face, Anim, transform);
             transform.rotation = Quaternion.Euler(0f, 180f, 0f);
@@ -130,9 +132,13 @@ namespace Bella.Pet
             {
                 Puppy.ClearLook();
                 AudioManager.Play("munch");
+                Face.Munch(2.6f);               // mouth opens and closes with the sound
+                Puppy.Chewing = true;
                 bool wasHungry = Needs.Hunger < 30f;
                 fsm.ChangeState(new InteractionState(Face, Anim, Expression.Soapy, "Eat", 2.6f, () =>
                 {
+                    Puppy.Chewing = false;
+                    Face.StopMunch();
                     room.SetBowlFull(false);
                     float hunger = food != null ? food.hunger : (Needs.Config != null ? Needs.Config.feedAmount : 35f);
                     float happy = food != null ? food.happiness : 4f;
@@ -150,26 +156,100 @@ namespace Bella.Pet
         public void RequestSleep()
         {
             if (Busy || InActivity || room == null) return;
+            RoomObject bed = room.FindObject("bed");
+            if (bed == null) return;
             Busy = true;
             bool rewarded = Needs.Energy < RewardBelow;
             AudioManager.Play("tap");
             AudioManager.Voice("yawn_sleepy");
 
-            fsm.ChangeState(new WalkToState(transform, Anim, room.BedPosition, WalkSpeed, false, () =>
+            // walk to the bed's edge, face it, HOP up onto the cushion, then curl up
+            Vector3 stand = bed.StandPoint;
+            fsm.ChangeState(new WalkToState(transform, Anim, stand, WalkSpeed, false, () =>
             {
-                if (GameRoot.Instance != null) GameRoot.Instance.SetSleepMode(true);
-                float nap = Mathf.Lerp(4f, 9f, Mathf.Clamp01((100f - Needs.Energy) / 100f));
-                sleepState = new SleepState(Needs, Face, Anim, Puppy, Model.HeadCentre, nap, () =>
+                AudioManager.Play("whoosh", 0.4f);
+                HopTo(new Vector3(bed.transform.localPosition.x, 0f, bed.transform.localPosition.z), 0f, SleepState.BedHeight, 0.32f, 0.7f, 180f, () =>
                 {
-                    sleepState = null;
-                    if (GameRoot.Instance != null) GameRoot.Instance.SetSleepMode(false);
-                    SaveSystem.Data.countNaps++;
-                    AudioManager.Voice("yip");
-                    Celebrate(rewarded ? 2 : 0);
-                    FinishCare("sleep");
+                    if (GameRoot.Instance != null) GameRoot.Instance.SetSleepMode(true);
+                    float nap = Mathf.Lerp(4f, 9f, Mathf.Clamp01((100f - Needs.Energy) / 100f));
+                    sleepState = new SleepState(Needs, Face, Anim, Puppy, Model.HeadCentre, nap, () =>
+                    {
+                        sleepState = null;
+                        if (GameRoot.Instance != null) GameRoot.Instance.SetSleepMode(false);
+                        SaveSystem.Data.countNaps++;
+                        // hop back down beside the bed
+                        Vector3 down = bed.StandPoint;
+                        HopTo(down, SleepState.BedHeight, 0f, 0.22f, 0.55f, YawTowards(down, bed.transform.localPosition) + 180f, () =>
+                        {
+                            AudioManager.Voice("yip");
+                            Celebrate(rewarded ? 2 : 0);
+                            FinishCare("sleep");
+                        });
+                    });
+                    fsm.ChangeState(sleepState);
                 });
-                fsm.ChangeState(sleepState);
-            }, 180f));
+            }, YawTowards(stand, bed.transform.localPosition)));
+        }
+
+        /// <summary>
+        /// A hop in an arc to a floor point: used to jump onto and off the bed. lift0 / lift1 are the heights
+        /// she starts and ends at (the cushion is higher than the floor), apex is the extra height at the top.
+        /// </summary>
+        private void HopTo(Vector3 groundPos, float lift0, float lift1, float apex, float seconds, float endYaw, Action done)
+        {
+            if (hopRoutine != null) StopCoroutine(hopRoutine);
+            hopRoutine = StartCoroutine(HopRoutine(groundPos, lift0, lift1, apex, seconds, endYaw, done));
+        }
+
+        private System.Collections.IEnumerator HopRoutine(Vector3 groundPos, float lift0, float lift1, float apex,
+            float seconds, float endYaw, Action done)
+        {
+            fsm.ChangeState(null);
+            Anim.Play("Happy", 0.1f);
+            Puppy.SnapHeight(0f);
+            Puppy.HopLift = lift0;
+            Vector3 from = transform.position;
+            Vector3 to = new Vector3(groundPos.x, from.y, groundPos.z);
+            Quaternion r0 = transform.rotation;
+            Quaternion r1 = Quaternion.Euler(0f, endYaw, 0f);
+            for (float e = 0f; e < seconds; e += Time.deltaTime)
+            {
+                float k = Mathf.Clamp01(e / seconds);
+                float ease = k * k * (3f - 2f * k);
+                transform.position = Vector3.Lerp(from, to, ease);
+                transform.rotation = Quaternion.Slerp(r0, r1, Mathf.Clamp01(k * 1.6f));
+                Puppy.HopLift = Mathf.Lerp(lift0, lift1, ease) + Mathf.Sin(k * Mathf.PI) * apex;
+                yield return null;
+            }
+            transform.position = to;
+            transform.rotation = r1;
+            Puppy.HopLift = 0f;
+            Puppy.SnapHeight(lift1);
+            hopRoutine = null;
+            if (done != null) done();
+        }
+
+        /// <summary>Tap on a piece of furniture: she walks over, looks at it and reacts.</summary>
+        public void RequestVisit(Vector3 stand, Vector3 lookAt, string clip, Expression expression, string sfx, float seconds, bool munch)
+        {
+            if (Busy || InActivity || room == null) return;
+            Busy = true;
+            AudioManager.Play("tap", 0.5f);
+            Puppy.LookAt(lookAt + Vector3.up * 0.15f);
+            fsm.ChangeState(new WalkToState(transform, Anim, stand, RunSpeed * 0.8f, true, () =>
+            {
+                if (!string.IsNullOrEmpty(sfx)) AudioManager.Play(sfx, 0.7f);
+                if (munch) { Face.Munch(seconds); Puppy.Chewing = true; }
+                fsm.ChangeState(new InteractionState(Face, Anim, expression, clip, seconds, () =>
+                {
+                    Puppy.Chewing = false;
+                    Face.StopMunch();
+                    Puppy.ClearLook();
+                    Needs.AddHappiness(1.5f);
+                    Busy = false;
+                    fsm.ChangeState(idle);
+                }));
+            }, YawTowards(stand, lookAt)));
         }
 
         public void WakeUp()
@@ -189,7 +269,7 @@ namespace Bella.Pet
                 return;
             }
             Busy = true;
-            Vector3 landing = room.RandomFloorPoint(0.5f);
+            Vector3 landing = room.RandomFloorPointAwayFrom(transform.position, 1.2f);
             Face.Set(Expression.Excited);
             AudioManager.Play("whoosh");
             AudioManager.Voice("bark");
@@ -199,7 +279,7 @@ namespace Bella.Pet
                 Puppy.ClearLook();
                 Vector3 dir = (landing - transform.position);
                 dir.y = 0f;
-                Vector3 stop = landing - dir.normalized * 0.32f;
+                Vector3 stop = landing - dir.normalized * 0.72f;   // stops in front of the ball, not on top of it
                 fsm.ChangeState(new WalkToState(transform, Anim, stop, RunSpeed, true, () =>
                 {
                     room.HideBall();

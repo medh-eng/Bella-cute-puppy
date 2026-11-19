@@ -64,6 +64,7 @@ namespace Bella.MiniGames
             Bella.BeginActivity(G.Room.HomePoint, 180f, "Sit", () =>
             {
                 Ready = true;
+                Bella.Puppy.HeightOffset = global::Bella.World.Room.TubFloor;      // sits ON the tub floor, inside the tub
                 Bella.Face.Set(Expression.Happy);
                 AudioManager.Play("splash");
                 Fx.Drops(Bella.transform.position + Vector3.up * 0.4f, 8);
@@ -191,6 +192,7 @@ namespace Bella.MiniGames
         protected override void OnEnd()
         {
             ClearSoap();
+            Bella.Puppy.HeightOffset = 0f;
             G.Room.ShowTub(false);
         }
     }

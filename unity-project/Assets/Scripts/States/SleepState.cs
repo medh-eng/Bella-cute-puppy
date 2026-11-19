@@ -22,7 +22,7 @@ namespace Bella.States
         private readonly Action onWake;
 
         /// <summary>Top of the bed cushion built in World/Room.cs.</summary>
-        private const float BedHeight = 0.15f;
+        public const float BedHeight = 0.15f;
 
         private float elapsed;
         private float energyPerSecond;

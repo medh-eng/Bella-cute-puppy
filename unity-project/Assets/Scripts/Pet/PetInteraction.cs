@@ -1,78 +1,177 @@
 using UnityEngine;
 using Bella.Core;
+using Bella.World;
 
 namespace Bella.Pet
 {
     /// <summary>
-    /// Tap or stroke Bella to pet her. While the finger is down near her she
-    /// watches it (head follows). Disabled automatically during mini-games, which
-    /// read the pointer themselves.
+    /// Everything a finger does in the room (outside mini-games):
+    ///   tap or stroke Bella        -> she is petted
+    ///   tap furniture              -> Bella goes there (bed: she jumps up and sleeps, bowl: she eats,
+    ///                                 ball: she fetches, others: she walks over and reacts)
+    ///   tap the empty floor        -> Bella walks to that spot
+    ///   press and HOLD furniture   -> it lifts; drag it anywhere on the floor and let go to place it
+    /// While the finger is down she also watches it (head follows).
     /// </summary>
     public class PetInteraction : MonoBehaviour
     {
+        private const float HoldSeconds = 0.45f;
+        private const float TapSlopPixels = 28f;
+
         private Camera cam;
         private BellaController bella;
+        private Room room;
         private bool startedOnUI;
-        private bool downOnBella;
+
+        private RoomObject pressObj;
         private Vector2 downPos;
         private float downTime;
+        private bool dragging;
+        private bool onBellaAtDown;
+        private Vector3 dragOffset;
+        private bool movedFar;
+        private bool hitOtherAtDown;
 
-        // room floor she may be sent to by a tap (same area she wanders in, a little wider)
-        private const float XMin = -1.1f, XMax = 1.1f, ZMin = -0.5f, ZMax = 0.9f;
-
-        public void Init(Camera c, BellaController b)
+        public void Init(Camera c, BellaController b, Room r)
         {
             cam = c;
             bella = b;
+            room = r;
         }
 
         private void Update()
         {
             if (cam == null || bella == null) return;
-            if (bella.InActivity) return;
+            if (bella.InActivity) { CancelPress(); return; }
 
             if (Pointer.Down)
             {
                 startedOnUI = Pointer.OverUI;
-                downPos = Pointer.Position;
-                downTime = Time.time;
-                RaycastHit h0;
-                downOnBella = Pointer.Raycast(cam, out h0) && h0.collider.GetComponentInParent<BellaController>() == bella;
+                pressObj = null; dragging = false; movedFar = false; onBellaAtDown = false; hitOtherAtDown = false;
+                if (!startedOnUI)
+                {
+                    downPos = Pointer.Position;
+                    downTime = Time.time;
+                    RaycastHit hit;
+                    if (Pointer.Raycast(cam, out hit))
+                    {
+                        onBellaAtDown = hit.collider.GetComponentInParent<BellaController>() == bella;
+                        if (!onBellaAtDown) pressObj = hit.collider.GetComponentInParent<RoomObject>();
+                        hitOtherAtDown = !onBellaAtDown && pressObj == null;     // a butterfly or similar: not a floor tap
+                    }
+                }
             }
 
             if (Pointer.Held && !startedOnUI)
             {
-                RaycastHit hit;
-                if (Pointer.Raycast(cam, out hit))
+                if ((Pointer.Position - downPos).magnitude > TapSlopPixels) movedFar = true;
+
+                // pick up furniture after a long press
+                if (pressObj != null && pressObj.movable && !dragging && !movedFar && Time.time - downTime > HoldSeconds
+                    && !(pressObj.id == "bed" && bella.IsSleeping))
                 {
-                    bool onBella = hit.collider.GetComponentInParent<BellaController>() == bella;
-                    if (onBella) bella.PetBella(hit.point);
-                    if (!bella.Busy) bella.Puppy.LookAt(hit.point + Vector3.up * (onBella ? 0.35f : 0.1f));
+                    dragging = true;
+                    Vector3 floorPoint;
+                    dragOffset = FloorPoint(out floorPoint) ? pressObj.transform.localPosition - floorPoint : Vector3.zero;
+                    AudioManager.Play("pop", 0.7f, 1.3f);
+                    Fx.Sparkles(pressObj.transform.position + Vector3.up * 0.3f, 6);
+                }
+
+                if (dragging)
+                {
+                    Vector3 fp;
+                    if (FloorPoint(out fp)) room.SetObjectSpot(pressObj, fp + dragOffset, false);
+                    // lift a little while held
+                    Vector3 lp = pressObj.transform.localPosition;
+                    pressObj.transform.localPosition = new Vector3(lp.x, 0.06f, lp.z);
+                    return;
+                }
+
+                if (pressObj == null)
+                {
+                    RaycastHit hit;
+                    if (Pointer.Raycast(cam, out hit))
+                    {
+                        bool onBella = hit.collider.GetComponentInParent<BellaController>() == bella;
+                        if (onBella) bella.PetBella(hit.point);
+                        if (!bella.Busy) bella.Puppy.LookAt(hit.point + Vector3.up * (onBella ? 0.35f : 0.1f));
+                    }
                 }
             }
 
-            if (Pointer.Up && !bella.Busy) bella.Puppy.ClearLook();
-
-            // A quick tap on the empty floor sends her there.
-            if (Pointer.Up && !startedOnUI && !downOnBella && !bella.Busy && !bella.IsSleeping
-                && Time.time - downTime < 0.35f && (Pointer.Position - downPos).magnitude < Screen.height * 0.03f)
+            if (Pointer.Up)
             {
-                Ray ray = cam.ScreenPointToRay(Pointer.Position);
-                Plane floor = new Plane(Vector3.up, Vector3.zero);
-                float enter;
-                if (floor.Raycast(ray, out enter))
+                if (!startedOnUI)
                 {
-                    Vector3 p = ray.GetPoint(enter);
-                    if (p.x >= XMin && p.x <= XMax && p.z >= ZMin && p.z <= ZMax)
+                    if (dragging)
                     {
-                        p.y = 0f;
-                        if (bella.WalkToPoint(p, null))
-                        {
-                            AudioManager.Play("tap", 0.5f);
-                            Fx.Burst(p + Vector3.up * 0.05f, "paw", 3, 0.2f, -0.2f, 0.4f, 0.8f);
-                        }
+                        room.SetObjectSpot(pressObj, new Vector3(pressObj.transform.localPosition.x, 0f, pressObj.transform.localPosition.z), true);
+                        AudioManager.Play("tap", 0.8f);
+                        Fx.Sparkles(pressObj.transform.position + Vector3.up * 0.2f, 4);
+                    }
+                    else if (!movedFar && Time.time - downTime <= 1.2f)
+                    {
+                        if (pressObj != null) TapObject(pressObj);
+                        else if (!onBellaAtDown && !hitOtherAtDown) TapFloor();
                     }
                 }
+                dragging = false;
+                pressObj = null;
+                if (!bella.Busy) bella.Puppy.ClearLook();
+            }
+        }
+
+        private void CancelPress()
+        {
+            dragging = false;
+            pressObj = null;
+        }
+
+        /// <summary>Where the finger's ray meets the floor (y = 0).</summary>
+        private bool FloorPoint(out Vector3 point)
+        {
+            point = Vector3.zero;
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            if (Mathf.Abs(ray.direction.y) < 0.0001f) return false;
+            float t = -ray.origin.y / ray.direction.y;
+            if (t < 0f) return false;
+            point = ray.origin + ray.direction * t;
+            point.y = 0f;
+            return true;
+        }
+
+        private void TapFloor()
+        {
+            if (bella.Busy || bella.IsSleeping) return;
+            Vector3 p;
+            if (!FloorPoint(out p)) return;
+            p = Room.ClampWalk(p);
+            AudioManager.Play("tap", 0.5f);
+            Fx.Burst(p + Vector3.up * 0.05f, "paw", 3, 0.2f, -0.2f, 0.4f, 0.8f);
+            if (bella.WalkToPoint(room.PushOut(p), null) && Bella.Core.GameRoot.Instance != null && Bella.Core.GameRoot.Instance.Wander != null)
+                Bella.Core.GameRoot.Instance.Wander.Interrupted();
+        }
+
+        private void TapObject(RoomObject o)
+        {
+            if (bella.IsSleeping) { bella.WakeUp(); return; }
+            if (bella.Busy) return;
+            Vector3 at = o.transform.position;
+            switch (o.id)
+            {
+                case "bed": bella.RequestSleep(); break;
+                case "bowl": bella.RequestFeed(); break;
+                case "ball": bella.RequestFetch(); break;
+                case "waterbowl":
+                    bella.RequestVisit(o.StandPoint, at, "Eat", Expression.Soapy, "splash", 2.0f, true); break;
+                case "plant":
+                    bella.RequestVisit(o.StandPoint, at, "Sneeze", Expression.Excited, "pop", 1.2f, false); break;
+                case "basket":
+                    bella.RequestVisit(o.StandPoint, at, "PlayBow", Expression.Excited, "pop", 1.6f, false); break;
+                case "nightlight":
+                    bella.RequestVisit(o.StandPoint, at, "Happy", Expression.Excited, "sparkle", 1.4f, false); break;
+                default:
+                    bella.RequestVisit(o.StandPoint, at, "Happy", Expression.Excited, "tap", 1.4f, false); break;
             }
         }
     }
