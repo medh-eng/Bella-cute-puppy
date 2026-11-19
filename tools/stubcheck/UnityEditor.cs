@@ -42,7 +42,7 @@ namespace UnityEditor {
     public enum ModelImporterAnimationType { None = 0, Legacy = 1, Generic = 2, Human = 3 }
     public enum ModelImporterAnimationCompression { Off = 0, KeyframeReduction = 1, KeyframeReductionAndCompression = 2, Optimal = 3 }
     public enum ModelImporterMaterialImportMode { None = 0, ImportStandard = 1, ImportViaMaterialDescription = 2 }
-    public class ModelImporter : AssetImporter { public ModelImporterAnimationType animationType { get; set; } public bool importAnimation { get; set; } public bool optimizeGameObjects { get; set; } public ModelImporterAnimationCompression animationCompression { get; set; } public ModelImporterMaterialImportMode materialImportMode { get; set; } public bool importBlendShapes { get; set; } public bool importCameras { get; set; } public bool importLights { get; set; } }
+    public class ModelImporter : AssetImporter { public ModelImporterAnimationType animationType { get; set; } public bool importAnimation { get; set; } public bool optimizeGameObjects { get; set; } public ModelImporterAnimationCompression animationCompression { get; set; } public ModelImporterMaterialImportMode materialImportMode { get; set; } public bool importBlendShapes { get; set; } public bool importCameras { get; set; } public bool importLights { get; set; } public float globalScale { get; set; } }
     public struct AudioImporterSampleSettings { public AudioClipLoadType loadType; public AudioCompressionFormat compressionFormat; public float quality; }
     public class AudioImporter : AssetImporter { public AudioImporterSampleSettings defaultSampleSettings { get; set; } public bool forceToMono { get; set; } }
 }

@@ -114,31 +114,57 @@ namespace Bella.World
 
             // Bed
             Vector3 bed = BedPosition;
-            Art.Prim(PrimitiveType.Cylinder, "BedBase", t, bed + new Vector3(0f, 0.07f, 0f), new Vector3(1.25f, 0.07f, 1.05f), Art.Lilac);
-            Art.Prim(PrimitiveType.Cylinder, "BedCushion", t, bed + new Vector3(0f, 0.09f, 0f), new Vector3(1.0f, 0.065f, 0.82f), Art.Cream);
+            if (Art.Prop("bed", t, bed, 1.25f) == null)
+            {
+                Art.Prim(PrimitiveType.Cylinder, "BedBase", t, bed + new Vector3(0f, 0.07f, 0f), new Vector3(1.25f, 0.07f, 1.05f), Art.Lilac);
+                Art.Prim(PrimitiveType.Cylinder, "BedCushion", t, bed + new Vector3(0f, 0.09f, 0f), new Vector3(1.0f, 0.065f, 0.82f), Art.Cream);
+            }
 
             // Bowl + kibble
             Vector3 bowl = BowlPosition;
-            Art.Prim(PrimitiveType.Cylinder, "Bowl", t, bowl + new Vector3(0f, 0.06f, 0f), new Vector3(0.46f, 0.06f, 0.46f), Art.Rose);
-            Art.Prim(PrimitiveType.Cylinder, "BowlInside", t, bowl + new Vector3(0f, 0.064f, 0f), new Vector3(0.37f, 0.06f, 0.37f), new Color(0.75f, 0.22f, 0.27f));
-            kibble = Art.Prim(PrimitiveType.Sphere, "Kibble", t, bowl + new Vector3(0f, 0.105f, 0f), new Vector3(0.34f, 0.1f, 0.34f), new Color(0.62f, 0.4f, 0.22f));
+            if (Art.Prop("bowl", t, bowl, 0.46f) == null)
+            {
+                Art.Prim(PrimitiveType.Cylinder, "Bowl", t, bowl + new Vector3(0f, 0.06f, 0f), new Vector3(0.46f, 0.06f, 0.46f), Art.Rose);
+                Art.Prim(PrimitiveType.Cylinder, "BowlInside", t, bowl + new Vector3(0f, 0.064f, 0f), new Vector3(0.37f, 0.06f, 0.37f), new Color(0.75f, 0.22f, 0.27f));
+            }
+            kibble = Art.Prop("kibble", t, bowl + new Vector3(0f, 0.05f, 0f), 0.34f);
+            if (kibble == null)
+                kibble = Art.Prim(PrimitiveType.Sphere, "Kibble", t, bowl + new Vector3(0f, 0.105f, 0f), new Vector3(0.34f, 0.1f, 0.34f), new Color(0.62f, 0.4f, 0.22f));
             kibble.SetActive(false);
 
             // Ball
-            ball = Art.Prim(PrimitiveType.Sphere, "Ball", t, ballHome, Vector3.one * 0.22f, Art.Rose);
-            Art.Prim(PrimitiveType.Cylinder, "BallBand", ball.transform, Vector3.zero, new Vector3(1.03f, 0.12f, 1.03f), Art.Gold);
+            // generated model: an empty "Ball" centre point with the model hung around it (it moves and spins as before)
+            var ballRoot = new GameObject("Ball");
+            ballRoot.transform.SetParent(t, false);
+            ballRoot.transform.localPosition = ballHome;
+            if (Art.Prop("ball", ballRoot.transform, new Vector3(0f, -0.11f, 0f), 0.22f) != null) ball = ballRoot;
+            else
+            {
+                Destroy(ballRoot);
+                ball = Art.Prim(PrimitiveType.Sphere, "Ball", t, ballHome, Vector3.one * 0.22f, Art.Rose);
+                Art.Prim(PrimitiveType.Cylinder, "BallBand", ball.transform, Vector3.zero, new Vector3(1.03f, 0.12f, 1.03f), Art.Gold);
+            }
 
             // Bath tub (hidden until Bubble Bath)
             tub = new GameObject("Tub");
             tub.transform.SetParent(t, false);
             tub.transform.localPosition = HomePoint;
-            Art.Prim(PrimitiveType.Cylinder, "TubWall", tub.transform, new Vector3(0f, 0.15f, 0f), new Vector3(1.55f, 0.15f, 1.3f), Color.white);
-            Art.Prim(PrimitiveType.Cylinder, "Water", tub.transform, new Vector3(0f, 0.16f, 0f), new Vector3(1.4f, 0.15f, 1.15f), new Color(0.62f, 0.86f, 0.98f));
-            for (int i = 0; i < 4; i++)
+            if (Art.Prop("tub", tub.transform, Vector3.zero, 1.45f) != null)
             {
-                float x = (i % 2 == 0 ? -1f : 1f) * 0.55f;
-                float z = (i < 2 ? -1f : 1f) * 0.42f;
-                Art.Prim(PrimitiveType.Sphere, "TubFoot", tub.transform, new Vector3(x, 0.04f, z), Vector3.one * 0.14f, Art.Gold);
+                // the generated tub is taller than the old one: lift the water to just under its rim
+                Art.Prim(PrimitiveType.Cylinder, "Water", tub.transform, new Vector3(0f, 0.52f, 0f), new Vector3(1.15f, 0.02f, 0.58f), new Color(0.62f, 0.86f, 0.98f));
+                Art.Prop("toy_duck", tub.transform, new Vector3(0.3f, 0.53f, 0.05f), 0.24f, -25f);
+            }
+            else
+            {
+                Art.Prim(PrimitiveType.Cylinder, "TubWall", tub.transform, new Vector3(0f, 0.15f, 0f), new Vector3(1.55f, 0.15f, 1.3f), Color.white);
+                Art.Prim(PrimitiveType.Cylinder, "Water", tub.transform, new Vector3(0f, 0.16f, 0f), new Vector3(1.4f, 0.15f, 1.15f), new Color(0.62f, 0.86f, 0.98f));
+                for (int i = 0; i < 4; i++)
+                {
+                    float x = (i % 2 == 0 ? -1f : 1f) * 0.55f;
+                    float z = (i < 2 ? -1f : 1f) * 0.42f;
+                    Art.Prim(PrimitiveType.Sphere, "TubFoot", tub.transform, new Vector3(x, 0.04f, z), Vector3.one * 0.14f, Art.Gold);
+                }
             }
             tub.SetActive(false);
         }
@@ -189,6 +215,7 @@ namespace Bella.World
         /// <summary>A little shelf on the back wall with a teddy, picture books and a spare ball.</summary>
         private void BuildToyShelf(Transform t)
         {
+            if (Art.Prop("toyshelf", t, new Vector3(2.05f, 1.82f, 2.55f), 1.0f) != null) return;
             Art.Prim(PrimitiveType.Cube, "Shelf", t, new Vector3(2.05f, 1.9f, 2.6f), new Vector3(1.05f, 0.055f, 0.24f), new Color(1.00f, 0.98f, 0.94f));
             Art.Prim(PrimitiveType.Cube, "ShelfBracketL", t, new Vector3(1.65f, 1.8f, 2.66f), new Vector3(0.05f, 0.16f, 0.1f), new Color(1.00f, 0.98f, 0.94f));
             Art.Prim(PrimitiveType.Cube, "ShelfBracketR", t, new Vector3(2.45f, 1.8f, 2.66f), new Vector3(0.05f, 0.16f, 0.1f), new Color(1.00f, 0.98f, 0.94f));
@@ -216,6 +243,7 @@ namespace Bella.World
         /// <summary>A wicker toy basket in the back corner, out of Bella's wander area.</summary>
         private void BuildToyBasket(Transform t)
         {
+            if (Art.Prop("basket", t, new Vector3(-1.9f, 0f, 2.05f), 0.55f) != null) return;
             var wicker = new Color(0.82f, 0.62f, 0.40f);
             Vector3 p = new Vector3(-1.9f, 0f, 2.05f);
             Art.Prim(PrimitiveType.Cylinder, "Basket", t, p + new Vector3(0f, 0.16f, 0f), new Vector3(0.55f, 0.16f, 0.55f), wicker);

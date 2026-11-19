@@ -12,7 +12,7 @@ namespace Bella.EditorTools
     /// </summary>
     public class BellaImportSettings : AssetPostprocessor
     {
-        public override uint GetVersion() { return 5; }
+        public override uint GetVersion() { return 6; }
 
         private void OnPreprocessTexture()
         {
@@ -63,6 +63,13 @@ namespace Bella.EditorTools
                 ti.filterMode = FilterMode.Bilinear;
                 ti.maxTextureSize = (assetPath.Contains("title_bg") || assetPath.Contains("/Story/")) ? 2048 : 1024;
             }
+            else if (assetPath.Contains("/Props/"))
+            {
+                ti.textureType = TextureImporterType.Default;
+                ti.mipmapEnabled = true;
+                ti.wrapMode = TextureWrapMode.Clamp;
+                ti.maxTextureSize = 512;
+            }
             else if (assetPath.Contains("/Bella/"))
             {
                 ti.textureType = TextureImporterType.Default;
@@ -73,9 +80,22 @@ namespace Bella.EditorTools
 
         private void OnPreprocessModel()
         {
-            if (!assetPath.StartsWith("Assets/Resources/Bella/")) return;
+            bool prop = assetPath.StartsWith("Assets/Resources/Props/");
+            if (!prop && !assetPath.StartsWith("Assets/Resources/Bella/")) return;
             var mi = assetImporter as ModelImporter;
             if (mi == null) return;
+            if (prop)
+            {
+                // furniture and toys: plain static meshes, the game supplies the material and texture
+                mi.animationType = ModelImporterAnimationType.None;
+                mi.importAnimation = false;
+                mi.materialImportMode = ModelImporterMaterialImportMode.None;
+                mi.importBlendShapes = false;
+                mi.importCameras = false;
+                mi.importLights = false;
+                mi.globalScale = 1f;
+                return;
+            }
             mi.animationType = ModelImporterAnimationType.Generic;
             mi.importAnimation = true;
             mi.optimizeGameObjects = false;     // the game moves tail / ear / head bones itself

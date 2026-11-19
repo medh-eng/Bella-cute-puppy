@@ -18,7 +18,7 @@ Nothing in the build is taken from another game. The supplied audio listed below
 | Store feature graphic | `docs/store/feature_graphic_1024x500.png` | Composed from the project's own portrait and icons | Original work |
 | Font | — | Unity's built-in runtime font (`LegacyRuntime.ttf`) | Ships with the Unity engine |
 
-**On hold, not shipped:** 7 prop models (bed, bowl, kibble, ball, tub, toy shelf, duck) made on Tripo with free credits. Free-plan output is not cleared for commercial use, so they are kept out of the repo and `Resources/` until a paid commercial plan is confirmed.
+**Props (8 models):** bed, bowl, kibble, ball, tub, toy shelf, toy basket, toy duck — made by Pon on the Triple 3D site (triple3d.ai) from reference pictures generated in ChatGPT, then reduced by script (Blender: ~2,500 triangles, 512 px texture) into `Assets/Resources/Props/`. Triple 3D's terms (https://triple3d.ai/terms, §6, checked 19 Nov 2026) allow use of generated outputs for commercial purposes; they give no guarantee of exclusivity or non-infringement, so re-check the terms on launch day and keep a saved copy. Full-size originals stay on Pon's computer, not in the repo.
 
 Engine: Unity (Unity Personal). No third-party plugins, SDKs or packages beyond Unity's own modules.
 
