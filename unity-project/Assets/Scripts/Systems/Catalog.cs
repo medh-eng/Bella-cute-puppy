@@ -108,6 +108,7 @@ namespace Bella.Systems
             new ThemeDef("floor_carpet",  "floor", "floor_carpet",  20),
             new ThemeDef("floor_grass",   "floor", "floor_grass",   25),
             new ThemeDef("floor_sand",    "floor", "floor_sand",    25),
+            new ThemeDef("floor_stage",   "floor", "floor_stage",   30),
         };
 
         public static ThemeDef FindTheme(string id)
