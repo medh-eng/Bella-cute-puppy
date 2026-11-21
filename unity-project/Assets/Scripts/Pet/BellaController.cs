@@ -48,6 +48,37 @@ namespace Bella.Pet
         public Vector3 HeadPoint =>
             Model != null && Model.HeadCentre != null ? Model.HeadCentre.position : transform.position + Vector3.up * 0.7f;
 
+        /// <summary>Where a ball sits when she holds it: just in front of her nose, a little below.</summary>
+        public Vector3 MouthPoint
+        {
+            get
+            {
+                if (Model != null && Model.Nose != null)
+                    return Model.Nose.position + transform.forward * 0.03f + Vector3.down * 0.075f;
+                return HeadPoint + transform.forward * 0.17f + Vector3.down * 0.1f;
+            }
+        }
+
+        // the ball she is holding in her mouth (living-room fetch); follows her head every frame
+        private Transform heldBall;
+        private Vector3 heldBallScale;
+        private float heldBlend;
+
+        public void HoldInMouth(Transform ball, Vector3 baseScale)
+        {
+            heldBall = ball; heldBallScale = baseScale; heldBlend = 0f;
+        }
+
+        public void ReleaseFromMouth() { heldBall = null; }
+
+        private void LateUpdate()
+        {
+            if (heldBall == null) return;
+            heldBlend = Mathf.Min(1f, heldBlend + Time.deltaTime * 6f);
+            heldBall.position = Vector3.Lerp(heldBall.position, MouthPoint, heldBlend);
+            heldBall.localScale = heldBallScale * Mathf.Lerp(1f, 0.8f, heldBlend);
+        }
+
         public void Init(PetNeeds needs, Room roomRef)
         {
             Needs = needs;
@@ -149,8 +180,54 @@ namespace Bella.Pet
                     else if (wasHungry) AudioManager.Voice("whimper_hungry");
                     Celebrate(rewarded ? 2 : 0);
                     FinishCare("feed");
+                    if (UnityEngine.Random.value < 0.6f) StartCoroutine(DrinkSoon());
                 }));
             }, yaw));
+        }
+
+        /// <summary>Walk to the water bowl and lap water: head down, mouth moving, the real lapping sound.</summary>
+        public void RequestDrink()
+        {
+            if (Busy || InActivity || room == null) return;
+            RoomObject bowl = room.FindObject("waterbowl");
+            if (bowl == null) return;
+            Busy = true;
+            AudioManager.Play("tap", 0.5f);
+            Vector3 at = bowl.transform.position;
+            Puppy.LookAt(at + Vector3.up * 0.1f);
+            Vector3 stand = bowl.StandPoint;
+            fsm.ChangeState(new WalkToState(transform, Anim, stand, RunSpeed * 0.7f, true, () =>
+            {
+                const float seconds = 3.2f;
+                Puppy.ClearLook();
+                Face.Munch(seconds);
+                Puppy.Chewing = true;
+                StartCoroutine(LapSounds(seconds));
+                fsm.ChangeState(new InteractionState(Face, Anim, Expression.Soapy, "Eat", seconds, () =>
+                {
+                    Puppy.Chewing = false;
+                    Face.StopMunch();
+                    Needs.AddHappiness(3f);
+                    AudioManager.Play("pant", 0.35f);
+                    FinishCare("drink");
+                }));
+            }, YawTowards(stand, at)));
+        }
+
+        private System.Collections.IEnumerator DrinkSoon()
+        {
+            yield return new WaitForSeconds(2.6f);       // after the "well done" beat
+            if (!Busy && !InActivity && !IsSleeping) RequestDrink();
+        }
+
+        private System.Collections.IEnumerator LapSounds(float seconds)
+        {
+            // lap.wav is ~1.5 s of lapping: play it back to back for the whole drink
+            for (float t = 0f; t < seconds - 0.4f; t += 1.45f)
+            {
+                AudioManager.Play("lap", 0.85f, UnityEngine.Random.Range(0.96f, 1.04f));
+                yield return new WaitForSeconds(1.45f);
+            }
         }
 
         public void RequestSleep()
@@ -282,12 +359,16 @@ namespace Bella.Pet
                 Vector3 stop = landing - dir.normalized * 0.72f;   // stops in front of the ball, not on top of it
                 fsm.ChangeState(new WalkToState(transform, Anim, stop, RunSpeed, true, () =>
                 {
-                    room.HideBall();
-                    fsm.ChangeState(new InteractionState(Face, Anim, Expression.Excited, "Happy", 1.1f, () =>
+                    HoldInMouth(room.BallTransform, room.BallBaseScale);
+                    AudioManager.Play("tap", 0.7f);
+                    fsm.ChangeState(new InteractionState(Face, Anim, Expression.Excited, "Idle", 0.5f, () =>
                     {
-                        fsm.ChangeState(new WalkToState(transform, Anim, room.HomePoint, RunSpeed, true, () =>
+                        Face.Set(Expression.Happy);
+                        fsm.ChangeState(new WalkToState(transform, Anim, room.HomePoint, RunSpeed * 0.85f, true, () =>
                         {
+                            ReleaseFromMouth();
                             room.ResetBall();
+                            AudioManager.Play("chime", 0.6f);
                             Needs.AddHappiness(14f);
                             Needs.Tire(6f);
                             SaveSystem.Data.countFetches++;

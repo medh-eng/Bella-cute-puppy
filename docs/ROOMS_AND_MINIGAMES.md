@@ -12,6 +12,18 @@ optional with a fallback, repeatable play pays from a daily allowance (`Progress
   visit = combo bonus. Stickers: Fetch fan (10), Fetch champion (50).
 - **Tap-to-move in the living room** (`Pet/PetInteraction.cs`): a quick tap on empty floor sends her there.
 
+- **Play menu** (`UI/GamePicker.cs`): the ball button now opens a picker — Fetch, Treat Catch, Dig for Treasure.
+- **Treat Catch** (`MiniGames/TreatCatchActivity.cs`, kitchen): 30 s, slide a finger, Bella runs under falling treats;
+  golden stars worth 3. Payout from the daily play pool. Stickers: Treat catcher, Catch champion (10 rounds).
+- **Dig for Treasure** (`MiniGames/DigActivity.cs`, garden): tap mounds, Bella digs, every mound hides treat / bone /
+  star / gift. 8 digs a visit. Stickers: Treasure hunter, Master digger (25 digs).
+- **21 Nov 2026 playtest fixes**: armchair faces the room and sits in the corner (smaller footprint); pinch /
+  two-finger-drag zoom in the living room (`World/CameraRig.cs`); lower ambient + stronger key light + deeper fur
+  tint for contrast (`World/DayNight.cs`, `Pet/BellaModel.cs`); living-room fetch now carries the ball in her mouth
+  (`BellaController.HoldInMouth`, shared with the park); **drinking**: `BellaController.RequestDrink` — walks to the
+  water bowl, head down, `lap` sound looped for the drink, +3 happy; she drinks after most meals and sometimes on her own.
+  Tuning to check on the phone: `BellaController.MouthPoint` offsets, `CameraRig.MaxZoom`, ambient values.
+
 ## Rooms / places (backdrops already in `Resources/Places`: kitchen, garden, park, bedroom_night, beach, snow, stage, bathroom, clinic)
 1. Garden (digging + butterflies), Kitchen (feeding), Bedroom (naps, night) as places you can switch to from a
    "Places" button, unlocked with treats. A place = backdrop + floor surface + a handful of props + its own music

@@ -125,8 +125,8 @@ namespace Bella.World
             Art.Prim(PrimitiveType.Sphere, "Leaf2", plant.transform, new Vector3(-0.17f, 0.5f, -0.05f), new Vector3(0.3f, 0.36f, 0.3f), Art.Leaf * 0.92f);
             Art.Prim(PrimitiveType.Sphere, "Leaf3", plant.transform, new Vector3(0.17f, 0.52f, -0.03f), new Vector3(0.3f, 0.36f, 0.3f), Art.Leaf * 0.92f);
 
-            RoomObject chair = MakeObject("armchair", new Vector3(-1.25f, 0f, 2.1f), 0.5f, 0.9f, 12f);
-            Art.Prop("armchair", chair.transform, Vector3.zero, 0.9f);
+            RoomObject chair = MakeObject("armchair", new Vector3(-1.45f, 0f, 2.15f), 0.34f, 0.8f, 192f);   // 192 = faces into the room
+            Art.Prop("armchair", chair.transform, Vector3.zero, 0.75f);
             RoomObject lamp = MakeObject("nightlight", new Vector3(-0.3f, 0f, 2.35f), 0.2f, 0.6f);
             Art.Prop("nightlight", lamp.transform, Vector3.zero, 0.6f);
             RoomObject water = MakeObject("waterbowl", new Vector3(1.48f, 0f, 1.28f), 0.2f, 0.2f);
@@ -175,6 +175,7 @@ namespace Bella.World
             // the ball can be tapped (she fetches it) but not moved
             SphereCollider ballCol = ball.AddComponent<SphereCollider>();
             ballCol.radius = ball == ballRoot ? 0.2f : 0.9f;
+            ballBaseScale = ball.transform.localScale;
             RoomObject ballObj = ball.AddComponent<RoomObject>();
             ballObj.id = "ball"; ballObj.movable = false; ballObj.solid = false; ballObj.radius = 0.15f; ballObj.height = 0.25f;
 
@@ -539,6 +540,11 @@ namespace Bella.World
             ballRoutine = StartCoroutine(BallArc(landing, landed));
         }
 
+        /// <summary>The ball's transform (null if the model failed to build) — used while Bella carries it.</summary>
+        public Transform BallTransform { get { return ball != null ? ball.transform : null; } }
+        private Vector3 ballBaseScale = Vector3.one;
+        public Vector3 BallBaseScale { get { return ballBaseScale; } }
+
         public void HideBall()
         {
             if (ball != null) ball.SetActive(false);
@@ -548,6 +554,7 @@ namespace Bella.World
         {
             if (ball == null) return;
             ball.SetActive(true);
+            ball.transform.localScale = ballBaseScale;
             ball.transform.localPosition = ballHome;
         }
 

@@ -43,6 +43,8 @@ namespace Bella.Pet
         {
             if (cam == null || bella == null) return;
             if (bella.InActivity) { CancelPress(); return; }
+            // two fingers = zoom / look around (CameraRig), never a tap, a pet or a furniture drag
+            if (Bella.World.CameraRig.Pinching) { CancelPress(); startedOnUI = true; return; }
 
             if (Pointer.Down)
             {
@@ -162,8 +164,7 @@ namespace Bella.Pet
                 case "bed": bella.RequestSleep(); break;
                 case "bowl": bella.RequestFeed(); break;
                 case "ball": bella.RequestFetch(); break;
-                case "waterbowl":
-                    bella.RequestVisit(o.StandPoint, at, "Eat", Expression.Soapy, "splash", 2.0f, true); break;
+                case "waterbowl": bella.RequestDrink(); break;
                 case "plant":
                     bella.RequestVisit(o.StandPoint, at, "Sneeze", Expression.Excited, "pop", 1.2f, false); break;
                 case "basket":

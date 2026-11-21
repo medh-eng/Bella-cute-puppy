@@ -72,20 +72,20 @@ namespace Bella.World
             switch (p)
             {
                 case Period.Morning:
-                    tLight = new Color(1.00f, 0.95f, 0.86f); tIntensity = 1.0f;
-                    tAmbient = new Color(0.70f, 0.68f, 0.70f); tSky = new Color(0.72f, 0.88f, 0.99f);
+                    tLight = new Color(1.00f, 0.94f, 0.84f); tIntensity = 1.15f;
+                    tAmbient = new Color(0.46f, 0.45f, 0.49f); tSky = new Color(0.72f, 0.88f, 0.99f);
                     break;
                 case Period.Afternoon:
-                    tLight = new Color(1.00f, 0.98f, 0.93f); tIntensity = 1.1f;
-                    tAmbient = new Color(0.72f, 0.72f, 0.74f); tSky = new Color(0.55f, 0.80f, 0.98f);
+                    tLight = new Color(1.00f, 0.97f, 0.90f); tIntensity = 1.2f;
+                    tAmbient = new Color(0.48f, 0.48f, 0.52f); tSky = new Color(0.55f, 0.80f, 0.98f);
                     break;
                 case Period.Evening:
-                    tLight = new Color(1.00f, 0.80f, 0.60f); tIntensity = 0.95f;
-                    tAmbient = new Color(0.68f, 0.58f, 0.60f); tSky = new Color(0.99f, 0.70f, 0.52f);
+                    tLight = new Color(1.00f, 0.79f, 0.58f); tIntensity = 1.1f;
+                    tAmbient = new Color(0.46f, 0.40f, 0.44f); tSky = new Color(0.99f, 0.70f, 0.52f);
                     break;
                 default:
-                    tLight = new Color(0.78f, 0.82f, 1.00f); tIntensity = 0.7f;
-                    tAmbient = new Color(0.50f, 0.50f, 0.66f); tSky = new Color(0.16f, 0.19f, 0.40f);
+                    tLight = new Color(0.72f, 0.78f, 1.00f); tIntensity = 0.8f;
+                    tAmbient = new Color(0.36f, 0.36f, 0.52f); tSky = new Color(0.16f, 0.19f, 0.40f);
                     break;
             }
             if (sleepDim)
@@ -144,7 +144,7 @@ namespace Bella.World
         {
             if (sun != null) { sun.color = cLight; sun.intensity = cIntensity; }
             RenderSettings.ambientLight = cAmbient;
-            if (cam != null) cam.backgroundColor = cAmbient;
+            if (cam != null) cam.backgroundColor = new Color(Mathf.Min(1f, cAmbient.r * 1.5f), Mathf.Min(1f, cAmbient.g * 1.5f), Mathf.Min(1f, cAmbient.b * 1.5f), 1f);
             if (room != null && room.WindowSky != null) room.WindowSky.sharedMaterial.color = cSky;
         }
     }

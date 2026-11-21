@@ -130,7 +130,7 @@ namespace Bella.Pet
 
             // --- Renderer + material (texture is applied by FaceExpressionController).
             smr.updateWhenOffscreen = true;
-            smr.sharedMaterial = Art.Lit(Color.white);
+            smr.sharedMaterial = Art.Lit(new Color(0.86f, 0.81f, 0.76f));   // slightly deeper than white: more contrast against the pale room
             smr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
             BodyRenderer = smr;
             FaceRenderer = smr;

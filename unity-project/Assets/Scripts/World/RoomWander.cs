@@ -42,6 +42,7 @@ namespace Bella.World
 
             bool sleepy = (dayNight != null && dayNight.IsNight) || bella.Needs.IsEnergyLow;
             timer = Random.Range(9f, 18f) * (sleepy ? 2.2f : 1f);
+            if (Random.value < 0.15f && !sleepy) { bella.RequestDrink(); return; }
             walking = bella.WalkToPoint(room.RandomFloorPoint(), () => walking = false);
         }
 

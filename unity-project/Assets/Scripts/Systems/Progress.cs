@@ -172,6 +172,10 @@ namespace Bella.Systems
             Try("first_meal", d.countMeals >= 1);
             Try("first_bath", d.countBaths >= 1);
             Try("first_nap", d.countNaps >= 1);
+            Try("first_catch", d.countCatchRounds >= 1);
+            Try("catch_10", d.countCatchRounds >= 10);
+            Try("first_dig", d.countDigs >= 1);
+            Try("dig_25", d.countDigs >= 25);
             Try("first_fetch", d.countFetches >= 1);
             Try("fetch_10", d.countFetches >= 10);
             Try("fetch_50", d.countFetches >= 50);

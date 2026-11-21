@@ -125,7 +125,7 @@ namespace UnityEngine
     public class AsyncOperation { }
     public static class Resources { public static AsyncOperation UnloadUnusedAssets() => null; public static T Load<T>(string p) where T : Object => null; public static T[] LoadAll<T>(string p) where T : Object => new T[0]; public static T GetBuiltinResource<T>(string p) where T : Object => null; }
     public static class Input {
-        public static bool GetMouseButtonDown(int b) => false; public static bool GetMouseButton(int b) => false; public static bool GetMouseButtonUp(int b) => false; public static Vector3 mousePosition => default;
+        public static float GetAxis(string axis) => 0f; public static bool GetMouseButtonDown(int b) => false; public static bool GetMouseButton(int b) => false; public static bool GetMouseButtonUp(int b) => false; public static Vector3 mousePosition => default;
         public static int touchCount => 0; public static Touch GetTouch(int i) => default; public static bool GetKeyDown(KeyCode k) => false;
     }
     public struct Touch { public int fingerId; public Vector2 position; }

@@ -37,6 +37,7 @@ namespace Bella.Core
         private ParentalGate gate;
         private ParentsPanel parents;
         private StickerBook stickers;
+        private GamePicker picker;
         private Activity activity;
         private bool built;
 
@@ -111,7 +112,7 @@ namespace Bella.Core
             Light sun = lightGo.AddComponent<Light>();
             sun.type = LightType.Directional;
             sun.shadows = LightShadows.Soft;
-            sun.shadowStrength = 0.35f;
+            sun.shadowStrength = 0.55f;
             QualitySettings.shadowDistance = 16f;
 
             // --- sound
@@ -161,6 +162,7 @@ namespace Bella.Core
             parents.Init(ResetEverything);
             stickers = gameObject.AddComponent<StickerBook>();
             stickers.Init();
+            picker = gameObject.AddComponent<GamePicker>();
 
             // --- long loop
             Progress = gameObject.AddComponent<Progress>();
@@ -216,7 +218,7 @@ namespace Bella.Core
 
         private void OnHudAction(string action)
         {
-            if (!built || activity != null || Popups.IsOpen) return;
+            if (!built || activity != null || Popups.IsOpen || (picker != null && picker.IsOpen)) return;
             Wander.Pause(10f);
             switch (action)
             {
@@ -224,7 +226,14 @@ namespace Bella.Core
                 case "sleep":
                     if (Bella.IsSleeping) Bella.WakeUp(); else Bella.RequestSleep();
                     break;
-                case "play": StartActivity<FetchActivity>(); break;
+                case "play":
+                    picker.Show(id =>
+                    {
+                        if (id == "catch") StartActivity<TreatCatchActivity>();
+                        else if (id == "dig") StartActivity<DigActivity>();
+                        else StartActivity<FetchActivity>();
+                    });
+                    break;
                 case "bath": StartActivity<BathActivity>(); break;
                 case "tricks": StartActivity<TrickActivity>(); break;
                 case "wardrobe": StartActivity<WardrobeActivity>(); break;

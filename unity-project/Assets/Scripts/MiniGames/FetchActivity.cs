@@ -91,6 +91,7 @@ namespace Bella.MiniGames
         protected override void OnEnd()
         {
             Bella.Puppy.ClearLook();
+            Bella.ReleaseFromMouth();
             if (ball != null) Destroy(ball);
             if (shadow != null) Destroy(shadow);
             if (mat != null) Destroy(mat);
@@ -332,6 +333,7 @@ namespace Bella.MiniGames
             {
                 carried = true;
                 carryBlend = 0f;
+                Bella.HoldInMouth(ballT, Vector3.one);      // follows her head every frame, after the animation
                 Bella.Puppy.ClearLook();
                 Bella.Puppy.PulseJoy();
                 Bella.Face.Set(Expression.Happy);
@@ -342,10 +344,7 @@ namespace Bella.MiniGames
 
         private void UpdateCarried()
         {
-            carryBlend = Mathf.Min(1f, carryBlend + Time.deltaTime * 6f);
-            Vector3 mouth = Bella.HeadPoint + Bella.transform.forward * 0.17f + Vector3.down * 0.1f;
-            ballT.position = Vector3.Lerp(ballT.position, mouth, carryBlend);
-            ballT.localScale = Vector3.one * Mathf.Lerp(1f, 0.8f, carryBlend);
+            // the ball itself is moved by BellaController.LateUpdate (HoldInMouth)
         }
 
         private void Deliver()
@@ -353,6 +352,7 @@ namespace Bella.MiniGames
             if (!Running) return;
             // let go over the mat: the ball drops and rolls to rest by itself
             carried = false;
+            Bella.ReleaseFromMouth();
             ballT.localScale = Vector3.one;
             vel = new Vector3(0f, 0.2f, -0.35f);
             phase = Phase.Celebrating;
