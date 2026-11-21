@@ -28,7 +28,7 @@ namespace Bella.Systems
         /// daily present and learning a new trick are never limited. This keeps the wardrobe a
         /// two-week goal instead of an afternoon of tapping, without ever saying "no" to play.
         /// </summary>
-        public const int DailyPlayTreats = 30;
+        public const int DailyPlayTreats = 60;
 
         /// <summary>Returns how many of the wanted treats today's play allowance still covers.</summary>
         public static int PlayTreats(int wanted)
@@ -172,6 +172,9 @@ namespace Bella.Systems
             Try("first_meal", d.countMeals >= 1);
             Try("first_bath", d.countBaths >= 1);
             Try("first_nap", d.countNaps >= 1);
+            Try("arcade_1", d.countArcade >= 1);
+            Try("arcade_10", d.countArcade >= 10);
+            Try("arcade_50", d.countArcade >= 50);
             Try("first_catch", d.countCatchRounds >= 1);
             Try("catch_10", d.countCatchRounds >= 10);
             Try("first_dig", d.countDigs >= 1);

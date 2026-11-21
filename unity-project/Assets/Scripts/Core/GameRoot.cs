@@ -229,9 +229,18 @@ namespace Bella.Core
                 case "play":
                     picker.Show(id =>
                     {
-                        if (id == "catch") StartActivity<TreatCatchActivity>();
-                        else if (id == "dig") StartActivity<DigActivity>();
-                        else StartActivity<FetchActivity>();
+                        switch (id)
+                        {
+                            case "catch": StartActivity<TreatCatchActivity>(); break;
+                            case "dig": StartActivity<DigActivity>(); break;
+                            case "ball": StartActivity<BallCatchActivity>(); break;
+                            case "frisbee": StartActivity<FrisbeeActivity>(); break;
+                            case "arrow": StartActivity<ArrowActivity>(); break;
+                            case "blocks": StartActivity<BlockDropActivity>(); break;
+                            case "jigsaw": StartActivity<JigsawActivity>(); break;
+                            case "car": StartActivity<CarRaceActivity>(); break;
+                            default: StartActivity<FetchActivity>(); break;
+                        }
                     });
                     break;
                 case "bath": StartActivity<BathActivity>(); break;

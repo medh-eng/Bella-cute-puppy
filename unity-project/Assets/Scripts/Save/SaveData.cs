@@ -71,6 +71,7 @@ namespace Bella.Save
         public int countButterflies = 0;
         public int countCatchRounds = 0;
         public int countDigs = 0;
+        public int countArcade = 0;
 
         // Parent settings.
         public bool sfxOn = true;

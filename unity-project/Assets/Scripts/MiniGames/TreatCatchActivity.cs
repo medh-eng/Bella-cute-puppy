@@ -16,7 +16,7 @@ namespace Bella.MiniGames
     /// </summary>
     public class TreatCatchActivity : Activity
     {
-        private class Drop { public Transform t; public float speed, spin; public bool golden; }
+        private class Drop { public Transform t; public float speed, spin, vx; public bool golden; }
 
         private const float RoundSeconds = 30f;
         private const float XLimit = 1.05f;
@@ -34,6 +34,11 @@ namespace Bella.MiniGames
         protected override string Tune { get { return "music_play"; } }
         protected override string Place { get { return "kitchen"; } }
         protected override string PlaceFloor { get { return "floor_checker"; } }
+        protected virtual string HintText { get { return "Slide your finger to catch the treats!"; } }
+        protected virtual string NormalIcon { get { return "Icons/treat"; } }
+        protected virtual string GoldIcon { get { return "Icons/star"; } }
+        protected virtual float Drift { get { return 0f; } }        // sideways speed: balls fly in from the sides
+        protected virtual void CountRound() { SaveSystem.Data.countCatchRounds++; }
 
         protected override void OnBegin()
         {
@@ -49,7 +54,7 @@ namespace Bella.MiniGames
             timeLabel = UIKit.Label("Time", tpill.transform, "30", 50, Art.Ink, TextAnchor.MiddleCenter);
             UIKit.Stretch(timeLabel.rectTransform, 0f, 0f, 0f, 0f);
 
-            hint = UIKit.Label("Hint", UI, "Slide your finger to catch the treats!", 50, Art.Ink, TextAnchor.MiddleCenter);
+            hint = UIKit.Label("Hint", UI, HintText, 50, Art.Ink, TextAnchor.MiddleCenter);
             UIKit.Place(hint.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 0.5f), new Vector2(0f, -290f), new Vector2(960f, 100f));
             hint.resizeTextForBestFit = true; hint.resizeTextMinSize = 28; hint.resizeTextMaxSize = 50;
 
@@ -127,13 +132,20 @@ namespace Bella.MiniGames
             go.name = golden ? "GoldenTreat" : "Treat";
             Destroy(go.GetComponent<Collider>());
             go.transform.SetParent(G.Room.transform, false);
-            go.transform.localPosition = new Vector3(Random.Range(-XLimit, XLimit), SpawnY, BellaZ - 0.05f);
+            float vx = 0f, startX = Random.Range(-XLimit, XLimit), startY = SpawnY;
+            if (Drift > 0f)
+            {
+                float side = Random.value < 0.5f ? -1f : 1f;
+                startX = side * (XLimit + 0.1f); startY = Random.Range(1.5f, 2.2f);
+                vx = -side * Random.Range(0.35f, Drift);
+            }
+            go.transform.localPosition = new Vector3(startX, startY, BellaZ - 0.05f);
             float size = golden ? 0.34f : 0.28f;
             go.transform.localScale = new Vector3(size, size, 1f);
             Renderer r = go.GetComponent<Renderer>();
-            r.sharedMaterial = Art.SpriteMat(Color.white, Art.Tex(golden ? "Icons/star" : "Icons/treat"));
+            r.sharedMaterial = Art.SpriteMat(Color.white, Art.Tex(golden ? GoldIcon : NormalIcon));
             r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            drops.Add(new Drop { t = go.transform, golden = golden, speed = Random.Range(1.1f, 1.7f) * (golden ? 1.25f : 1f), spin = Random.Range(-60f, 60f) });
+            drops.Add(new Drop { t = go.transform, golden = golden, speed = Random.Range(1.1f, 1.7f) * (golden ? 1.25f : 1f), spin = Random.Range(-60f, 60f), vx = vx });
         }
 
         private void StepDrops(float dt)
@@ -145,6 +157,8 @@ namespace Bella.MiniGames
                 if (d.t == null) { drops.RemoveAt(i); continue; }
                 Vector3 p = d.t.position;
                 p.y -= d.speed * dt;
+                p.x += d.vx * dt;
+                if (d.vx != 0f && Mathf.Abs(p.x) > XLimit + 0.25f) d.vx = -d.vx;
                 d.t.position = p;
                 d.t.rotation = Quaternion.Euler(0f, 0f, d.t.eulerAngles.z + d.spin * dt);
 
@@ -179,7 +193,7 @@ namespace Bella.MiniGames
             drops.Clear();
 
             SaveData d = SaveSystem.Data;
-            d.countCatchRounds++;
+            CountRound();
             Bella.Anim.Play("Happy", 0.2f);
             Bella.Needs.AddHappiness(12f);
             Bella.Needs.Tire(4f);

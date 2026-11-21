@@ -2,7 +2,7 @@
 
 Pon's goals: more engagement, mini-games a child enjoys, rewards (coins/treats, gifts, new items),
 and several rooms/places. Rules that stay: no fail states, no ads/networking, every generated asset
-optional with a fallback, repeatable play pays from a daily allowance (`Progress.DailyPlayTreats` = 30).
+optional with a fallback, repeatable play pays from a daily allowance (`Progress.DailyPlayTreats` = 60, raised from 30 on 21 Nov 2026 when the arcade games arrived).
 
 ## Done
 - **Fetch** (`MiniGames/FetchActivity.cs`, `States/FetchChaseState.cs`): in the park. Pick the ball up with a
@@ -17,6 +17,14 @@ optional with a fallback, repeatable play pays from a daily allowance (`Progress
   golden stars worth 3. Payout from the daily play pool. Stickers: Treat catcher, Catch champion (10 rounds).
 - **Dig for Treasure** (`MiniGames/DigActivity.cs`, garden): tap mounds, Bella digs, every mound hides treat / bone /
   star / gift. 8 digs a visit. Stickers: Treasure hunter, Master digger (25 digs).
+- **Arcade pack, 21 Nov 2026** — the Play menu is now a 3x3 grid of nine games. Shared shell: `MiniGames/ArcadeActivity.cs`
+  (score pills, hint, Bella cheers, one payout routine `EndRound`; counter `countArcade`; stickers Game time / lover / champion).
+  New: **Ball Catch** (park, subclass of Treat Catch, balls fly in from the sides), **Block Drop** (8x14 falling blocks, 4 buttons,
+  90 s, full board just clears), **Jigsaw** (2x2, 3x3, 4x4 cut from the place backdrops, drag to snap), **Arrows** (pull back and release,
+  dotted aim line, 12 arrows, balloons), **Car Race** (3 lanes, tap left/right of the car, 45 s, cones only slow you), **Frisbee**
+  (park, swipe to throw at a gold target pad, Bella catches it in her mouth, 8 throws). Four new icons from
+  `tools/pipeline/gen_game_icons.py`. Daily play pool raised 30 -> 60. All logic compiles under stubcheck; none of it has run in
+  Unity yet — first things to check: Jigsaw crop of the backdrops, Car Race HUD layering, Frisbee throw distances (`Throw`), Arrow `PullPower`.
 - **21 Nov 2026 playtest fixes**: armchair faces the room and sits in the corner (smaller footprint); pinch /
   two-finger-drag zoom in the living room (`World/CameraRig.cs`); lower ambient + stronger key light + deeper fur
   tint for contrast (`World/DayNight.cs`, `Pet/BellaModel.cs`); living-room fetch now carries the ball in her mouth
