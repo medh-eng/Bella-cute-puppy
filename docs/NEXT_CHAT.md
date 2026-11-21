@@ -4,11 +4,17 @@
 *"Continue Bella — repo medh-eng/Bella-cute-puppy, read docs/NEXT_CHAT.md."*
 If the Unity session has happened, paste the report from the bottom of `docs/UNITY_DAY.md` too.
 
-Last updated: 18 Nov 2026.
+Last updated: 21 Nov 2026.
 
 ---
 
 ## 1. Where the project is
+
+**Update, 21 Nov 2026 (evening) — three more mini-games, Places, title screen; all compile (stubcheck, 67 scripts), none run in Unity.**
+Hide & Seek, Paw Memory, Bubble Pop (Play menu = 12 games); Places (map button, `PlacePicker`, `VisitActivity`, `PlaceDef`, stickers visit_1 / visit_all);
+`UI/TitleScreen.cs` (title_bg + logo + `music_title`, then four story cards `Story/intro_1..4` once, `SaveData.introSeen`). Details in `docs/ROOMS_AND_MINIGAMES.md`.
+.NET SDK installs with `apt-get install -y dotnet-sdk-8.0` in the cloud session, so stubcheck can run. Left: Agility course (needs a jump clip), seasonal places / Seasons calendar
+(art in `art-source/ready/Seasons`, `music_fest_*`, `music_garden` now used by Garden), then the Unity build and playtest.
 
 **18 Nov 2026 (evening): the to-do list for new art and audio is now `docs/ASSET_PROMPTS_V2.md` (finished packs, tiers, every remaining prompt). The old `ASSET_PROMPTS.md` stays as reference.**
 

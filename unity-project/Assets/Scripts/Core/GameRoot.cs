@@ -39,6 +39,7 @@ namespace Bella.Core
         private StickerBook stickers;
         private GamePicker picker;
         private PlacePicker placePicker;
+        private TitleScreen title;
         private Activity activity;
         private bool built;
 
@@ -165,11 +166,14 @@ namespace Bella.Core
             stickers.Init();
             picker = gameObject.AddComponent<GamePicker>();
             placePicker = gameObject.AddComponent<PlacePicker>();
+            title = gameObject.AddComponent<TitleScreen>();
 
             // --- long loop
             Progress = gameObject.AddComponent<Progress>();
             Progress.Init(Needs, Bella, Popups, Hud);
             Progress.OnSessionStart(true);
+
+            title.Show(null);
 
             Diagnostics.Fact("Game built. Problems: " + Diagnostics.ProblemCount);
             Diagnostics.WriteFile();
@@ -220,7 +224,7 @@ namespace Bella.Core
 
         private void OnHudAction(string action)
         {
-            if (!built || activity != null || Popups.IsOpen || (picker != null && picker.IsOpen) || (placePicker != null && placePicker.IsOpen)) return;
+            if (!built || activity != null || Popups.IsOpen || (picker != null && picker.IsOpen) || (placePicker != null && placePicker.IsOpen) || (title != null && title.IsOpen)) return;
             Wander.Pause(10f);
             switch (action)
             {

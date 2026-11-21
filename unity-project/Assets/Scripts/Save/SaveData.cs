@@ -73,6 +73,7 @@ namespace Bella.Save
         public int countDigs = 0;
         public int countArcade = 0;
         public int countVisits = 0;
+        public bool introSeen = false;   // the four story cards after the first title screen
         public List<string> ownedPlaces = new List<string>();     // places bought with treats (beach, snow, stage)
         public List<string> visitedPlaces = new List<string>();   // places visited at least once (souvenir paid)
 
