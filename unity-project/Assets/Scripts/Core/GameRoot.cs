@@ -239,6 +239,9 @@ namespace Bella.Core
                             case "blocks": StartActivity<BlockDropActivity>(); break;
                             case "jigsaw": StartActivity<JigsawActivity>(); break;
                             case "car": StartActivity<CarRaceActivity>(); break;
+                            case "hide": StartActivity<HideSeekActivity>(); break;
+                            case "memory": StartActivity<PawMemoryActivity>(); break;
+                            case "bubbles": StartActivity<BubblePopActivity>(); break;
                             default: StartActivity<FetchActivity>(); break;
                         }
                     });

@@ -25,6 +25,11 @@ optional with a fallback, repeatable play pays from a daily allowance (`Progress
   (park, swipe to throw at a gold target pad, Bella catches it in her mouth, 8 throws). Four new icons from
   `tools/pipeline/gen_game_icons.py`. Daily play pool raised 30 -> 60. All logic compiles under stubcheck; none of it has run in
   Unity yet — first things to check: Jigsaw crop of the backdrops, Car Race HUD layering, Frisbee throw distances (`Throw`), Arrow `PullPower`.
+- **Puzzle trio, 21 Nov 2026** — Play menu now 12 games (4 rows). All three are UI-only on the `ArcadeActivity` shell and pay from the daily play pool:
+  **Hide & Seek** (`HideSeekActivity`: Bella peeks, ducks, cushions shuffle, tap the right one; 3 rounds of 3/4/5 cushions),
+  **Paw Memory** (`PawMemoryActivity`: 3, 6, 8 pairs, no clock), **Bubble Pop** (`BubblePopActivity`: 40 s, gold bubbles = 3).
+  Compile-checked (stubcheck, 64 scripts); not yet run in Unity. Check first: cushion/portrait layout (`Portraits/face_playful` assumed square),
+  card sizes on small phones, bubble speed and tap radius, picker height (1660) on short screens.
 - **21 Nov 2026 playtest fixes**: armchair faces the room and sits in the corner (smaller footprint); pinch /
   two-finger-drag zoom in the living room (`World/CameraRig.cs`); lower ambient + stronger key light + deeper fur
   tint for contrast (`World/DayNight.cs`, `Pet/BellaModel.cs`); living-room fetch now carries the ball in her mouth
@@ -41,9 +46,9 @@ optional with a fallback, repeatable play pays from a daily allowance (`Progress
 ## Mini-games, in suggested order (each is an `Activity` subclass, ~200-300 lines)
 1. **Treat catch** — treats fall, drag Bella left/right to catch; golden ones are worth more.
 2. **Dig for treasure** (garden) — tap spots, Bella digs, finds treats, toys, sometimes a gift box.
-3. **Hide and seek** — Bella hides behind 3 cushions; find her; harder with more cushions.
-4. **Paw memory** — flip cards, match pairs (uses existing sticker/icon art).
-5. **Bubble pop** — bubbles float up, pop for treats (bath-adjacent, reuses `Fx.Bubbles`).
+3. ~~**Hide and seek**~~ (done) — Bella hides behind 3 cushions; find her; harder with more cushions.
+4. ~~**Paw memory**~~ (done) — flip cards, match pairs (uses existing sticker/icon art).
+5. ~~**Bubble pop**~~ (done) — bubbles float up, pop for treats (bath-adjacent, reuses `Fx.Bubbles`).
 6. **Agility course** — swipe to jump hurdles in the park (needs a jump clip: only new animation required).
 
 ## Rewards, kept in balance

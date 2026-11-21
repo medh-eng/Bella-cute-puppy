@@ -5,7 +5,7 @@ using Bella.Core;
 
 namespace Bella.UI
 {
-    /// <summary>The "Play" menu: pick one of nine games. Tap outside or the X to close.</summary>
+    /// <summary>The "Play" menu: pick one of twelve games. Tap outside or the X to close.</summary>
     public class GamePicker : MonoBehaviour
     {
         private Canvas canvas;
@@ -24,14 +24,14 @@ namespace Bella.UI
             dimBtn.onClick.AddListener(Close);
 
             Image panel = UIKit.Panel("Panel", root, new Color(1f, 0.97f, 0.9f, 0.98f));
-            UIKit.Place(panel.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1000f, 1330f));
+            UIKit.Place(panel.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1000f, 1660f));
 
             Text title = UIKit.Label("Title", panel.transform, "Let's play!", 70, Art.Ink, TextAnchor.MiddleCenter);
             UIKit.Place(title.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 0.5f), new Vector2(0f, -90f), new Vector2(800f, 110f));
 
-            string[] ids = { "fetch", "catch", "dig", "ball", "frisbee", "arrow", "blocks", "jigsaw", "car" };
-            string[] icons = { "place_park", "place_kitchen", "place_garden", "toy_tennis", "toy_frisbee", "game_arrow", "game_blocks", "game_puzzle", "game_car" };
-            string[] names = { "Fetch", "Treat Catch", "Dig", "Ball Catch", "Frisbee", "Arrows", "Blocks", "Jigsaw", "Car Race" };
+            string[] ids = { "fetch", "catch", "dig", "ball", "frisbee", "arrow", "blocks", "jigsaw", "car", "hide", "memory", "bubbles" };
+            string[] icons = { "place_park", "place_kitchen", "place_garden", "toy_tennis", "toy_frisbee", "game_arrow", "game_blocks", "game_puzzle", "game_car", "question", "paw", "bubbles" };
+            string[] names = { "Fetch", "Treat Catch", "Dig", "Ball Catch", "Frisbee", "Arrows", "Blocks", "Jigsaw", "Car Race", "Hide & Seek", "Paw Memory", "Bubble Pop" };
             for (int i = 0; i < ids.Length; i++)
             {
                 string id = ids[i];
