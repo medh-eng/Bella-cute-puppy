@@ -144,6 +144,8 @@ namespace Bella.Systems
             new StickerDef("arcade_1",     "game_blocks", "Game time",     Art.Orange),
             new StickerDef("arcade_10",    "game_puzzle", "Game lover",    Art.Lilac),
             new StickerDef("arcade_50",    "trophy",      "Game champion", Art.Gold),
+            new StickerDef("visit_1",      "map",         "Little explorer", Art.Teal),
+            new StickerDef("visit_all",    "rainbow",     "World traveller", Art.Gold),
             new StickerDef("first_catch",  "treat",    "Treat catcher",    Art.Orange),
             new StickerDef("catch_10",     "star",     "Catch champion",   Art.Gold),
             new StickerDef("first_dig",    "bone",     "Treasure hunter",  Art.Leaf),

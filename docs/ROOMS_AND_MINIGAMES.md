@@ -30,6 +30,10 @@ optional with a fallback, repeatable play pays from a daily allowance (`Progress
   **Paw Memory** (`PawMemoryActivity`: 3, 6, 8 pairs, no clock), **Bubble Pop** (`BubblePopActivity`: 40 s, gold bubbles = 3).
   Compile-checked (stubcheck, 64 scripts); not yet run in Unity. Check first: cushion/portrait layout (`Portraits/face_playful` assumed square),
   card sizes on small phones, bubble speed and tap radius, picker height (1660) on short screens.
+- **Places, 21 Nov 2026** — new map button (left side of the HUD) opens `UI/PlacePicker.cs`: Garden, Park, Kitchen free; Beach 20, Snow 30,
+  Stage 40 treats (bought once, `SaveData.ownedPlaces`). `MiniGames/VisitActivity.cs` (+ `PlaceDef` table): backdrop, floor and music per place, tap the
+  ground to send Bella exploring, +2 happiness every 12 s, first visit to each place pays a 5-treat souvenir (`visitedPlaces`). Stickers `visit_1`,
+  `visit_all`. Compile-checked, not run in Unity. Check: camera framing (`Focus` in `VisitActivity.Build`), the extra HUD button's position, `music_fest_winter` for snow.
 - **21 Nov 2026 playtest fixes**: armchair faces the room and sits in the corner (smaller footprint); pinch /
   two-finger-drag zoom in the living room (`World/CameraRig.cs`); lower ambient + stronger key light + deeper fur
   tint for contrast (`World/DayNight.cs`, `Pet/BellaModel.cs`); living-room fetch now carries the ball in her mouth

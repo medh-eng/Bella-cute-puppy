@@ -72,6 +72,9 @@ namespace Bella.Save
         public int countCatchRounds = 0;
         public int countDigs = 0;
         public int countArcade = 0;
+        public int countVisits = 0;
+        public List<string> ownedPlaces = new List<string>();     // places bought with treats (beach, snow, stage)
+        public List<string> visitedPlaces = new List<string>();   // places visited at least once (souvenir paid)
 
         // Parent settings.
         public bool sfxOn = true;
@@ -113,6 +116,8 @@ namespace Bella.Save
             if (trickProgress == null) trickProgress = new List<TrickProgress>();
             if (stickers == null) stickers = new List<string>();
             if (ownedThemes == null) ownedThemes = new List<string>();
+            if (ownedPlaces == null) ownedPlaces = new List<string>();
+            if (visitedPlaces == null) visitedPlaces = new List<string>();
             if (wallId == null) wallId = "";
             if (objectSpots == null) objectSpots = new List<string>();
             if (floorId == null) floorId = "";

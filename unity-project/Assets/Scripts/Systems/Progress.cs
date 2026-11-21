@@ -175,6 +175,8 @@ namespace Bella.Systems
             Try("arcade_1", d.countArcade >= 1);
             Try("arcade_10", d.countArcade >= 10);
             Try("arcade_50", d.countArcade >= 50);
+            Try("visit_1", d.countVisits >= 1);
+            Try("visit_all", d.visitedPlaces.Count >= 6);
             Try("first_catch", d.countCatchRounds >= 1);
             Try("catch_10", d.countCatchRounds >= 10);
             Try("first_dig", d.countDigs >= 1);

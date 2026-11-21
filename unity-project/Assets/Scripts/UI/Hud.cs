@@ -84,6 +84,8 @@ namespace Bella.UI
             UIKit.Place(book.GetComponent<RectTransform>(), bl, new Vector2(0.5f, 0.5f), new Vector2(104f, 370f), new Vector2(150f, 150f));
             Button decor = UIKit.IconButton("Decor", Root, "home", 150f, Art.Cream, () => onAction("decor"));
             UIKit.Place(decor.GetComponent<RectTransform>(), bl, new Vector2(0.5f, 0.5f), new Vector2(104f, 545f), new Vector2(150f, 150f));
+            Button places = UIKit.IconButton("Places", Root, "map", 150f, Art.Cream, () => onAction("places"));
+            UIKit.Place(places.GetComponent<RectTransform>(), bl, new Vector2(0.5f, 0.5f), new Vector2(104f, 720f), new Vector2(150f, 150f));
             Button wardrobe = UIKit.IconButton("Wardrobe", Root, "wardrobe", 150f, Art.Cream, () => onAction("wardrobe"));
             UIKit.Place(wardrobe.GetComponent<RectTransform>(), br, new Vector2(0.5f, 0.5f), new Vector2(-104f, 370f), new Vector2(150f, 150f));
             Button clinic = UIKit.IconButton("Clinic", Root, "clinic", 150f, Art.Cream, () => onAction("clinic"));

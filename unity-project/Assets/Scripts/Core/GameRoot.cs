@@ -38,6 +38,7 @@ namespace Bella.Core
         private ParentsPanel parents;
         private StickerBook stickers;
         private GamePicker picker;
+        private PlacePicker placePicker;
         private Activity activity;
         private bool built;
 
@@ -163,6 +164,7 @@ namespace Bella.Core
             stickers = gameObject.AddComponent<StickerBook>();
             stickers.Init();
             picker = gameObject.AddComponent<GamePicker>();
+            placePicker = gameObject.AddComponent<PlacePicker>();
 
             // --- long loop
             Progress = gameObject.AddComponent<Progress>();
@@ -218,7 +220,7 @@ namespace Bella.Core
 
         private void OnHudAction(string action)
         {
-            if (!built || activity != null || Popups.IsOpen || (picker != null && picker.IsOpen)) return;
+            if (!built || activity != null || Popups.IsOpen || (picker != null && picker.IsOpen) || (placePicker != null && placePicker.IsOpen)) return;
             Wander.Pause(10f);
             switch (action)
             {
@@ -246,6 +248,7 @@ namespace Bella.Core
                         }
                     });
                     break;
+                case "places": ShowPlaces(); break;
                 case "bath": StartActivity<BathActivity>(); break;
                 case "tricks": StartActivity<TrickActivity>(); break;
                 case "wardrobe": StartActivity<WardrobeActivity>(); break;
@@ -255,6 +258,30 @@ namespace Bella.Core
                 case "gift": Progress.ClaimGift(); break;
                 case "parents": AudioManager.Play("tap"); gate.Ask(parents.Show); break;
             }
+        }
+
+        private void ShowPlaces()
+        {
+            placePicker.Show(Needs.Treats, id =>
+            {
+                PlaceDef def = PlaceDef.Find(id);
+                if (def == null) return;
+                SaveData d = SaveSystem.Data;
+                if (def.Cost > 0 && !d.ownedPlaces.Contains(id))
+                {
+                    if (!Needs.SpendTreats(def.Cost))
+                    {
+                        AudioManager.Play("pop", 0.4f, 0.7f);
+                        ShowPlaces();
+                        return;
+                    }
+                    d.ownedPlaces.Add(id);
+                    SaveSystem.Flush();
+                    AudioManager.Play("success", 0.8f);
+                }
+                VisitActivity.Next = def;
+                StartActivity<VisitActivity>();
+            });
         }
 
         private void StartActivity<T>() where T : Activity
