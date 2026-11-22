@@ -41,6 +41,18 @@ optional with a fallback, repeatable play pays from a daily allowance (`Progress
   water bowl, head down, `lap` sound looped for the drink, +3 happy; she drinks after most meals and sometimes on her own.
   Tuning to check on the phone: `BellaController.MouthPoint` offsets, `CameraRig.MaxZoom`, ambient values.
 
+- **Seasons / festivals, 22 Nov 2026** — `Systems/Seasons.cs` (calendar), `World/FestiveDecor.cs` (room dressing). Festival of Lights
+  (Diwali main day ±2 days), Festival of Colours (Holi ±1 day), winter holidays (20 Dec – 1 Jan) and Bella's birthday (anniversary of the
+  first launch and the day after, from year one). Diwali/Holi dates are a table for 2026–2030 — extend it before 2031. While a festival is
+  on: 10–12 pictures from `Resources/Seasons/<id>_1..9` dress the back wall, window, sill and floor (the everyday pennants hide), daytime music
+  becomes `music_fest_*` (night keeps the lullaby), and the first opening brings a greeting with a festival portrait, +15 treats (outside the
+  play pool) and the `fest_*` sticker — once per festival per year (`SaveData.festivalsSeen`). Parents can switch it off (`festivalsOn`).
+  Editor: **F** cycles a preview (records and pays nothing). Not built: monsoon / kites / harvest / New Year sets (art I-05…I-08 not made),
+  festival props (G-81…G-88), a festival place backdrop (F-10). Spot list and per-festival layout are tables at the top of `FestiveDecor.cs`.
+- **Sticker art wired, 22 Nov 2026** — sticker book and "New sticker!" popup use `Resources/Stickers/<id>` when it exists (icon fallback);
+  the book now has pages of 12 with arrows (31+ stickers no longer run off the screen). Portraits now used: `face_proud` (growing),
+  `face_goodnight` (night greeting), `face_love` / `face_silly` / `face_chilly` / `face_party` (festivals).
+
 ## Rooms / places (backdrops already in `Resources/Places`: kitchen, garden, park, bedroom_night, beach, snow, stage, bathroom, clinic)
 1. Garden (digging + butterflies), Kitchen (feeding), Bedroom (naps, night) as places you can switch to from a
    "Places" button, unlocked with treats. A place = backdrop + floor surface + a handful of props + its own music

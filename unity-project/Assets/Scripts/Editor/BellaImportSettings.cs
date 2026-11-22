@@ -42,6 +42,17 @@ namespace Bella.EditorTools
                 ti.filterMode = FilterMode.Bilinear;
                 ti.maxTextureSize = 2048;
             }
+            else if (assetPath.Contains("/Seasons/"))
+            {
+                // festival decorations hang in the 3D room (some lie flat on the floor): keep mip-maps so they don't shimmer
+                ti.textureType = TextureImporterType.Default;
+                ti.npotScale = TextureImporterNPOTScale.None;
+                ti.mipmapEnabled = true;
+                ti.alphaIsTransparency = true;
+                ti.wrapMode = TextureWrapMode.Clamp;
+                ti.filterMode = FilterMode.Bilinear;
+                ti.maxTextureSize = 512;
+            }
             else if (assetPath.Contains("/Icons/") || assetPath.Contains("/Portraits/") || assetPath.Contains("/Fx/"))
             {
                 ti.textureType = TextureImporterType.Default;

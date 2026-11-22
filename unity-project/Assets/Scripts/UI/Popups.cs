@@ -81,7 +81,8 @@ namespace Bella.UI
             current = queue.Dequeue();
             picture.sprite = Art.SpriteAt(current.picture);
             bool portrait = current.picture.StartsWith("Portraits/");
-            picture.rectTransform.sizeDelta = portrait ? new Vector2(420f, 420f) : new Vector2(300f, 300f);
+            bool sticker = current.picture.StartsWith("Stickers/");
+            picture.rectTransform.sizeDelta = portrait ? new Vector2(420f, 420f) : sticker ? new Vector2(380f, 380f) : new Vector2(300f, 300f);
             badge.color = current.badge;
             title.text = current.title;
             body.text = current.body;

@@ -4,11 +4,36 @@
 *"Continue Bella — repo medh-eng/Bella-cute-puppy, read docs/NEXT_CHAT.md."*
 If the Unity session has happened, paste the report from the bottom of `docs/UNITY_DAY.md` too.
 
-Last updated: 21 Nov 2026.
+Last updated: 22 Nov 2026.
 
 ---
 
 ## 1. Where the project is
+
+**Update, 22 Nov 2026 — Seasons (festival calendar) built, sticker art wired; 69 scripts compile (stubcheck), not run in Unity.**
+Festival of Lights, Festival of Colours, winter holidays and Bella's birthday decorate the living room on their dates, change the daytime
+music and give a once-a-year greeting + 15 treats + sticker (`Systems/Seasons.cs`, `World/FestiveDecor.cs`; the calendar was tested
+date-by-date against the real code). Parents' area has a **Festivals: ON/OFF** switch; in the Editor the **F** key previews each festival.
+The sticker book now shows the real sticker pictures and has pages (it ran off the screen with 31 stickers). About text corrected (music and
+puppy sounds are library recordings, not synthesised). 36 decoration pictures moved into `Resources/Seasons` (0.7 MB; Resources 58.7 of 60 MB).
+Rough layout drawing: `docs/preview/festivals_mock.png`. Details: `docs/ROOMS_AND_MINIGAMES.md`.
+
+### Plan for the next work (22 Nov 2026), in order
+
+1. **Pon — Unity playtest (the most important step now).** Since the 16 Nov Unity day about 20 new scripts (Fetch, 15 mini-games,
+   Places, title screen, Seasons, sticker book) have only been compile-checked. Pull `main` → Bella → Set Up Project → Play, and go through
+   `docs/UNITY_DAY.md` Step 4 (new lines for festivals and the sticker book at the end). Then Step 6: a test APK on the phone. Send the
+   report, screenshots of anything odd, and the Diagnostics text.
+2. **Claude — fix round from that report** (Sonnet is fine). Tuning points are listed per feature in `docs/ROOMS_AND_MINIGAMES.md`.
+3. **Claude — wire the art that is still waiting in `art-source/ready/`**: rugs, window views and wall pictures as Decor-shop items
+   (with saving), the extra effect sprites, 3 more place backdrops (one is the festival street F-10 → a Festival place during festivals).
+   No Unity needed.
+4. **Claude — Agility course** (last planned mini-game). Needs a new jump animation: the Blender pipeline (`tools/pipeline/build_anim.py`)
+   needs the `bpy` module — try `pip install bpy` (needs Python 3.11) in the session; then re-run the three Blender checks before committing.
+5. **Pon — optional art**: I-05…I-08 (rainy season, kites/spring, harvest, New Year) and festival props G-81…G-88 from
+   `docs/ASSET_PROMPTS_V2.md`. Each new set needs a few lines in `Seasons.cs` (dates) and `FestiveDecor.cs` (layout).
+6. **Before release (Pon):** record where each audio file came from and its licence (`CREDITS.md` still says unknown); Play organisation
+   account (D-U-N-S); internal test with a few families; store screenshots into `docs/store/screenshots/`.
 
 **Update, 21 Nov 2026 (evening) — three more mini-games, Places, title screen; all compile (stubcheck, 67 scripts), none run in Unity.**
 Hide & Seek, Paw Memory, Bubble Pop (Play menu = 12 games); Places (map button, `PlacePicker`, `VisitActivity`, `PlaceDef`, stickers visit_1 / visit_all);

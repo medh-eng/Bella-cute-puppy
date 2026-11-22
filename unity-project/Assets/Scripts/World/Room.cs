@@ -32,6 +32,8 @@ namespace Bella.World
 
         public Renderer WindowSky { get; private set; }
         public Renderer WindowOrb { get; private set; }
+        /// <summary>The everyday pennant string; festivals hide it and hang their own garland.</summary>
+        public GameObject Bunting { get; private set; }
 
         /// <summary>Height of the (flattened) tub's inside floor and of its water, metres.</summary>
         public const float TubFloor = 0.07f;
@@ -229,8 +231,11 @@ namespace Bella.World
         }
 
         /// <summary>A string of party pennants near the ceiling — the room is always a little festive.</summary>
-        private void BuildBunting(Transform t)
+        private void BuildBunting(Transform room)
         {
+            Bunting = new GameObject("Bunting");
+            Bunting.transform.SetParent(room, false);
+            Transform t = Bunting.transform;
             Art.Prim(PrimitiveType.Cube, "BuntingRibbon", t, new Vector3(0f, 2.96f, 2.67f), new Vector3(5.3f, 0.03f, 0.02f), Art.Gold);
             Color[] cols = { Art.Pink, Art.Gold, Art.Teal, Art.Lilac, Art.Leaf, Art.Orange };
             const int count = 11;

@@ -41,6 +41,7 @@ namespace Bella.Core
         private PlacePicker placePicker;
         private TitleScreen title;
         private Activity activity;
+        private FestiveDecor festive;
         private bool built;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -143,6 +144,8 @@ namespace Bella.Core
             Wander = gameObject.AddComponent<RoomWander>();
             Wander.Init(Bella, Room, DayNight);
             gameObject.AddComponent<Ambience>().Init(Room, DayNight, Cam, Needs, Bella);
+            festive = gameObject.AddComponent<FestiveDecor>();
+            festive.Init(Room);
 
             // --- UI
             if (UnityEngine.EventSystems.EventSystem.current == null)
@@ -161,7 +164,7 @@ namespace Bella.Core
             gate = gameObject.AddComponent<ParentalGate>();
             gate.Init();
             parents = gameObject.AddComponent<ParentsPanel>();
-            parents.Init(ResetEverything);
+            parents.Init(ResetEverything, () => RefreshSeason(true));
             stickers = gameObject.AddComponent<StickerBook>();
             stickers.Init();
             picker = gameObject.AddComponent<GamePicker>();
@@ -172,6 +175,7 @@ namespace Bella.Core
             Progress = gameObject.AddComponent<Progress>();
             Progress.Init(Needs, Bella, Popups, Hud);
             Progress.OnSessionStart(true);
+            RefreshSeason(true);
 
             title.Show(null);
 
@@ -309,6 +313,19 @@ namespace Bella.Core
             Hud.SetVisible(true);
             Bella.EndActivity();
             Progress.CheckStickers();
+            if (festive != null) festive.Sync();     // a place backdrop may have hidden the decorations
+        }
+
+        /// <summary>
+        /// Decorations and music for today's festival (Systems/Seasons), and its greeting the first
+        /// time. Runs at launch, on returning from the background and when parents flip the switch.
+        /// </summary>
+        public void RefreshSeason(bool greet)
+        {
+            FestivalDef f = Seasons.Today();
+            festive.Apply(f);
+            DayNight.SetFestival(f);
+            if (greet && f != null) Progress.CheckFestival(f);
         }
 
         /// <summary>Lights down + quieter music while Bella naps.</summary>
@@ -336,6 +353,13 @@ namespace Bella.Core
                 if (activity != null) activity.Finish();
                 else if (!Popups.IsOpen) Application.Quit();
             }
+            // Editor only: F previews the festivals in turn (lights, colours, winter, birthday, then the real calendar).
+            if (Application.isEditor && Input.GetKeyDown(KeyCode.F) && activity == null)
+            {
+                Seasons.PreviewIndex = Seasons.PreviewIndex + 1 >= Seasons.All.Length ? -1 : Seasons.PreviewIndex + 1;
+                Debug.Log("Festival preview: " + (Seasons.PreviewIndex < 0 ? "off (real calendar)" : Seasons.All[Seasons.PreviewIndex].id));
+                RefreshSeason(true);
+            }
         }
 
         private void OnApplicationPause(bool paused)
@@ -343,6 +367,7 @@ namespace Bella.Core
             if (!built || paused) return;
             // Coming back from the background may mean a new day (PetNeeds reloads itself).
             Progress.OnSessionStart(false);
+            RefreshSeason(true);
         }
     }
 }

@@ -57,6 +57,15 @@ namespace Bella.World
             if (!on) Evaluate();
         }
 
+        /// <summary>The festival on today (Systems/Seasons) or null; its tune replaces the daytime music.</summary>
+        public Bella.Systems.FestivalDef Festival { get; private set; }
+
+        public void SetFestival(Bella.Systems.FestivalDef f)
+        {
+            Festival = f;
+            Evaluate();
+        }
+
         public static Period PeriodForHour(int hour)
         {
             if (hour >= 6 && hour < 12) return Period.Morning;
@@ -107,6 +116,7 @@ namespace Bella.World
                     if (sleepDim || p == Period.Night) track = "music_night";
                     else if (p == Period.Morning) track = "music_morning";
                     else if (p == Period.Evening) track = "music_evening";
+                    if (Festival != null && !sleepDim && p != Period.Night) track = Festival.music;
                     audioManager.SetMusic(track);
                 }
                 // Birdsong while the sun is up, crickets after dark, hush while she naps.

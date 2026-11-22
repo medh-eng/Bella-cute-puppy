@@ -130,7 +130,7 @@ namespace UnityEngine
         public static int touchCount => 0; public static Touch GetTouch(int i) => default; public static bool GetKeyDown(KeyCode k) => false;
     }
     public struct Touch { public int fingerId; public Vector2 position; }
-    public enum KeyCode { Escape, Space }
+    public enum KeyCode { Escape = 27, Space = 32, F = 102 }
     public enum Space { World, Self }
     public struct Ray { public Vector3 origin => default; public Vector3 direction => default; public Vector3 GetPoint(float distance) => default; }
     public struct Plane { public Plane(Vector3 inNormal, Vector3 inPoint) {} public bool Raycast(Ray ray, out float enter) { enter = 0f; return false; } } public struct RaycastHit { public Vector3 point => default; public Collider collider => null; public Transform transform => null; public Vector3 normal => default; }

@@ -76,10 +76,12 @@ namespace Bella.Save
         public bool introSeen = false;   // the four story cards after the first title screen
         public List<string> ownedPlaces = new List<string>();     // places bought with treats (beach, snow, stage)
         public List<string> visitedPlaces = new List<string>();   // places visited at least once (souvenir paid)
+        public List<string> festivalsSeen = new List<string>();   // "lights-2026": greeting + present given for that festival
 
         // Parent settings.
         public bool sfxOn = true;
         public bool musicOn = true;
+        public bool festivalsOn = true;   // festival decorations, music and presents (Systems/Seasons)
 
         public DateTime LastSavedUtc =>
             lastSavedUtcTicks > 0 ? new DateTime(lastSavedUtcTicks, DateTimeKind.Utc) : DateTime.UtcNow;
@@ -119,6 +121,7 @@ namespace Bella.Save
             if (ownedThemes == null) ownedThemes = new List<string>();
             if (ownedPlaces == null) ownedPlaces = new List<string>();
             if (visitedPlaces == null) visitedPlaces = new List<string>();
+            if (festivalsSeen == null) festivalsSeen = new List<string>();
             if (wallId == null) wallId = "";
             if (objectSpots == null) objectSpots = new List<string>();
             if (floorId == null) floorId = "";

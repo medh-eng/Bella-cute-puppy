@@ -107,7 +107,7 @@ namespace Bella.Systems
                 }
                 else
                 {
-                    string portrait = DateTime.Now.Hour >= 20 || DateTime.Now.Hour < 6 ? "Portraits/face_sleepy" : "Portraits/face_excited";
+                    string portrait = DateTime.Now.Hour >= 20 || DateTime.Now.Hour < 6 ? "Portraits/face_goodnight" : "Portraits/face_excited";
                     popups.Show(portrait, Art.Gold, "Day " + d.dayStreak + " with Bella!",
                         "She is so happy to see you.", "success");
                 }
@@ -118,7 +118,7 @@ namespace Bella.Systems
             {
                 d.growthStageSeen = stage;
                 SaveSystem.Flush();
-                popups.Show("Portraits/face_excited", Art.Leaf,
+                popups.Show("Portraits/face_proud", Art.Leaf,
                     stage == 1 ? "Bella is growing!" : "What a big puppy!",
                     "Look how much she has grown with your care.", "gift");
             }
@@ -144,6 +144,35 @@ namespace Bella.Systems
             popups.Show("Icons/gift", Art.Pink, "A present!", "+" + amount + " treats for Bella's wardrobe.", "gift");
             bella.Celebrate(0);
             CheckStickers();
+        }
+
+        /// <summary>
+        /// First time the game opens during a festival: a greeting, a present (not from the daily play
+        /// allowance) and the festival's sticker. Once per festival per year (SaveData.festivalsSeen).
+        /// The editor preview (Seasons.PreviewIndex) shows the greeting but records and pays nothing.
+        /// </summary>
+        public const int FestivalTreats = 15;
+
+        public void CheckFestival(FestivalDef f)
+        {
+            if (f == null) return;
+            SaveData d = SaveSystem.Data;
+            bool preview = Seasons.PreviewIndex >= 0;
+            string key = Seasons.OccurrenceKey(f, DateTime.Now);
+            if (!preview && d.festivalsSeen.Contains(key)) return;
+            if (!preview)
+            {
+                d.festivalsSeen.Add(key);
+                if (d.festivalsSeen.Count > 40) d.festivalsSeen.RemoveAt(0);     // old years are never asked again
+                needs.AddTreats(FestivalTreats);
+                needs.Save();
+            }
+            string body = f == Seasons.Birthday
+                ? "Bella is one year older today! Look, the room is ready for a party. +" + FestivalTreats + " treats."
+                : "Bella decorated the room and has a festive present for you: +" + FestivalTreats + " treats.";
+            popups.Show(f.portrait, f.color, f.greeting, body, "gift");
+            bella.Celebrate(0);
+            if (!preview) Try(f.sticker, true);
         }
 
         public void CureSniffles()
@@ -200,6 +229,13 @@ namespace Bella.Systems
             Try("butterfly_20", d.countButterflies >= 20);
         }
 
+        /// <summary>The sticker's own picture (Resources/Stickers/&lt;id&gt;) when it exists, else its icon.</summary>
+        public static string StickerPicture(StickerDef def)
+        {
+            string path = "Stickers/" + def.id;
+            return Art.TryTex(path) != null ? path : "Icons/" + def.icon;
+        }
+
         private void Try(string id, bool condition)
         {
             if (!condition) return;
@@ -209,7 +245,7 @@ namespace Bella.Systems
             if (def == null) return;
             d.stickers.Add(id);
             SaveSystem.Flush();
-            popups.Show("Icons/" + def.icon, def.color, "New sticker!", def.title, "sparkle");
+            popups.Show(StickerPicture(def), def.color, "New sticker!", def.title, "sparkle");
         }
     }
 }

@@ -168,6 +168,10 @@ namespace Bella.Systems
             new StickerDef("cuddles_50",   "sparkle",  "50 cuddles",       Art.Lilac),
             new StickerDef("butterfly_1",  "butterfly","Butterfly friend", Art.Sky),
             new StickerDef("butterfly_20", "rainbow",  "Garden of friends",Art.Leaf),
+            new StickerDef("fest_lights",  "sparkle",  "Festival of Lights",  Art.Gold),
+            new StickerDef("fest_colours", "rainbow",  "Festival of Colours", Art.Pink),
+            new StickerDef("fest_winter",  "star",     "Winter holidays",     Art.Sky),
+            new StickerDef("fest_birthday","cake",     "Bella's birthday",    Art.Lilac),
         };
 
         public static OutfitDef FindOutfit(string id)

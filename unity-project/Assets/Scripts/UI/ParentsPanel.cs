@@ -23,12 +23,14 @@ namespace Bella.UI
 
         private Canvas canvas;
         private GameObject root, mainPage, textPage, confirmPage;
-        private Text sfxLabel, musicLabel, pageText;
+        private Text sfxLabel, musicLabel, festLabel, pageText;
         private Action onReset;
+        private Action onFestivalsChanged;
 
-        public void Init(Action resetRequested)
+        public void Init(Action resetRequested, Action festivalsChanged = null)
         {
             onReset = resetRequested;
+            onFestivalsChanged = festivalsChanged;
             canvas = UIKit.CreateCanvas("ParentsCanvas", 55);
             canvas.transform.SetParent(transform, false);
             root = UIKit.Rect("ParentsRoot", canvas.transform).gameObject;
@@ -56,13 +58,16 @@ namespace Bella.UI
             UIKit.Place(mus.GetComponent<RectTransform>(), topC, mid, new Vector2(0f, -260f), size);
             musicLabel = mus.GetComponentInChildren<Text>();
             Button priv = UIKit.TextButton("Privacy", mainPage.transform, "Privacy", size, Art.Lilac, () => ShowText(PrivacyText));
-            UIKit.Place(priv.GetComponent<RectTransform>(), topC, mid, new Vector2(0f, -410f), size);
+            Button fest = UIKit.TextButton("Festivals", mainPage.transform, "", size, Art.Teal, ToggleFestivals);
+            UIKit.Place(fest.GetComponent<RectTransform>(), topC, mid, new Vector2(0f, -410f), size);
+            festLabel = fest.GetComponentInChildren<Text>();
+            UIKit.Place(priv.GetComponent<RectTransform>(), topC, mid, new Vector2(0f, -560f), size);
             Button about = UIKit.TextButton("About", mainPage.transform, "About this game", size, Art.Lilac, () => ShowText(AboutText()));
-            UIKit.Place(about.GetComponent<RectTransform>(), topC, mid, new Vector2(0f, -560f), size);
+            UIKit.Place(about.GetComponent<RectTransform>(), topC, mid, new Vector2(0f, -710f), size);
             Button diag = UIKit.TextButton("Diag", mainPage.transform, "Diagnostics", size, Art.Lilac, () => ShowText(Diagnostics.Report()));
-            UIKit.Place(diag.GetComponent<RectTransform>(), topC, mid, new Vector2(0f, -710f), size);
+            UIKit.Place(diag.GetComponent<RectTransform>(), topC, mid, new Vector2(0f, -860f), size);
             Button reset = UIKit.TextButton("Reset", mainPage.transform, "Start over", size, Art.Rose, () => ShowPage(confirmPage));
-            UIKit.Place(reset.GetComponent<RectTransform>(), topC, mid, new Vector2(0f, -900f), size);
+            UIKit.Place(reset.GetComponent<RectTransform>(), topC, mid, new Vector2(0f, -1050f), size);
             Text ver = UIKit.Label("Version", mainPage.transform, "Version " + Application.version, 30, new Color(0.5f, 0.4f, 0.35f));
             UIKit.Place(ver.rectTransform, new Vector2(0.5f, 0f), mid, new Vector2(0f, 70f), new Vector2(700f, 50f));
 
@@ -101,7 +106,9 @@ namespace Bella.UI
                    "A gentle virtual-pet game with no adverts and no purchases.\n\n" +
                    "Bella, her room, her sounds and her music are original work made for this game. " +
                    "Her 3D model and pictures were created with AI image and 3D tools and then rigged, animated and painted for the game; " +
-                   "all sounds are synthesised.\n\n" +
+                   "its music and puppy sounds come from royalty-free libraries, and the little effects were synthesised for the game.\n\n" +
+                   "Festivals (Festival of Lights, Festival of Colours, winter holidays and Bella's birthday) decorate her room on their dates; " +
+                   "you can switch them off above.\n\n" +
                    "Tips: tap the thought bubble above Bella to give her what she wants. " +
                    "Draw shapes in Trick Training to teach her tricks. Come back each day for a present.";
         }
@@ -147,10 +154,19 @@ namespace Bella.UI
             Refresh();
         }
 
+        private void ToggleFestivals()
+        {
+            SaveSystem.Data.festivalsOn = !SaveSystem.Data.festivalsOn;
+            SaveSystem.Flush();
+            if (onFestivalsChanged != null) onFestivalsChanged();
+            Refresh();
+        }
+
         private void Refresh()
         {
             sfxLabel.text = "Sounds: " + (SaveSystem.Data.sfxOn ? "ON" : "OFF");
             musicLabel.text = "Music: " + (SaveSystem.Data.musicOn ? "ON" : "OFF");
+            festLabel.text = "Festivals: " + (SaveSystem.Data.festivalsOn ? "ON" : "OFF");
         }
     }
 }

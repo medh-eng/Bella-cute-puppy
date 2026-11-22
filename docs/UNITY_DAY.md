@@ -78,6 +78,9 @@ with the words in the box at the bottom of this page.
 - [ ] Shadow under Bella is steady (no flicker). In the bath she sits inside the tub, chest and head above the rim, nothing poking out underneath
 - [ ] Ball fetch: the ball lands in front of her and she never walks through it
 - [ ] Sounds and music play
+- [ ] **Festivals (new 22 Nov):** with the Game tab focused, press **F** on the keyboard. Each press shows the next festival — Lights, Colours, Winter, Birthday, then back to normal. Check: the room is decorated (garland over the window, things on the sill and floor, nothing cut off at the edges), the music changes, and a greeting pops up. Compare with `docs/preview/festivals_mock.png` (a rough drawing, not a screenshot)
+- [ ] **Sticker book:** opens with sticker pictures (not plain icons) for the ones earned, arrows at the bottom turn the pages (3 pages)
+- [ ] Gear → parents' page → **Festivals: ON/OFF** button switches the decorations off and on
 
 **If you see a brown, blocky puppy made of balls** instead of the fluffy Bella, the model did not
 load. Open gear → (answer the sum) → **Diagnostics**, screenshot it, and send it to Claude.
