@@ -294,14 +294,39 @@ namespace Bella.Core
 
         private void StartActivity<T>() where T : Activity
         {
-            if (activity != null) return;
+            if (activity != null) { Diagnostics.Note("Start " + typeof(T).Name + ": another activity is still running"); return; }
             if (Bella.IsSleeping) Bella.WakeUp();
-            if (Bella.Busy) return;     // finishing a meal or a fetch — try again in a moment
+            if (Bella.Busy)
+            {
+                // finishing a meal or a fetch — say so instead of silently ignoring the tap
+                Diagnostics.Note("Start " + typeof(T).Name + ": Bella is busy");
+                Popups.Show("Portraits/face_proud", Art.Sky, "One moment!", "Bella is still busy. Try again in a few seconds.", "tap");
+                return;
+            }
             Hud.SetVisible(false);
-            var go = new GameObject(typeof(T).Name);
-            go.transform.SetParent(transform, false);
-            activity = go.AddComponent<T>();
-            activity.Begin(this);
+            GameObject go = null;
+            try
+            {
+                go = new GameObject(typeof(T).Name);
+                go.transform.SetParent(transform, false);
+                activity = go.AddComponent<T>();
+                activity.Begin(this);
+            }
+            catch (Exception e)
+            {
+                // Never leave the player stuck with a hidden HUD: undo, record the error and show it.
+                Debug.LogError("Could not start " + typeof(T).Name + ": " + e);
+                Diagnostics.Note("Start " + typeof(T).Name + " FAILED: " + e.GetType().Name + ": " + e.Message);
+                if (go != null) Destroy(go);
+                activity = null;
+                if (Room != null) Room.HomePlace();
+                if (DayNight != null) DayNight.SetMusicOverride(false);
+                CameraRig.GoHome();
+                Bella.EndActivity();
+                Hud.SetVisible(true);
+                Popups.Show("Portraits/face_surprised", Art.Rose, "Oops!",
+                    typeof(T).Name + " could not start.\n" + e.GetType().Name + ": " + e.Message + "\nPlease send a screenshot of this.", "pop");
+            }
         }
 
         public void ActivityFinished(Activity a)
