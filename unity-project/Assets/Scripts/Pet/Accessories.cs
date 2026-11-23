@@ -93,6 +93,13 @@ namespace Bella.Pet
                     t.localRotation = Quaternion.Euler(-6f, 0f, -8f);
                     break;
                 case "crown":
+                    // the gold model has its own gold/ruby colours, so it only stands in for the gold crown
+                    if (Mathf.Abs(c.r - Art.Gold.r) + Mathf.Abs(c.g - Art.Gold.g) + Mathf.Abs(c.b - Art.Gold.b) < 0.05f
+                        && Art.Prop("hat_crown", t, Vector3.zero, 0.21f) != null)
+                    {
+                        t.localRotation = Quaternion.Euler(-8f, 0f, 0f);
+                        break;
+                    }
                     Art.Prim(PrimitiveType.Cylinder, "Ring", t, new Vector3(0f, 0.03f, 0f), new Vector3(0.2f, 0.035f, 0.2f), c);
                     for (int i = 0; i < 5; i++)
                     {

@@ -137,6 +137,7 @@ namespace Bella.World
             BuildBunting(t);
             BuildToyShelf(t);
             BuildToyBasket(t);
+            BuildSillAndFloorToys(t);
 
             // Bed
             RoomObject bedObj = MakeObject("bed", new Vector3(-0.92f, 0f, 1.2f), 0.62f, 0.3f);
@@ -193,6 +194,7 @@ namespace Bella.World
                 tubModel.transform.localScale = new Vector3(1f, 0.55f, 1f);
                 Art.Prim(PrimitiveType.Cylinder, "Water", tub.transform, new Vector3(0f, TubWaterY, 0f), new Vector3(1.15f, 0.02f, 0.58f), new Color(0.62f, 0.86f, 0.98f));
                 Art.Prop("toy_duck", tub.transform, new Vector3(0.35f, TubWaterY + 0.01f, 0.08f), 0.22f, -25f);
+                Art.Prop("shampoo", tub.transform, new Vector3(-0.98f, 0f, -0.3f), 0.28f, 170f);   // on the floor beside the tub
             }
             else
             {
@@ -280,6 +282,28 @@ namespace Bella.World
             Art.Prim(PrimitiveType.Cube, "Book2", t, new Vector3(2.19f, 2.04f, 2.62f), new Vector3(0.055f, 0.21f, 0.16f), Art.Teal);
             Art.Prim(PrimitiveType.Cube, "Book3", t, new Vector3(2.27f, 2.03f, 2.62f), new Vector3(0.055f, 0.19f, 0.15f), Art.Gold, new Vector3(0f, 0f, -8f));
             Art.Prim(PrimitiveType.Sphere, "ShelfBall", t, new Vector3(2.43f, 1.99f, 2.6f), Vector3.one * 0.12f, Art.Sky);
+        }
+
+        /// <summary>
+        /// Generated extras that exist only as models: a tulip box on the window sill and a rope toy on the floor.
+        /// Nothing is built when the model file is missing, so the room looks as it did before.
+        /// </summary>
+        private void BuildSillAndFloorToys(Transform t)
+        {
+            // sill top is y = 1.385; the box sits left of centre so the sun/moon stays visible
+            Art.Prop("windowbox", t, new Vector3(-0.28f, 1.385f, 2.56f), 0.6f);
+
+            if (Resources.Load<GameObject>("Props/toy_rope") != null)
+            {
+                RoomObject rope = MakeObject("rope", new Vector3(0.45f, 0f, 2.05f), 0.2f, 0.12f);
+                Art.Prop("toy_rope", rope.transform, Vector3.zero, 0.42f, 28f);
+            }
+
+            if (Resources.Load<GameObject>("Props/toy_teddy") != null)
+            {
+                RoomObject teddy = MakeObject("teddy", new Vector3(-0.85f, 0f, 2.0f), 0.18f, 0.3f, 195f);   // 195 = faces into the room
+                Art.Prop("toy_teddy", teddy.transform, Vector3.zero, 0.34f);
+            }
         }
 
         /// <summary>A wicker toy basket in the back corner, out of Bella's wander area.</summary>

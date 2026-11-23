@@ -4,11 +4,16 @@
 *"Continue Bella — repo medh-eng/Bella-cute-puppy, read docs/NEXT_CHAT.md."*
 If the Unity session has happened, paste the report from the bottom of `docs/UNITY_DAY.md` too.
 
-Last updated: 22 Nov 2026.
+Last updated: 23 Nov 2026.
 
 ---
 
 ## 1. Where the project is
+
+**Update, 23 Nov 2026 - ten more 3D models absorbed (21 props now); 69 scripts compile (stubcheck), not run in Unity.**
+Windowbox, rope, teddy, frisbee, bone treat, fancy meal, birthday cake, shampoo, gold crown and Pip the bluebird (new: sits on the window sill by day, tappable).
+Wiring table, the reduction command (`tools/pipeline/reduce_prop.py`) and a list of things to eyeball in Unity: `art-inbox/INTAKE_2026-11-23.md`.
+Resources is at 59.9 of 60 MB: **anything new must shrink something else first** (the rugs/window views/wall pictures waiting in `art-source/ready/` included).
 
 **Update, 22 Nov 2026 — Seasons (festival calendar) built, sticker art wired; 69 scripts compile (stubcheck), not run in Unity.**
 Festival of Lights, Festival of Colours, winter holidays and Bella's birthday decorate the living room on their dates, change the daytime

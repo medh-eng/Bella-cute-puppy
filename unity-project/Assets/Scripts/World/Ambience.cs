@@ -33,6 +33,11 @@ namespace Bella.World
         private Renderer nightlight;
         private float time;
 
+        // -- Pip the bluebird: perches on the window sill by day (only when the model is in Resources/Props)
+        private Transform pip;
+        private float pipHop = -1f, pipNextHop, pipCooldown;
+        private static readonly Vector3 PipPerch = new Vector3(0.62f, 1.385f, 2.55f);
+
         private class CloudData { public Transform t; public Renderer r; public float speed, phase, y, scale; }
         private class StarData { public Transform t; public Renderer r; public float phase, speed; public Vector3 pos; }
 
@@ -58,7 +63,51 @@ namespace Bella.World
             BuildButterflies();
             BuildFireflies();
             BuildNightlight();
+            BuildPip();
             ApplyPeriod(true);
+        }
+
+        private void BuildPip()
+        {
+            GameObject holder = Art.Prop("friend_bird", room.transform, PipPerch, 0.24f, 200f);   // 200 = beak towards the room
+            if (holder == null) return;
+            pip = holder.transform;
+            BoxCollider box = holder.AddComponent<BoxCollider>();
+            box.center = new Vector3(0f, 0.12f, 0f);
+            box.size = new Vector3(0.24f, 0.26f, 0.24f);
+            pipNextHop = Random.Range(3f, 7f);
+        }
+
+        /// <summary>Pip bobs, hops now and then, and chirps happily when tapped.</summary>
+        private void UpdatePip()
+        {
+            float dt = Time.deltaTime;
+            pipCooldown -= dt;
+            pipNextHop -= dt;
+            if (pipHop < 0f && pipNextHop <= 0f) { pipHop = 0f; pipNextHop = Random.Range(4f, 9f); }
+            float y = 0.004f * Mathf.Sin(time * 2.4f);
+            if (pipHop >= 0f)
+            {
+                pipHop += dt * 2.6f;
+                y += 0.09f * Mathf.Sin(Mathf.Min(pipHop, 1f) * Mathf.PI);
+                if (pipHop >= 1f) pipHop = -1f;
+            }
+            Vector3 p = room.transform.TransformPoint(PipPerch);
+            pip.position = new Vector3(p.x, p.y + y, p.z);
+            pip.rotation = room.transform.rotation * Quaternion.Euler(0f, 200f + 14f * Mathf.Sin(time * 0.7f), 0f);
+
+            bool canTap = Pointer.Down && !Pointer.OverUI && bella != null && !bella.InActivity && pipCooldown <= 0f;
+            RaycastHit hit;
+            if (canTap && Pointer.Raycast(cam, out hit) && hit.collider != null && hit.collider.transform == pip)
+            {
+                pipCooldown = 2f;
+                pipHop = 0f;
+                Fx.Sparkles(pip.position + Vector3.up * 0.15f, 8);
+                Fx.Hearts(pip.position + Vector3.up * 0.2f, 3);
+                AudioManager.Play("sparkle");
+                AudioManager.Voice("yip");
+                if (needs != null) needs.AddHappiness(3f);
+            }
         }
 
         // ---------------------------------------------------------------- build
@@ -187,6 +236,7 @@ namespace Bella.World
             for (int i = 0; i < stars.Count; i++) stars[i].t.gameObject.SetActive(dayNight.IsNight && !room.InPlace);
             for (int i = 0; i < butterflies.Count; i++) butterflies[i].root.gameObject.SetActive(day);
             for (int i = 0; i < fireflies.Count; i++) fireflies[i].t.gameObject.SetActive(dayNight.IsNight);
+            if (pip != null) pip.gameObject.SetActive(day && !room.InPlace);
             if (nightlight != null) nightlight.gameObject.SetActive(NightGlow && !room.InPlace);
         }
 
@@ -198,6 +248,7 @@ namespace Bella.World
 
             UpdateWindow();
             if (DayCrittersOut) UpdateButterflies();
+            if (pip != null && pip.gameObject.activeSelf) UpdatePip();
             if (dayNight.IsNight) UpdateFireflies();
             if (nightlight != null && nightlight.gameObject.activeSelf)
             {

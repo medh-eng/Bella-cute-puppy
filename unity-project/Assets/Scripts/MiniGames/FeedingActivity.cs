@@ -125,7 +125,11 @@ namespace Bella.MiniGames
             if (def.happiness >= 20f) AudioManager.Voice("bark_happy");
             else if (wasHungry) AudioManager.Voice("whimper_hungry");
 
-            After(1.2f, () => { feeding = false; Refresh(); });
+            // the meal itself, when its model is in Resources/Props (the food's icon name is also its model name)
+            Vector3 mealAt = G.Room.transform.InverseTransformPoint(Bella.transform.position + Bella.transform.forward * 0.55f);
+            GameObject meal = Art.Prop(def.icon, G.Room.transform, mealAt, def.price >= 20 ? 0.42f : 0.3f);
+
+            After(1.2f, () => { if (meal != null) Destroy(meal); feeding = false; Refresh(); });
         }
     }
 }

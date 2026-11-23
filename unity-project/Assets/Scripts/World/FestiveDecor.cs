@@ -115,8 +115,12 @@ namespace Bella.World
             (int pic, string spot, float scale)[] layout;
             if (!Layouts.TryGetValue(f.id, out layout)) return;
             int made = 0;
+            bool cake = false;
+            if (f.id == "birthday" && Spots.TryGetValue("floorR", out Spot cakeSpot))
+                cake = Art.Prop("food_cake", root.transform, cakeSpot.pos, 0.36f, 190f) != null;   // the model takes the "floorR" place of the picture
             for (int i = 0; i < layout.Length; i++)
             {
+                if (cake && layout[i].spot == "floorR") continue;
                 Texture2D tex = Art.TryTex("Seasons/" + f.id + "_" + layout[i].pic);
                 Spot s;
                 if (tex == null || !Spots.TryGetValue(layout[i].spot, out s)) continue;

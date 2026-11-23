@@ -66,6 +66,19 @@ namespace Bella.MiniGames
 
         private void BuildFrisbee()
         {
+            // The model lies flat in its own space; the root keeps the old "quad lying flat" convention
+            // (X rotation 90 = flat, 80 = tilted in flight), so the model child is turned back by -90.
+            var root = new GameObject("Frisbee");
+            root.transform.SetParent(G.Room.transform, false);
+            GameObject model = Art.Prop("toy_frisbee", root.transform, new Vector3(0f, -0.025f, 0f), 0.32f);
+            if (model != null)
+            {
+                model.transform.localRotation = Quaternion.Euler(-90f, 0f, 0f);
+                frisbee = root.transform;
+                Rest();
+                return;
+            }
+            Destroy(root);
             var go = GameObject.CreatePrimitive(PrimitiveType.Quad);
             go.name = "Frisbee";
             Destroy(go.GetComponent<Collider>());
