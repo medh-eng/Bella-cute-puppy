@@ -144,7 +144,8 @@ namespace Bella.MiniGames
         {
             for (float t = 0f; t < seconds && Running; t += 0.27f)
             {
-                Fx.Burst(at + Vector3.up * 0.12f, "paw", 2, 0.14f, 1.0f, 1.3f, 0.7f);
+                if (Fx.Has("dust")) Fx.Burst(at + Vector3.up * 0.12f, "dust", 2, 0.3f, 0.4f, 1.1f, 0.8f);
+                else Fx.Burst(at + Vector3.up * 0.12f, "paw", 2, 0.14f, 1.0f, 1.3f, 0.7f);
                 AudioManager.Play("pop", 0.25f, Random.Range(0.55f, 0.8f));
                 yield return new WaitForSeconds(0.27f);
             }

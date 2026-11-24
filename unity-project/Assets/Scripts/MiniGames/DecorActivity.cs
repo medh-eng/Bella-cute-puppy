@@ -20,7 +20,7 @@ namespace Bella.MiniGames
 
         private class Entry
         {
-            public string kind;          // "wall" | "floor"
+            public string kind;          // "wall" | "floor" | "rug" | "view" | "pic"
             public ThemeDef def;         // null = the free original look
             public Image cell;
             public GameObject price, check;
@@ -54,14 +54,16 @@ namespace Bella.MiniGames
             sheet.sizeDelta = new Vector2(-40f, 700f);
 
             // entries: Classic first, then every theme whose picture exists
-            all.Add(new Entry { kind = "wall", def = null });
-            for (int i = 0; i < Catalog.Themes.Length; i++)
-                if (Catalog.Themes[i].kind == "wall" && Art.TryTex("Surfaces/" + Catalog.Themes[i].file) != null)
-                    all.Add(new Entry { kind = "wall", def = Catalog.Themes[i] });
-            all.Add(new Entry { kind = "floor", def = null });
-            for (int i = 0; i < Catalog.Themes.Length; i++)
-                if (Catalog.Themes[i].kind == "floor" && Art.TryTex("Surfaces/" + Catalog.Themes[i].file) != null)
-                    all.Add(new Entry { kind = "floor", def = Catalog.Themes[i] });
+            string[] kinds = { "wall", "floor", "rug", "view", "pic" };
+            for (int k = 0; k < kinds.Length; k++)
+            {
+                int before = all.Count;
+                all.Add(new Entry { kind = kinds[k], def = null });
+                for (int i = 0; i < Catalog.Themes.Length; i++)
+                    if (Catalog.Themes[i].kind == kinds[k] && Art.TryTex("Surfaces/" + Catalog.Themes[i].file) != null)
+                        all.Add(new Entry { kind = kinds[k], def = Catalog.Themes[i] });
+                if (all.Count == before + 1) all.RemoveAt(before);    // no pictures for this kind: no lonely "Classic" cell
+            }
 
             for (int i = 0; i < all.Count; i++) BuildCell(all[i]);
 
@@ -88,7 +90,11 @@ namespace Bella.MiniGames
             e.cell = cell;
 
             // picture: the surface texture itself (or the original colour for "Classic")
-            Image pic = UIKit.Panel("Swatch", cell.transform, e.kind == "wall" ? new Color(1f, 0.91f, 0.82f) : new Color(0.94f, 0.80f, 0.62f), false);
+            Color classic = e.kind == "wall" ? new Color(1f, 0.91f, 0.82f)
+                          : e.kind == "floor" ? new Color(0.94f, 0.80f, 0.62f)
+                          : e.kind == "rug" ? Art.Teal
+                          : e.kind == "view" ? Art.Sky : Color.white;
+            Image pic = UIKit.Panel("Swatch", cell.transform, classic, false);
             UIKit.Place(pic.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -16f), new Vector2(190f, 150f));
             if (e.def != null)
             {
@@ -156,7 +162,7 @@ namespace Bella.MiniGames
         {
             SaveData d = SaveSystem.Data;
             string id = e.def == null ? "" : e.def.id;
-            return (e.kind == "wall" ? d.wallId : d.floorId) == id;
+            return d.GetDecor(e.kind) == id;
         }
 
         private void Refresh()
@@ -198,8 +204,9 @@ namespace Bella.MiniGames
                 AudioManager.Play("pop");
             }
             string id = e.def == null ? "" : e.def.id;
-            if (e.kind == "wall") d.wallId = id; else d.floorId = id;
+            d.SetDecor(e.kind, id);
             G.Room.ApplyTheme(d.wallId, d.floorId);
+            G.Room.ApplyExtras(d.rugId, d.viewId, d.picId);
             SaveSystem.Flush();
             Refresh();
         }

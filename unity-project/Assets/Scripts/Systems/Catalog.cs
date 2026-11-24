@@ -55,7 +55,7 @@ namespace Bella.Systems
     /// <summary>A wallpaper or floor for the Decor shop. `file` is the name under Resources/Surfaces.</summary>
     public class ThemeDef
     {
-        public string id, kind, file;   // kind: "wall" or "floor"
+        public string id, kind, file;   // kind: "wall", "floor", "rug", "view" (window scenery) or "pic" (wall picture)
         public int price;
 
         public ThemeDef(string id, string kind, string file, int price)
@@ -109,6 +109,17 @@ namespace Bella.Systems
             new ThemeDef("floor_grass",   "floor", "floor_grass",   25),
             new ThemeDef("floor_sand",    "floor", "floor_sand",    25),
             new ThemeDef("floor_stage",   "floor", "floor_stage",   30),
+            new ThemeDef("rug_paw",       "rug",   "rug_paw",       15),
+            new ThemeDef("rug_flower",    "rug",   "rug_flower",    15),
+            new ThemeDef("rug_donut",     "rug",   "rug_donut",     20),
+            new ThemeDef("rug_rainbow",   "rug",   "rug_rainbow",   25),
+            new ThemeDef("view_hills",    "view",  "view_hills",    15),
+            new ThemeDef("view_town",     "view",  "view_town",     20),
+            new ThemeDef("view_beach",    "view",  "view_beach",    20),
+            new ThemeDef("view_snow",     "view",  "view_snow",     20),
+            new ThemeDef("pic_1", "pic", "pic_1", 8), new ThemeDef("pic_2", "pic", "pic_2", 8), new ThemeDef("pic_3", "pic", "pic_3", 8),
+            new ThemeDef("pic_4", "pic", "pic_4", 8), new ThemeDef("pic_5", "pic", "pic_5", 8), new ThemeDef("pic_6", "pic", "pic_6", 8),
+            new ThemeDef("pic_7", "pic", "pic_7", 8), new ThemeDef("pic_8", "pic", "pic_8", 8), new ThemeDef("pic_9", "pic", "pic_9", 8),
         };
 
         public static ThemeDef FindTheme(string id)

@@ -50,7 +50,32 @@ namespace Bella.MiniGames
         private bool souvenirShown;
 
         protected override string Tune { get { return def != null ? def.Music : "music_play"; } }
-        protected override string Place { get { return def != null ? def.Id : null; } }
+        private string placeArt;
+        protected override string Place
+        {
+            get
+            {
+                if (def == null) return null;
+                if (placeArt == null) placeArt = PickBackdrop(def.Id);
+                return placeArt;
+            }
+        }
+
+        /// <summary>Same place, different picture: the Stage rotates between three studios, the Park becomes the festival street while a festival is on.</summary>
+        private static string PickBackdrop(string id)
+        {
+            if (id == "stage")
+            {
+                string[] studios = { "stage", "studio_pink", "studio_rainbow" };
+                string pick = studios[Random.Range(0, studios.Length)];
+                if (Resources.Load<Texture2D>("Places/" + pick) != null) return pick;
+            }
+            else if (id == "park" && Seasons.Today() != null && Resources.Load<Texture2D>("Places/festival") != null)
+            {
+                return "festival";
+            }
+            return id;
+        }
         protected override string PlaceFloor { get { return def != null ? def.Floor : null; } }
 
         private void Awake() { def = Next; }

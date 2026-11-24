@@ -54,6 +54,32 @@ namespace Bella.Save
         public string wallId = "";
         public List<string> objectSpots = new List<string>();   // "id|x|z" for furniture the player moved
         public string floorId = "";
+        public string rugId = "", viewId = "", picId = "";   // rug, window view and wall picture from the Decor shop
+
+        /// <summary>The chosen decor id for a Decor-shop kind ("wall", "floor", "rug", "view", "pic"); empty = the original look.</summary>
+        public string GetDecor(string kind)
+        {
+            switch (kind)
+            {
+                case "wall": return wallId;
+                case "floor": return floorId;
+                case "rug": return rugId;
+                case "view": return viewId;
+                default: return picId;
+            }
+        }
+
+        public void SetDecor(string kind, string id)
+        {
+            switch (kind)
+            {
+                case "wall": wallId = id; break;
+                case "floor": floorId = id; break;
+                case "rug": rugId = id; break;
+                case "view": viewId = id; break;
+                default: picId = id; break;
+            }
+        }
 
         // Daily allowance of treats from repeatable play (fetch, extra tricks...).
         public string playPayDateKey = "";
@@ -125,6 +151,9 @@ namespace Bella.Save
             if (wallId == null) wallId = "";
             if (objectSpots == null) objectSpots = new List<string>();
             if (floorId == null) floorId = "";
+            if (rugId == null) rugId = "";
+            if (viewId == null) viewId = "";
+            if (picId == null) picId = "";
             if (lastStreakDateKey == null) lastStreakDateKey = "";
             if (lastGiftDateKey == null) lastGiftDateKey = "";
             if (playPayDateKey == null) playPayDateKey = "";

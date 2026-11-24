@@ -4,11 +4,17 @@
 *"Continue Bella — repo medh-eng/Bella-cute-puppy, read docs/NEXT_CHAT.md."*
 If the Unity session has happened, paste the report from the bottom of `docs/UNITY_DAY.md` too.
 
-Last updated: 23 Nov 2026.
+Last updated: 25 Nov 2026.
 
 ---
 
 ## 1. Where the project is
+
+**Update, 25 Nov 2026 - the art waiting in `art-source/ready/` is wired (plan item 3 done); 69 scripts compile, not run in Unity.**
+Decor shop now has five sections: wallpapers, floors, **rugs** (4), **window views** (4, darker at night) and **wall pictures** (9) - `SaveData.rugId/viewId/picId`, `Room.ApplyExtras`, `ThemeDef` kinds `rug`/`view`/`pic`. Places: the Stage rotates between three studio backdrops, the Park becomes the festival street while a festival is on (`VisitActivity.PickBackdrop`). Confetti (arcade round end, new trick) and dust (digging) effects (`Fx.Confetti`, `Fx.Has`). Other ready effects (glow, rays, petals, leaves, snow, rain, firework, puff, foam, splat, note, paw, flare, smoke, beam, ring, dot) are still not used; they stay in `art-source/ready/Fx`.
+To make room: all PNGs in Resources were recompressed losslessly (oxipng, -1.4 MB); rugs 384 px / 160 colours, window views 512 px; Resources is now 59.2 of 60 MB.
+Still open from the plan: Pon's Unity playtest (1), the fix round after it (2), the Agility course (4, needs a new jump clip: Bella's FBX would have to be rebuilt with Blender and the three checks re-run, so it is best done together with the Unity report), optional art (5), release chores (6).
+Check in Unity: rug size/overlap with the old rug and furniture, window view strip position and night tint, picture swap, festival street and studio backdrops, confetti look, Decor shop pages (now 36 cells over 6 pages).
 
 **Update, 23 Nov 2026 - ten more 3D models absorbed (21 props now); 69 scripts compile (stubcheck), not run in Unity.**
 Windowbox, rope, teddy, frisbee, bone treat, fancy meal, birthday cake, shampoo, gold crown and Pip the bluebird (new: sits on the window sill by day, tappable).
@@ -30,7 +36,7 @@ Rough layout drawing: `docs/preview/festivals_mock.png`. Details: `docs/ROOMS_AN
    `docs/UNITY_DAY.md` Step 4 (new lines for festivals and the sticker book at the end). Then Step 6: a test APK on the phone. Send the
    report, screenshots of anything odd, and the Diagnostics text.
 2. **Claude — fix round from that report** (Sonnet is fine). Tuning points are listed per feature in `docs/ROOMS_AND_MINIGAMES.md`.
-3. **Claude — wire the art that is still waiting in `art-source/ready/`**: rugs, window views and wall pictures as Decor-shop items
+3. ~~**Claude — wire the art that is still waiting in `art-source/ready/`**~~ (done 25 Nov, see above; only the unused effect sprites remain): rugs, window views and wall pictures as Decor-shop items
    (with saving), the extra effect sprites, 3 more place backdrops (one is the festival street F-10 → a Festival place during festivals).
    No Unity needed.
 4. **Claude — Agility course** (last planned mini-game). Needs a new jump animation: the Blender pipeline (`tools/pipeline/build_anim.py`)

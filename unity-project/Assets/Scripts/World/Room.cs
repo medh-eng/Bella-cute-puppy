@@ -449,6 +449,75 @@ namespace Bella.World
                 SetSurface(wallRends[i], wallOriginals[i], wallTheme, tiling[i]);
         }
 
+        private GameObject rugArt, viewArt;
+        private Material viewMat;
+        private float viewBrightness = 1f;
+
+        /// <summary>
+        /// Rug, window scenery and wall picture from Resources/Surfaces (empty id, or a missing file, = the original look:
+        /// round teal rug, plain sky, paw picture). Safe to call again at any time.
+        /// </summary>
+        public void ApplyExtras(string rugId, string viewId, string picId)
+        {
+            // rug: a round picture lying on the floor; the built rug is hidden while it shows
+            Texture2D rugTex = string.IsNullOrEmpty(rugId) ? null : Art.TryTex("Surfaces/" + rugId);
+            if (rugArt != null) { Destroy(rugArt); rugArt = null; }
+            Transform rug = transform.Find("Rug"), rugIn = transform.Find("RugInner");
+            if (rugTex != null)
+            {
+                rugTex.wrapMode = TextureWrapMode.Clamp;
+                rugArt = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                rugArt.name = "RugArt";
+                Destroy(rugArt.GetComponent<Collider>());
+                rugArt.transform.SetParent(transform, false);
+                rugArt.transform.localPosition = new Vector3(0f, 0.012f, 0.25f);
+                rugArt.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+                rugArt.transform.localScale = new Vector3(1.9f, 1.9f, 1f);
+                Renderer rr = rugArt.GetComponent<Renderer>();
+                rr.sharedMaterial = Art.SpriteMat(Color.white, rugTex);
+                rr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                rr.receiveShadows = false;
+            }
+            if (rug != null) rug.gameObject.SetActive(rugTex == null);
+            if (rugIn != null) rugIn.gameObject.SetActive(rugTex == null);
+
+            // window view: a scenery strip along the bottom of the pane, over the sky (the sun / moon stay in front)
+            Texture2D viewTex = string.IsNullOrEmpty(viewId) ? null : Art.TryTex("Surfaces/" + viewId);
+            if (viewArt != null) { Destroy(viewArt); viewArt = null; viewMat = null; }
+            if (viewTex != null)
+            {
+                viewTex.wrapMode = TextureWrapMode.Clamp;
+                viewArt = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                viewArt.name = "WindowView";
+                Destroy(viewArt.GetComponent<Collider>());
+                viewArt.transform.SetParent(transform, false);
+                viewArt.transform.localPosition = new Vector3(0.1f, 1.735f, 2.652f);   // pane bottom is 1.455; strip is 1.34 wide x 0.56 tall
+                viewArt.transform.localScale = new Vector3(1.34f, 0.56f, 1f);
+                Renderer vr = viewArt.GetComponent<Renderer>();
+                viewMat = Art.SpriteMat(Color.white, viewTex);
+                vr.sharedMaterial = viewMat;
+                vr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                vr.receiveShadows = false;
+                SetViewBrightness(viewBrightness);
+            }
+
+            // wall picture: swaps the paw picture's artwork
+            Transform pic = transform.Find("Picture");
+            if (pic != null)
+            {
+                Texture2D picTex = string.IsNullOrEmpty(picId) ? null : Art.TryTex("Surfaces/" + picId);
+                if (picTex != null) picTex.wrapMode = TextureWrapMode.Clamp;
+                pic.GetComponent<Renderer>().sharedMaterial = Art.SpriteMat(Color.white, picTex != null ? picTex : Art.Tex("Icons/paw"));
+            }
+        }
+
+        /// <summary>Darkens the window scenery at night (1 = full colour). Called when the time of day changes.</summary>
+        public void SetViewBrightness(float b)
+        {
+            viewBrightness = b;
+            if (viewMat != null) viewMat.color = new Color(b, b, b, 1f);
+        }
+
         private static void SetSurface(Renderer r, Material original, string id, Vector2 tiling)
         {
             if (r == null) return;

@@ -128,6 +128,7 @@ namespace Bella.Core
             Room.transform.SetParent(transform, false);
             Room.Build();
             Room.ApplyTheme(SaveSystem.Data.wallId, SaveSystem.Data.floorId);
+            Room.ApplyExtras(SaveSystem.Data.rugId, SaveSystem.Data.viewId, SaveSystem.Data.picId);
 
             // --- Bella
             var bellaGo = new GameObject("Bella");

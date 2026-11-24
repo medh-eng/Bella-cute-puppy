@@ -183,6 +183,7 @@ namespace Bella.MiniGames
             {
                 d.learnedTricks.Add(def.id);
                 Fx.Stars(Bella.HeadPoint + Vector3.up * 0.3f, 18);
+                Fx.Confetti(Bella.HeadPoint + Vector3.up * 0.5f, 18);
                 AudioManager.Play("success");
                 Bella.Celebrate(10);
                 UIKit.Pop(cards[def.id].gameObject);

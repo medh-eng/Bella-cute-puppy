@@ -16,6 +16,16 @@ namespace Bella.Pet
         public static void Zzz(Vector3 worldPos) { Burst(worldPos, "zzz", 1, 0.3f, -0.12f, 0.35f, 2.4f); }
         public static void Drops(Vector3 worldPos, int count = 10) { Burst(worldPos, "drop", count, 0.16f, 1.2f, 2.4f); }
 
+        /// <summary>True when the generated sprite Resources/Fx/fx_&lt;name&gt; exists.</summary>
+        public static bool Has(string name) { return Art.TryTex("Fx/fx_" + name) != null; }
+
+        /// <summary>Paper confetti (three kinds); falls back to stars when the sprites are missing.</summary>
+        public static void Confetti(Vector3 worldPos, int count = 18)
+        {
+            if (!Has("confetti_1")) { Stars(worldPos, count / 2); return; }
+            for (int i = 1; i <= 3; i++) Burst(worldPos, "confetti_" + i, count / 3, 0.2f, 0.9f, 2.4f, 1.7f);
+        }
+
         public static void Burst(Vector3 worldPos, string icon, int count, float size, float gravity, float speed, float life = 1.2f)
         {
             var go = new GameObject("Fx_" + icon);

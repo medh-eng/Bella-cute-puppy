@@ -232,6 +232,7 @@ namespace Bella.World
         private void ApplyPeriod(bool force)
         {
             bool day = DayCrittersOut;
+            room.SetViewBrightness(dayNight.IsNight ? 0.4f : 1f);
             for (int i = 0; i < clouds.Count; i++) clouds[i].t.gameObject.SetActive(!dayNight.IsNight && !room.InPlace);
             for (int i = 0; i < stars.Count; i++) stars[i].t.gameObject.SetActive(dayNight.IsNight && !room.InPlace);
             for (int i = 0; i < butterflies.Count; i++) butterflies[i].root.gameObject.SetActive(day);

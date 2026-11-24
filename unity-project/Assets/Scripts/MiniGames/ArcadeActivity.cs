@@ -79,6 +79,7 @@ namespace Bella.MiniGames
             AudioManager.Play("success", 0.8f);
             Fx.Hearts(Bella.HeadPoint + Vector3.up * 0.3f, 12);
             Fx.Stars(Bella.HeadPoint + Vector3.up * 0.35f, 14);
+            Fx.Confetti(Bella.HeadPoint + Vector3.up * 0.5f, 18);
             Bella.Anim.Play("Happy", 0.2f);
             SetHint(summary + (paid > 0 ? "   +" + paid + " treats" : "   (Enough treats for today!)"));
             FinishAfter(3.0f);
